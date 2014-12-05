@@ -1,4 +1,6 @@
-from bottle import run, template, static_file, view, Bottle
+from bottle import run, template, static_file, view, Bottle, request
+import json
+import pe
 
 app = Bottle()
 
@@ -22,6 +24,20 @@ def export():
 @view('attributes')
 def attributs():
 	return { 'get_url':  app.get_url } 
+
+@app.route('/questions')
+@view('questions')
+def questions():
+	return { 'get_url':  app.get_url } 
+
+@app.route('/ajax', method="POST")
+def ajax():
+	query = json.load(request.body)
+	if query['method']=='PE':
+		return str(pe.PE(float(query['proba']), int(query['choice'])))
+	else:	
+		return query['method']
+
 
 @app.route('/static/:path#.+#', name='static')
 def static(path):

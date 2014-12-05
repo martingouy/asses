@@ -56,6 +56,9 @@
                     <li class="manage">
                         <a href="{{ get_url('/attributes') }}"><i class="fa fa-fw fa-file"></i>Manage attributes</a>
                     </li>
+                    <li class="questions">
+                        <a href="{{ get_url('/questions') }}"><i class="fa fa-fw fa-file"></i>Treat attributes</a>
+                    </li>
                     <li class="export">
                         <a href="{{ get_url('/export') }}"><i class="fa fa-fw fa-file"></i>Export simulation</a>
                     </li>
