@@ -8,6 +8,13 @@
 	            <button type="button" class="btn btn-default"><a id="start">Click to start</a></button>
             </div>
             <div id="choice">
+            	<img src="{{ get_url('static', path='img/tree_choice.png') }}" class="center"></img>
+            	<span id="questions_val_min"></span>
+            	<span id="questions_val_max"></span>
+            	<span id="questions_val_mean"></span>
+            	<span id="questions_proba_haut"></span>
+            	<span id="questions_proba_bas"></span>
+
             </div>
 
 %include('header_end.tpl')
@@ -15,6 +22,7 @@
 
 <script>
 $(function() { 
+	$('#choice').hide();
 	var asses_session = JSON.parse(localStorage.getItem("asses_session"));
 
 	var text = ''
@@ -33,6 +41,9 @@ $(function() {
 		// we delete the slect div
 		$('#select').remove();
 
+		// we show the choice div
+		$('#choice').show();
+
 		// which index is it ?
 		var indice;
 		for (var j = 0; j < asses_session.attributes.length; j++) {
@@ -46,23 +57,47 @@ $(function() {
 		var method = asses_session.attributes[indice].method;
 		var probability = 0.5;
 
-		$('#choice').append('val_min=' + val_min +'<br />val_max=' + val_max);
-		$('#choice').append('<div id="proba">'+ String(probability) +'</div><button type="button" class="btn btn-default"><a id="gain">Gain</a></button><button type="button" class="btn btn-default"><a id="lottery">Lottery</a></button>');
+		$('#questions_val_min').append(val_min);
+		$('#questions_val_max').append(val_max);
+		$('#questions_val_mean').append((parseFloat(val_max)+ parseFloat(val_min)) / 2);
+		$('#choice').append('</div><button type="button" class="btn btn-default"><a id="gain">Gain</a></button><button type="button" class="btn btn-default"><a id="lottery">Lottery</a></button>');
 
+		function sync_values() {
+			$('#questions_proba_haut').empty();
+			$('#questions_proba_bas').empty();
+			var proba_bas = 1 - probability;
+			$('#questions_proba_bas').append(proba_bas.toFixed(2));
+			$('#questions_proba_haut').append(probability);
+
+		}
+
+		sync_values();
 
 		$('#gain').click(function() {
 			$.post('ajax', '{"method": "PE", "proba": '+ String(probability) + ', "choice": "0"}', function(data) {
-				probability = parseFloat(data);
-				$('#proba').empty();
-				$('#proba').append(probability);
+				if (Math.abs(probability - parseFloat(data).toFixed(2)) <= 0.05){
+					alert('END!');
+					probability = parseFloat(data).toFixed(2);
+					sync_values();
+				}
+				else {
+					probability = parseFloat(data).toFixed(2);
+					sync_values();
+				}
 			});
 		});
 
 		$('#lottery').click(function() {
 			$.post('ajax', '{"method": "PE", "proba": '+ String(probability) + ', "choice": "1"}', function(data) {
-				probability = parseFloat(data);
-				$('#proba').empty();
-				$('#proba').append(probability);
+				if (Math.abs(probability - parseFloat(data).toFixed(2)) <= 0.05){
+					alert('END!');
+					probability = parseFloat(data).toFixed(2);
+					sync_values();
+				}
+				else {
+					probability = parseFloat(data).toFixed(2);
+					sync_values();
+				}
 			});
 		});
 	});

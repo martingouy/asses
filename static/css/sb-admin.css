@@ -232,3 +232,34 @@ ul.alert-dropdown {
 #add_attribute {
     display: inline-block;
 }
+
+#choice {
+    text-align: center;
+}
+
+#questions_val_min {
+    position: relative;
+    top: 100px;
+}
+
+#questions_val_max {
+    position: relative;
+    top: -100px;
+}
+
+#questions_val_mean {
+    position: relative;
+    left: -350px;
+}
+
+#questions_proba_haut {
+    position: relative;
+    top: -75px;
+    left: -145px;
+}
+
+#questions_proba_bas {
+    position: relative;
+    top: 75px;
+    left: -165px;
+}
