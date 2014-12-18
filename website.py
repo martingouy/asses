@@ -5,12 +5,6 @@ import pe
 
 app = Bottle()
 
-@app.route('/')
-@app.route('/hello/<name>')
-@view('blank-page')
-def greet(name='Stranger'):
-	return { 'get_url':  app.get_url } 
-
 @app.route('/export')
 @view('export')
 def export():
@@ -21,6 +15,7 @@ def export():
 def export():
 	return { 'get_url':  app.get_url } 
 
+@app.route('/')
 @app.route('/attributes')
 @view('attributes')
 def attributs():
