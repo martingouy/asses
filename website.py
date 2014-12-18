@@ -45,4 +45,4 @@ def static(path):
 	return static_file(path, root='static')
 
 #run(app, host='localhost', port=8080, debug=True)
-bottle.run(host='0.0.0.0', port=argv[1])
+app.run(host='0.0.0.0', port=argv[1])
