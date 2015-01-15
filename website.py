@@ -2,6 +2,8 @@ from bottle import run, template, static_file, view, Bottle, request
 from sys import argv
 import json
 import pe
+import fit
+import codecs
 
 app = Bottle()
 
@@ -28,11 +30,16 @@ def questions():
 
 @app.route('/ajax', method="POST")
 def ajax():
-	query = json.load(request.body)
-	if query['method']=='PE':
-		return pe.PE(float(query['min_interval']),float(query['max_interval']),float(query['proba']), int(query['choice']))
-	else:	
-		return query['method']
+	reader = codecs.getreader("utf-8")
+	query = json.load(reader(request.body))
+
+	if query['type'] == "question":
+		if query['method']=='PE':
+			return pe.PE(float(query['min_interval']),float(query['max_interval']),float(query['proba']), int(query['choice']))
+		else:	
+			return query['method']
+	elif query['type'] == "calc_util":
+		return fit.regressions(query['points'])
 
 
 @app.route('/static/:path#.+#', name='static')

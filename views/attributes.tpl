@@ -99,7 +99,7 @@
                 alert('Please fill correctly all the fields');
             }
             else {
-                asses_session.attributes.push({"name": name, 'unit': unit, 'val_min': val_min, 'val_max': val_max, 'method': method, 'completed': 'False'});
+                asses_session.attributes.push({"name": name, 'unit': unit, 'val_min': val_min, 'val_max': val_max, 'method': method, 'completed': 'False', 'questionnaire': {'number': 0, 'points': [], 'utility': {}}});
                 sync_table();
                 localStorage.setItem("asses_session", JSON.stringify(asses_session));
             }

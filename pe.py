@@ -18,8 +18,6 @@ def PE(min_interval,max_interval,p,choix):
         p=round(p/4,2) #au premier abord, on divise p par 4
         if p<min_interval:
             p=round(min_interval+(max_interval-min_interval)/4,2) 
-        else:
-            p=min_interval
         liste=[min_interval,max_interval] #pas la peine de renvoyer la valeur de p car max_interval=p
         return({"interval": liste,"proba": p})
     else:
