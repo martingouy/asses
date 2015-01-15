@@ -30,7 +30,7 @@ def questions():
 def ajax():
 	query = json.load(request.body)
 	if query['method']=='PE':
-		return str(pe.PE(float(query['proba']), int(query['choice'])))
+		return pe.PE(float(query['min_interval']),float(query['max_interval']),float(query['proba']), int(query['choice']))
 	else:	
 		return query['method']
 
