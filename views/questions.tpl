@@ -49,7 +49,7 @@ $(function() {
 		if (method == 'PE') {
 
 			// VARIABLES
-			var probability = 0.5;
+			var probability = 0.75;
 			var min_interval = 0;
 			var max_interval = 1;
 
