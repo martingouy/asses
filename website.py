@@ -67,5 +67,5 @@ def ajax():
 def static(path):
 	return static_file(path, root='static')
 
-run(app, host='localhost', port=8080, debug=True)
-#app.run(host='0.0.0.0', port=argv[1])
+#run(app, host='localhost', port=8080, debug=True)
+app.run(host='0.0.0.0', port=argv[1])
