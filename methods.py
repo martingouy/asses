@@ -30,7 +30,7 @@ def PE(min_interval,max_interval,p,choix, mode):
 
 ###################Programme LE##########################################################
 
-def LE(min_interval,max_interval,p,choix, mode):#sachant que p1 va être égale soit à 0.38 soit à 0.13
+def LE(min_interval,max_interval,p,choix, mode):#sachant que p1 va etre egale soit a 0.38 soit a 0.13
     #min_interval= 0; p = 0.47; max_interval = 0.5;
     if mode == 'reversed':
         choix = (choix + 1)%2
