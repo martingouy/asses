@@ -2,6 +2,8 @@
 
 <br />
 <br />
+<h2 style="display:inline-block; margin-right: 40px;"> Delete current simulation: </h2>
+<button type="button" class="btn btn-default del_simu">Delete</button>
 <h2> List of current attributes: </h2>
 <table class="table">
   <thead>
@@ -43,7 +45,14 @@
         <select class="form-control">
           <option>PE</option>
           <option>LE</option>
+          <option>CE_Constant_Prob</option>
+          <option>CE Variable Prob.</option>
         </select>
+    </div>
+    <div class="checkbox">
+        <label>
+          <input name="mode" type="checkbox"> The min value is optimal
+        </label>
     </div>
 
     <button type="submit" class="btn btn-default" id="submit">Submit</button>
@@ -63,12 +72,17 @@
 <script>
     $(function() {
 
+        $('.del_simu').click(function() {
+            localStorage.clear();
+            window.location.reload();
+        });
+
         $('li.manage').addClass("active");
         var asses_session = JSON.parse(localStorage.getItem("asses_session"));
 
         
         if (!asses_session){
-            asses_session = {"attributes": []};
+            asses_session = {"attributes": [], "k_calculus": {"nb_quest": 0, "k" :[]} };
             localStorage.setItem("asses_session", JSON.stringify(asses_session));
         }
 
@@ -95,11 +109,18 @@
             var val_max = parseInt($('#att_value_max').val());
             var method = $( "select option:selected" ).text();
 
+            if( $('input[name=mode]').is(':checked') ) {
+                var mode = "reversed";	
+            }
+            else {
+                var mode = "normal";
+            }
+
             if (!(name || unit || val_min || val_max) || isNaN(val_min) || isNaN(val_max)) {
                 alert('Please fill correctly all the fields');
             }
             else {
-                asses_session.attributes.push({"name": name, 'unit': unit, 'val_min': val_min, 'val_max': val_max, 'method': method, 'completed': 'False', 'questionnaire': {'number': 0, 'points': [], 'utility': {}}});
+                asses_session.attributes.push({"name": name, 'unit': unit, 'val_min': val_min, 'val_max': val_max, 'method': method, 'mode' : mode ,'completed': 'False', 'questionnaire': {'number': 0, 'points': [], 'utility': {}}});
                 sync_table();
                 localStorage.setItem("asses_session", JSON.stringify(asses_session));
             }

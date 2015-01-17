@@ -41,9 +41,6 @@ def regressions(liste_cord):
 	x = np.array(lx)
 	y = np.array(ly)
 
-	print(x)
-	print(y)
-
 
 	# creation of the fitted curves
 

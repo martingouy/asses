@@ -1,9 +1,11 @@
 from bottle import run, template, static_file, view, Bottle, request
 from sys import argv
 import json
-import pe
 import fit
 import codecs
+import methods
+import plot
+import kcalc
 
 app = Bottle()
 
@@ -28,6 +30,11 @@ def attributs():
 def questions():
 	return { 'get_url':  app.get_url } 
 
+@app.route('/k_calculus')
+@view('k_calculus')
+def k_calculus():
+	return { 'get_url':  app.get_url } 
+
 @app.route('/ajax', method="POST")
 def ajax():
 	reader = codecs.getreader("utf-8")
@@ -35,16 +42,30 @@ def ajax():
 
 	if query['type'] == "question":
 		if query['method']=='PE':
-			return pe.PE(float(query['min_interval']),float(query['max_interval']),float(query['proba']), int(query['choice']))
+			return methods.PE(float(query['min_interval']),float(query['max_interval']),float(query['proba']), int(query['choice']), str(query['mode']))
+		elif query['method']=='LE':
+			return methods.LE(float(query['min_interval']),float(query['max_interval']),float(query['proba']), int(query['choice']), str(query['mode']))
+		elif query['method']=='CE_Constant_Prob':
+			return methods.CE(float(query['min_interval']),float(query['max_interval']),float(query['gain']), int(query['choice']), str(query['mode']))
 		else:	
 			return query['method']
 	elif query['type'] == "calc_util":
 		return fit.regressions(query['points'])
+
+	elif query['type'] == "k_calculus":
+		return {"k":kcalc.calculk(query['k1'],query['k2'],query['k3'])}
+
+	elif query['type'] == "svg":
+		dictionary = query['data']
+		min = query['min']
+		max = query['max']
+		liste_cord = query['liste_cord']
+		return plot.generate_svg_plot(dictionary, min, max, liste_cord)
 
 
 @app.route('/static/:path#.+#', name='static')
 def static(path):
 	return static_file(path, root='static')
 
-#run(app, host='localhost', port=8080, debug=True)
-app.run(host='0.0.0.0', port=argv[1])
+run(app, host='localhost', port=8080, debug=True)
+#app.run(host='0.0.0.0', port=argv[1])

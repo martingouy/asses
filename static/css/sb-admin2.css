@@ -267,21 +267,25 @@ ul.alert-dropdown {
 .proba_tree {
     display: inline-block;
     margin-left: 100px;
+    height: 250px;
+    width: 600px;
 }
 
 .questions_val_min {
     position: relative;
-    top: 100px;
+    top: 200px;
+    left: 270px;
 }
 
 .questions_val_max {
     position: relative;
-    top: -100px;
+    left: 180px;
 }
 
 .questions_val_mean {
     position: relative;
-    left: -350px;
+    left: -325px;
+    top: 100px;
 }
 
 .questions_proba_haut {
@@ -295,6 +299,10 @@ ul.alert-dropdown {
     top: 75px;
     left: -165px;
 }
+.img_tree {
+    position: absolute;;
+}
+
 
 .functions_graph {
     display: inline-block;
