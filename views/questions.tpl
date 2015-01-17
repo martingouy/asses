@@ -31,6 +31,7 @@
 
 <script>
 $(function() { 
+	$('li.questions').addClass("active");
 	$('#charts').hide();
 	var asses_session = JSON.parse(localStorage.getItem("asses_session"));
 

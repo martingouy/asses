@@ -59,7 +59,7 @@
                     <li class="questions">
                         <a href="{{ get_url('/questions') }}"><i class="fa fa-fw fa-file"></i>Treat attributes</a>
                     </li>
-                    <li class="export">
+                    <li class="k">
                         <a href="{{ get_url('/k_calculus') }}"><i class="fa fa-fw fa-file"></i>k calculus</a>
                     </li>
                     <li class="export">

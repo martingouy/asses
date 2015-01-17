@@ -16,7 +16,7 @@
 
 <script>
 $(function() { 
-
+	$('li.k').addClass("active");
 	var asses_session = JSON.parse(localStorage.getItem("asses_session"));
 
 	function isInArray(value, array) {
