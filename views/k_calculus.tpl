@@ -1,10 +1,63 @@
 %include('header_init.tpl', heading='K calculus')
+
+<div role="tabpanel">
+<!-- Nav tabs -->
+<ul class="nav nav-tabs" role="tablist" >
+  <li role="presentation" class="active"><a href="#multiplicative" aria-controls="multiplicative" role="tab" data-toggle="tab">Multiplicative</a></li>
+  <li role="presentation"><a href="#multilinear" aria-controls="multilinear" role="tab" data-toggle="tab">Multilinear</a></li>
+
+</ul>
+
+
+ <!-- Tab panes -->
+  <div class="tab-content">
+
+    <div role="tabpanel" class="tab-pane active" id="multiplicative">
+    	<table class="table">
+			<thead>
+				<tr>
+					<th>Attribute</th>
+					<th>Method</th>
+					<th>Unit</th>
+					<th>Utility function type</th>
+                    <th>K</th>
+                    <th><img src='/static/img/delete.ico' style='width:16px;'/></th>
+				</tr>
+			</thead>
+			<tbody id="table_attributes">
+			</tbody>
+		</table>
+
+<br />
+
 	<div id="error_message">
 	</div>
 	<div id="k_calculus_info">
 	</div>
             <div id="trees">
             </div>	
+    </div>
+    
+    
+     <!-- Panel for multiplicatif ! -->
+    <div role="tabpanel" class="tab-pane" id="multilinear">
+    <br/>
+    	<table class="table">
+			<thead>
+				<tr>
+					<th>Attribute</th>
+					<th>Method</th>
+					<th>Unit</th>
+					<th>Utility function type</th> 
+				</tr>
+			</thead>
+			<tbody id="table_attributes_multiplicatif">
+			</tbody>
+		</table>
+    </div> 
+  </div>
+  <div style="float:left;width:100%;height:50px;"></div>
+</div>
 
 %include('header_end.tpl')
 %include('js.tpl')
@@ -22,7 +75,7 @@ $(function() {
 	function isInArray(value, array) {
 		return array.indexOf(value) > -1;
 	}
-
+	
 	// We Check the requirements
 	var req_nq = 0;
 	var req_done = true;
@@ -31,11 +84,69 @@ $(function() {
 		if (attribute.completed == 'False') {
 			req_done = false;
 		}
+		
 		req_nq += 1;
 	}
 
-	if (req_nq > 3) {
-		$('#error_message').append('<p>Error: In order to complete this task, you should have maximum 3 attributes, please delete some</p>');
+
+	//We display all the attribute in order to select wich one we want
+	
+	$('li.questions').addClass("active");
+	$('#charts').hide();
+	var asses_session = JSON.parse(localStorage.getItem("asses_session"));
+	//informations about the k already calculated
+    var k_calculus = asses_session['k_calculus'];
+	var nb_quest = k_calculus.nb_quest;
+	var numeroK=0;
+	// We fill the table
+	for (var i=0; i < asses_session.attributes.length; i++){
+		//If the utility fonction is not calculated we pass to the next one
+		if(asses_session.attributes[i].completed == 'False')
+			continue;
+			
+		
+		var text = '<tr><td>' + asses_session.attributes[i].name + '</td>';
+			text += '<td>'+ asses_session.attributes[i].method + '</td>';
+			text += '<td>'+ asses_session.attributes[i].unit +'</td>';
+			text += '<td>'+ asses_session.attributes[i].questionnaire.utilityType + '</td>';
+			if(nb_quest>0 && typeof k_calculus.k[numeroK] != 'undefined') 
+				text += '<td>'+ k_calculus.k[numeroK] + '</td>'; 
+			else
+				text += '<td>not calculated</td>'; 
+			text+='<td><img id="deleteK'+numeroK+'" src="/static/img/delete.ico" style="width:16px;"/></td></tr>';
+	
+			$('#table_attributes').append(text);
+			
+		var text_multiplicatif = '<tr><td>' + asses_session.attributes[i].name + '</td>';
+			text_multiplicatif += '<td>'+ asses_session.attributes[i].method + '</td>';
+			text_multiplicatif += '<td>'+ asses_session.attributes[i].unit +'</td>'; 
+			text_multiplicatif += '<td>'+ asses_session.attributes[i].questionnaire.utilityType + '</td>';
+			$('#table_attributes_multiplicatif').append(text_multiplicatif);
+			
+			
+			//we define the actions relatve of the delete img
+			(function(_numeroK){
+			$('#deleteK'+_numeroK).click(function(){ 
+				asses_session['k_calculus']['k']=[]; 
+				asses_session['k_calculus'].nb_quest=0;
+				// backup local
+				localStorage.setItem("asses_session", JSON.stringify(asses_session));
+				//refresh the page
+				window.location.reload();
+				});
+			})(numeroK);
+			
+			numeroK++;
+	}
+
+	
+	
+	
+
+
+	
+	if (req_nq < 3) {
+		$('#error_message').append('<p>Error: In order to complete this task, you should have at least 3 attributes, please delete some</p>');
 	}
 
 	else if (!req_done) {
@@ -56,6 +167,7 @@ $(function() {
 			// we check if the calculus has already been made :
 			if (!isInArray('k_calculated', Object.keys(asses_session['k_calculus']))) {
 				var list_temp = [0,0,0];
+  
 				for (var i = 0; i < asses_session['k_calculus']['k'].length; i++) {
 					list_temp[i] = asses_session['k_calculus']['k'][i];
 				}
@@ -67,25 +179,32 @@ $(function() {
 				});
 			}
 
-			var text_k = '';
-			var dic_k = {};
-			for (var j=0; j < asses_session['k_calculus']['k'].length; j++){
-				text_k += '<h4>K' + j +':</h4>' + asses_session['k_calculus']['k'][j] + '<br />';
-				dic_k['1'] = asses_session['k_calculus']['k'][j];
-			}
-
-			text_k += '<h4>K:</h4>' + asses_session['k_calculus']['k_calculated'];
+			var text_k = ''; 
+			
+			text_k += '<h4>K = ' + asses_session['k_calculus']['k_calculated']+'</h4>';
 
 			$('#k_calculus_info').append(text_k);
 		}
 	}
 
 
+//select the different view
 
+	$('#multilinear').click(function (e) {
+  e.preventDefault()
+  $(this).tab('show')
+	})
+	
+	$('#multiplicatif a').click(function (e) {
+  e.preventDefault()
+  $(this).tab('show')
+	})
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////// CLICK ON THE ANSWER BUTTON //////////////////////////////////////////////////////////////// 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+  
 	$('.answer_quest').click(function() {
 		// we store the name of the attribute
 		var method = 'PE';
@@ -117,23 +236,23 @@ $(function() {
 				var probability = random_proba(0.25, 0.75);
 				var min_interval = 0;
 				var max_interval = 1;
-
+				
 				// VARIABLES
 				var gain_certain = asses_session.attributes[numero_quest].val_max + ' ' + asses_session.attributes[numero_quest].unit;
 				var gain_haut = asses_session.attributes[numero_quest].val_max + ' ' + asses_session.attributes[numero_quest].unit;
 				var gain_bas = asses_session.attributes[numero_quest].val_min + ' ' + asses_session.attributes[numero_quest].unit;
 
 				for (var i = 0; i < numero_quest; i++){
-					gain_certain += ' | ' + asses_session.attributes[i].val_min + ' ' + asses_session.attributes[i].unit;
-					gain_haut += ' | ' + asses_session.attributes[i].val_max + ' ' + asses_session.attributes[i].unit;
-					gain_bas += ' | ' + asses_session.attributes[i].val_min + ' ' + asses_session.attributes[i].unit;
+					gain_certain += ' <br/> ' + asses_session.attributes[i].val_min + ' ' + asses_session.attributes[i].unit;
+					gain_haut += ' <br/> ' + asses_session.attributes[i].val_max + ' ' + asses_session.attributes[i].unit;
+					gain_bas += ' <br/> ' + asses_session.attributes[i].val_min + ' ' + asses_session.attributes[i].unit;
 
 				}
 
 				for (var i = numero_quest + 1 ; i < nb_attributs; i++){
-					gain_certain += ' | ' + asses_session.attributes[i].val_min + ' ' + asses_session.attributes[i].unit;
-					gain_haut += ' | ' + asses_session.attributes[i].val_max + ' ' + asses_session.attributes[i].unit;
-					gain_bas += ' | ' + asses_session.attributes[i].val_min + ' ' + asses_session.attributes[i].unit;
+					gain_certain += ' <br/> ' + asses_session.attributes[i].val_min + ' ' + asses_session.attributes[i].unit;
+					gain_haut += ' <br/> ' + asses_session.attributes[i].val_max + ' ' + asses_session.attributes[i].unit;
+					gain_bas += ' <br/> ' + asses_session.attributes[i].val_min + ' ' + asses_session.attributes[i].unit;
 
 				}
 
@@ -148,7 +267,7 @@ $(function() {
 				arbre_gauche.display();
 				arbre_gauche.update();
 				
-				$('#trees').append('</div><button type="button" class="btn btn-default gain">Gain with certainty</button><button type="button" class="btn btn-default lottery">Lottery</button>');
+				$('#trees').append('<br/><br/><br/><br/><button type="button" class="btn btn-default gain">Gain with certainty</button><button type="button" class="btn btn-default lottery">Lottery</button>');
 
 
 				function treat_answer(data){
@@ -181,7 +300,10 @@ $(function() {
 
 						if (final_proba <= max_interval && final_proba >= min_interval) {
 							// we save it 
+							
+							
 							asses_session['k_calculus']['k'].push(final_proba);
+								
 							asses_session['k_calculus']['nb_quest']+= 1;
 							// backup local
 							localStorage.setItem("asses_session", JSON.stringify(asses_session));

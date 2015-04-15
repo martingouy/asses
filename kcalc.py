@@ -4,6 +4,8 @@ def calculk(k1,k2,k3):
     coeff=[k1*k2*k3,k1*k2+k2*k3+k1*k3,k1+k2+k3-1]
     solution = np.roots(coeff)
     liste=[solution[0],solution[1]]
+    
+    
     if k1+k2+k3>1:
         k=float(round(liste[0],1))
         return (k)

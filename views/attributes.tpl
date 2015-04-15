@@ -13,6 +13,7 @@
     <th>Valeurs</th>
     <th>Méthode</th>
     <th>Etat</th>
+    <th><img src='/static/img/delete.ico' style='width:16px;'/></th>
     </tr>
   </thead>
   <tbody id="table_attributes">
@@ -57,14 +58,7 @@
 
     <button type="submit" class="btn btn-default" id="submit">Submit</button>
 </div>
-<div id="delete_attribute">
-    <h2>Delete an attribute:</h2>
-    <div class="form-group">
-        <label for="att_name_del">Name:</label>
-        <input type="text" class="form-control" id="att_name_del" placeholder="Name">
-    </div>
-    <button type="submit" class="btn btn-default" id="submit_del">Delete</button>
-</div>
+
 
 %include('header_end.tpl')
 
@@ -72,10 +66,7 @@
 <script>
     $(function() {
 
-        $('.del_simu').click(function() {
-            localStorage.clear();
-            window.location.reload();
-        });
+       
 
         $('li.manage').addClass("active");
         var asses_session = JSON.parse(localStorage.getItem("asses_session"));
@@ -86,16 +77,27 @@
             localStorage.setItem("asses_session", JSON.stringify(asses_session));
         }
 
-        function sync_table() {
-            var text_table = '';
+        function sync_table() { 
+			$('#table_attributes').empty();
             if (asses_session){
                 for (var i=0; i < asses_session.attributes.length; i++) {
                     var attribute = asses_session.attributes[i];
-                    text_table += '<tr><td>'+ attribute.name +'</td><td>'+ attribute.unit +'</td><td>['+ attribute.val_min +','+ attribute.val_max +']</td><td>'+ attribute.method +'</td><td>'+ attribute.completed +'</td></tr>';
+                    var text_table = '<tr><td>'+ attribute.name +'</td><td>'+ attribute.unit +'</td><td>['+ attribute.val_min +','+ attribute.val_max +']</td><td>'+ attribute.method +'</td><td>'+ attribute.completed +'</td>';
+					text_table+='<td><img id="deleteK'+i+'" src="/static/img/delete.ico" style="width:16px;"/></td></tr>';
+					
+					$('#table_attributes').append(text_table);
+				
+					(function(_i){
+					$('#deleteK'+_i).click(function(){ 
+						asses_session.attributes.splice(_i,1); 
+						// backup local
+						localStorage.setItem("asses_session", JSON.stringify(asses_session));
+						//refresh the page
+						window.location.reload();
+						});
+					})(i);
                 }
 
-                $('#table_attributes').children().remove();
-                $('#table_attributes').append(text_table);
             }
         }
         sync_table();
@@ -124,6 +126,8 @@
                 sync_table();
                 localStorage.setItem("asses_session", JSON.stringify(asses_session));
             }
+			
+			
         });
 
         function isAttribute(name){
@@ -135,20 +139,7 @@
             return [false, 0];
         }
 
-        $('#submit_del').click(function() {
-            var name = $('#att_name_del').val();
-            if (!name) {
-                alert("Please enter a value");
-            }
-            else if (!isAttribute(name)[0]) {
-                alert("This name doesn't match any attribute, please try again");
-            }
-            else {
-                asses_session.attributes.splice(isAttribute(name)[1], 1);
-                sync_table();
-                localStorage.setItem("asses_session", JSON.stringify(asses_session));
-            }
-        });
+        
     });
 </script>
 </body>

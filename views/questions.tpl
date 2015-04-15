@@ -106,10 +106,10 @@ $(function() {
 
 				$('.container-fluid').append(
 					'<div id=\"choice\">\
+				            	<span id="questions_val_mean"></span>\
 				            	<img src="{{ get_url('static', path='img/tree_choice.png') }}" class="center"></img>\
 				            	<span id="questions_val_min"></span>\
 				            	<span id="questions_val_max"></span>\
-				            	<span id="questions_val_mean"></span>\
 				            	<span id="questions_proba_haut"></span>\
 				            	<span id="questions_proba_bas"></span>\
 				        	</div>'
@@ -130,7 +130,7 @@ $(function() {
 					var gain_certain = parseFloat(val_min) + (parseFloat(val_max)- parseFloat(val_min)) * 3 / 4;
 					$('#questions_val_mean').append(gain_certain);
 				}
-				$('#choice').append('</div><button type="button" class="btn btn-default"><a id="gain">Gain</a></button><button type="button" class="btn btn-default"><a id="lottery">Lottery</a></button>');
+				$('#choice').append('</div><button type="button" class="btn btn-default" id="gain">Gain</button><button type="button" class="btn btn-default" id="lottery">Lottery</button>');
 
 				// FUNCTIONS
 				function sync_values() {
@@ -499,6 +499,7 @@ $(function() {
 					var selected_function = $(this).parent().attr('id');
 					
 					// we save it
+                    asses_session.attributes[indice].questionnaire.utilityType = selected_function;
 					asses_session.attributes[indice].questionnaire.utility[selected_function] = data[selected_function];
 					asses_session.attributes[indice].completed = 'True';
 					// backup local

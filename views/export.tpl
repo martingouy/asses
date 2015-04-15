@@ -1,6 +1,8 @@
 %include('header_init.tpl', heading='Export')
 
-            <button type="button" class="btn btn-default"><a id="export_json">Click to export</a></button>
+            <button type="button" class="btn btn-default"><a id="export_json">Click to export JSON</a></button>
+            <br/><br/>
+            <button type="button" class="btn btn-default"><a id="export_xls">Click to export Excel</a></button>
 
 %include('header_end.tpl')
 %include('js.tpl')
@@ -14,8 +16,16 @@
         button.attr('target', '_blank');
         button.attr('download', 'myFile.json');
     });
-</script>
 
+    $('#export_xls').click(function() {
+        var data_2_export = localStorage['asses_session'];
+        $.post('ajax', '{"type":"export_xls", "data":'+data_2_export+'}', function(data) { 
+               document.location = "export_download/"+data;
+               });
+    });
+
+
+</script>
 </body>
 
 </html>
