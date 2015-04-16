@@ -132,18 +132,19 @@ def generate_fichier(data):
         feuille.write(ligne,6, 'Calculated points', formatTitre);
         feuille.write(ligne,7, '', formatTitre);
         #On va maintenant generer plusieurs points
+        amplitude=(monAttribut['val_max']-monAttribut['val_min'])/10
         for i in range(0,11):
-            feuille.write(ligne+1+i, 6, i*100 )
+            feuille.write(ligne+1+i, 6, i*amplitude )
             if UtilityType=='exp':
-                feuille.write(ligne+1+i, 7, funcexp(i*100, utility['a'], utility['b'], utility['c']))
+                feuille.write(ligne+1+i, 7, funcexp(i*amplitude, utility['a'], utility['b'], utility['c']))
             elif UtilityType=='quad':
-                feuille.write(ligne+1+i, 7, funcquad(i*100, utility['a'], utility['b'], utility['c']))
+                feuille.write(ligne+1+i, 7, funcquad(i*amplitude, utility['a'], utility['b'], utility['c']))
             elif UtilityType=='pow':
-                feuille.write(ligne+1+i, 7, funcpuis(i*100, utility['a'], utility['b'], utility['c']))
+                feuille.write(ligne+1+i, 7, funcpuis(i*amplitude, utility['a'], utility['b'], utility['c']))
             elif UtilityType=='log':
-                feuille.write(ligne+1+i, 7, funclog(i*100, utility['a'], utility['b'], utility['c'], utility['d']))
+                feuille.write(ligne+1+i, 7, funclog(i*amplitude, utility['a'], utility['b'], utility['c'], utility['d']))
             elif UtilityType=='lin':
-                feuille.write(ligne+1+i, 7, funclin(i*100, utility['a'], utility['b']))
+                feuille.write(ligne+1+i, 7, funclin(i*amplitude, utility['a'], utility['b']))
 
         #Ensuite on fait le Chart ! (le diagramme)
         chart5 = classeur.add_chart({'type': 'scatter',
@@ -156,16 +157,15 @@ def generate_fichier(data):
                           'values':     '=feuille 1!$H$'+str(ligne+2)+':$H$'+str(ligne+12),
  
                           })
-
-
+ 
         # Add a chart title and some axis labels.
         chart5.set_title ({'name': 'Utility Function'})
 
         # Set an Excel chart style.
         chart5.set_style(4)
         chart5.set_x_axis({
-                         'min': 0,
-                         'max': 1000
+                         'min': monAttribut['val_min'],
+                         'max': monAttribut['val_max']
                          })
 
         # Insert the chart into the worksheet (with an offset).
