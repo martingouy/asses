@@ -2,28 +2,7 @@
 ///			javascript Function for k_calculus
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-function checked_button_clicked(element)
-{ 
-	var checked=$(element).prop("checked");
-	var i=$(element).val();
-	
-	//we modify the propriety
-	var asses_session = JSON.parse(localStorage.getItem("asses_session"));
-	asses_session.attributes[i].checked=checked; 
-	 
-	//we update the assess_session storage 
-	localStorage.setItem("asses_session", JSON.stringify(asses_session));
-	
-	//update
-	update_checked_button();
-}
 
-
-function update_checked_button()
-{
-	var counter=number_attributes_checked();
-	$("#message").html("You have selected "+counter+" attributes");
-}
 
 function number_attributes_checked()
 {
@@ -69,11 +48,37 @@ function update_method_button(type)
 }
 
 
+
+
+///  ACTION FROM BUTTON UPDATE 
+$("#update").click(function(){ 
+	create_multiplicative_k();
+	create_multilinear_k();
+	//we show it in 
+	update_method_button("multiplicative");
+	update_k_list(0);
+	show_list();
+	$("#update_box").hide("slow");	
+});
+
+$("#update_box").ready(function(){
+	$("#update_box").hide();
+	var NAttri=number_attributes_checked();
+	var asses_session = JSON.parse(localStorage.getItem("asses_session"));
+	var NK=asses_session.k_calculus[0].k.length;
+	if(NAttri!=NK)//If we have different attribute number used and attribute numbe active we show the update box
+	{
+	$("#update_box").show("slow");	
+	$("#update_attributes_number").html(NAttri);
+	$("#update_k_number").html(NK);
+	}
+	
+});
+
 ///  ACTION FROM BUTTON MULTIPLICATIVE 
 $("#button_multiplicative").click(function(){
 	//update the active methode for k_kalculus
 	update_method_button("multiplicative");
-	create_multiplicative_k();
 	update_k_list(0);
 	show_list();
 });
@@ -101,7 +106,6 @@ function create_multiplicative_k()
 $("#button_multilinear").click(function(){
 	//update the active methode for k_kalculus
 	update_method_button("multilinear");
-	create_multilinear_k();
 	update_k_list(1);
 	show_list();
 });	
@@ -187,8 +191,8 @@ function update_k_list(number)
 	
 	for(var i=0; i<ma_list.length; i++)
 	{
-		var text = '<tr id="line'+i+'"><td>' + ma_list[i].ID + '</td>';
-			text += '<td>'+ JSON.stringify(ma_list[i].attribute).replace(/"/g, ' ').replace("[", '').replace("]", ''); + '</td>';
+		var text = '<tr id="line'+i+'"><td>K<sub>' + String(ma_list[i].ID).replace(/,/g, '') + '</sub></td>';
+			text += '<td> '+ JSON.stringify(ma_list[i].attribute).replace(/"/g, ' ').replace("[", '').replace("]", '').replace(/,/g, '|'); + '</td>';
 			if(ma_list[i].value==null)
 				text += '<td id="k_value_'+i+'"><button type="button" class="btn btn-default btn-xs" id="k_answer_'+i+'">Answer</button></td>';
 			else
@@ -266,17 +270,28 @@ function k_multilinear_answer(i)
 				var max_interval = 1;
 				
 				// VARIABLES
-				var gain_certain = asses_session.attributes[mon_k.ID_attribute[0]].val_max + ' ' + asses_session.attributes[mon_k.ID_attribute[0]].unit;
-				var gain_haut = asses_session.attributes[mon_k.ID_attribute[0]].val_max + ' ' + asses_session.attributes[mon_k.ID_attribute[0]].unit;
-				var gain_bas = asses_session.attributes[mon_k.ID_attribute[0]].val_min + ' ' + asses_session.attributes[mon_k.ID_attribute[0]].unit;
+				var gain_certain = "";
+				var gain_haut = "";
+				var gain_bas = "";
 				
-				for (var l = 1; l < mon_k.ID_attribute.length; l++){
-					var id = mon_k.ID_attribute[l];
-					gain_certain += ' <br/> ' + asses_session.attributes[id].val_min + ' ' + asses_session.attributes[id].unit;
-					gain_haut += ' <br/> ' + asses_session.attributes[id].val_max + ' ' + asses_session.attributes[id].unit;
-					gain_bas += ' <br/> ' + asses_session.attributes[id].val_min + ' ' + asses_session.attributes[id].unit;
-
+				
+				var k=0;
+				//first we delete the array of k for multiplicative
+				for (var l=0; l < asses_session.attributes.length; l++){
+					if(!asses_session.attributes[l].checked)//if not checked we don't put it
+						continue;
+					if(l==mon_k.ID_attribute[k])//if the attribut is in our list
+					{
+						gain_certain += asses_session.attributes[l].val_max + ' ' + asses_session.attributes[l].unit+' <br/> ';
+						k++;
+					}
+					else
+						gain_certain += asses_session.attributes[l].val_min + ' ' + asses_session.attributes[l].unit+' <br/> ';
+					gain_haut += asses_session.attributes[l].val_max + ' ' + asses_session.attributes[l].unit+' <br/> ';
+					gain_bas += asses_session.attributes[l].val_min + ' ' + asses_session.attributes[l].unit+' <br/> ';
 				}
+				
+				
 
 				// INTERFACE
 				//on cache le bouton

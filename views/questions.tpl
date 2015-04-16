@@ -37,18 +37,14 @@ $(function() {
 
 	// We fill the table
 	for (var i=0; i < asses_session.attributes.length; i++){
+		if(!asses_session.attributes[i].checked)//if note activated
+			continue;//we pass to the next one
 		var text = '<tr><td>' + asses_session.attributes[i].name + '</td><td>'+ asses_session.attributes[i].method + '</td><td>'+ asses_session.attributes[i].questionnaire.number +'</td>';
-		if (asses_session.attributes[i].questionnaire.number < 3 && asses_session.attributes[i].completed == 'False') {
+		
 			text += '<td><button type="button" class="btn btn-default btn-xs answer_quest" id="q_' + asses_session.attributes[i].name  + '">Answer</button></td>';
-		}
-		else {
-			text += '<td>Done</td>';
-		}
-		if (asses_session.attributes[i].completed == 'False'  && asses_session.attributes[i].questionnaire.number > 0) {
+		
+		if (asses_session.attributes[i].questionnaire.number > 0) {
 			text += '<td><button type="button" class="btn btn-default btn-xs calc_util" id="u_' + asses_session.attributes[i].name  + '">Utility function</button></td>';
-		}
-		else if (asses_session.attributes[i].completed == 'True') {
-			text += '<td>Done</td>';
 		}
 		else{
 			text += '<td>Please answer questionnaire</td>';
@@ -107,7 +103,7 @@ $(function() {
 				$('.container-fluid').append(
 					'<div id=\"choice\">\
 				            	<span id="questions_val_mean"></span>\
-				            	<img src="{{ get_url('static', path='img/tree_choice.png') }}" class="center"></img>\
+				            	<img src="{{ get_url("static", path="img/tree_choice.png") }}" class="center"></img>\
 				            	<span id="questions_val_min"></span>\
 				            	<span id="questions_val_max"></span>\
 				            	<span id="questions_proba_haut"></span>\
@@ -474,23 +470,23 @@ $(function() {
 				for (var key in data) {
 					$('#charts').show();
 					if (key == 'exp') {
-						div_function = '<div id="' + key +'" class="functions_graph"><h3 style="color:#401539">Exponential</h3><br />Coefficient of determination: ' + Math.round(data[key]['r2'] * 100) / 100 + '<br /><button type="button" class="btn btn-default b_choose">Choose</button></div>';
+						div_function = '<div id="' + key +'" class="functions_graph"><h3 style="color:#401539">Exponential</h3><br />Coefficient of determination: ' + Math.round(data[key]['r2'] * 100) / 100 + '<br /><button type="button" class="btn btn-default b_choose">Copy in Clipboard</button></div>';
 						$('#charts').append(div_function);
 					}
 					else if (key == 'log') {
-						div_function = '<div id="' + key +'" class="functions_graph"><h3 style="color:#D9585A">Logarithmic</h3><br />Coefficient of determination: ' + Math.round(data[key]['r2'] * 100) / 100 + '<br /><button type="button" class="btn btn-default b_choose">Choose</button></div>';
+						div_function = '<div id="' + key +'" class="functions_graph"><h3 style="color:#D9585A">Logarithmic</h3><br />Coefficient of determination: ' + Math.round(data[key]['r2'] * 100) / 100 + '<br /><button type="button" class="btn btn-default b_choose">Copy in Clipboard</button></div>';
 						$('#charts').append(div_function);
 					}
 					else if (key == 'pow') {
-						div_function = '<div id="' + key +'" class="functions_graph"><h3 style="color:#6DA63C">Power</h3><br />Coefficient of determination: ' + Math.round(data[key]['r2'] * 100) / 100 + '<br /><button type="button" class="btn btn-default b_choose">Choose</button></div>';
+						div_function = '<div id="' + key +'" class="functions_graph"><h3 style="color:#6DA63C">Power</h3><br />Coefficient of determination: ' + Math.round(data[key]['r2'] * 100) / 100 + '<br /><button type="button" class="btn btn-default b_choose">Copy in Clipboard</button></div>';
 						$('#charts').append(div_function);
 					}
 					else if (key == 'quad') {
-						div_function = '<div id="' + key +'" class="functions_graph"><h3 style="color:#458C8C">Quadratic</h3><br />Coefficient of determination: ' + Math.round(data[key]['r2'] * 100) / 100 + '<br /><button type="button" class="btn btn-default b_choose">Choose</button></div>';
+						div_function = '<div id="' + key +'" class="functions_graph"><h3 style="color:#458C8C">Quadratic</h3><br />Coefficient of determination: ' + Math.round(data[key]['r2'] * 100) / 100 + '<br /><button type="button" class="btn btn-default b_choose">Copy in Clipboard</button></div>';
 						$('#charts').append(div_function);
 					}
 					else if (key == 'lin') {
-						div_function = '<div id="' + key +'" class="functions_graph"><h3 style="color:#D9B504">Linear</h3><br />Coefficient of determination: ' + Math.round(data[key]['r2'] * 100) / 100 + '<br /><button type="button" class="btn btn-default b_choose">Choose</button></div>';
+						div_function = '<div id="' + key +'" class="functions_graph"><h3 style="color:#D9B504">Linear</h3><br />Coefficient of determination: ' + Math.round(data[key]['r2'] * 100) / 100 + '<br /><button type="button" class="btn btn-default b_choose">Copy in Clipboard</button></div>';
 						$('#charts').append(div_function);
 					}
 				}
@@ -498,14 +494,16 @@ $(function() {
 				$('.b_choose').click(function(){
 					var selected_function = $(this).parent().attr('id');
 					
+					alert(JSON.stringify(selected_function));
 					// we save it
-                    asses_session.attributes[indice].questionnaire.utilityType = selected_function;
-					asses_session.attributes[indice].questionnaire.utility[selected_function] = data[selected_function];
-					asses_session.attributes[indice].completed = 'True';
+					
+                    //asses_session.attributes[indice].questionnaire.utilityType = selected_function;
+					//asses_session.attributes[indice].questionnaire.utility[selected_function] = data[selected_function];
+					//asses_session.attributes[indice].completed = 'True';
 					// backup local
-					localStorage.setItem("asses_session", JSON.stringify(asses_session));
+					//localStorage.setItem("asses_session", JSON.stringify(asses_session));
 					// we reload the page
-					window.location.reload();
+					//window.location.reload();
 
 				});
 			});

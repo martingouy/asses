@@ -8,11 +8,11 @@
 <table class="table">
   <thead>
     <tr>
-    <th>Attribut</th>
-    <th>Unité</th>
-    <th>Valeurs</th>
-    <th>Méthode</th>
-    <th>Etat</th>
+    <th style='width:50px;'>State</th>
+    <th>Attribute name</th>
+    <th>Unit</th>
+    <th>Values</th>
+    <th>Method</th> 
     <th><img src='/static/img/delete.ico' style='width:16px;'/></th>
     </tr>
   </thead>
@@ -86,11 +86,22 @@
             if (asses_session){
                 for (var i=0; i < asses_session.attributes.length; i++) {
                     var attribute = asses_session.attributes[i];
-                    var text_table = '<tr><td>'+ attribute.name +'</td><td>'+ attribute.unit +'</td><td>['+ attribute.val_min +','+ attribute.val_max +']</td><td>'+ attribute.method +'</td><td>'+ attribute.completed +'</td>';
+					var text_table="<tr>";
+					if(attribute.checked)
+						text_table+='<td><input type="checkbox" id="checkbox_'+i+'" value="'+i+'" name="' + attribute.name + '" checked></td>';
+					else
+						text_table+='<td><input type="checkbox" id="checkbox_'+i+'" value="'+i+'" name="' + attribute.name + '" ></td>';
+			
+				
+			
+                    text_table += '<td>'+ attribute.name +'</td><td>'+ attribute.unit +'</td><td>['+ attribute.val_min +','+ attribute.val_max +']</td><td>'+ attribute.method +'</td>';
 					text_table+='<td><img id="deleteK'+i+'" src="/static/img/delete.ico" style="width:16px;"/></td></tr>';
 					
 					$('#table_attributes').append(text_table);
-				
+					
+					//we will define the action when we click on the check input
+					$('#checkbox_'+i).click(function(){checked_button_clicked($(this))});
+			
 					(function(_i){
 					$('#deleteK'+_i).click(function(){ 
 						asses_session.attributes.splice(_i,1); 
@@ -126,7 +137,7 @@
                 alert('Please fill correctly all the fields');
             }
             else {
-                asses_session.attributes.push({"name": name, 'unit': unit, 'val_min': val_min, 'val_max': val_max, 'method': method, 'mode' : mode ,'completed': 'False', 'checked':false, 'questionnaire': {'number': 0, 'points': [], 'utility': {}}});
+                asses_session.attributes.push({"name": name, 'unit': unit, 'val_min': val_min, 'val_max': val_max, 'method': method, 'mode' : mode ,'completed': 'False', 'checked':true, 'questionnaire': {'number': 0, 'points': [], 'utility': {}}});
                 sync_table();
                 localStorage.setItem("asses_session", JSON.stringify(asses_session));
             }
@@ -143,6 +154,23 @@
             return [false, 0];
         }
 		
+		
+		function checked_button_clicked(element)
+		{ 
+			var checked=$(element).prop("checked");
+			var i=$(element).val();
+			
+			//we modify the propriety
+			var asses_session = JSON.parse(localStorage.getItem("asses_session"));
+			asses_session.attributes[i].checked=checked; 
+			 
+			//we update the assess_session storage 
+			localStorage.setItem("asses_session", JSON.stringify(asses_session));
+		
+		}
+
+
+
 		
 
         
