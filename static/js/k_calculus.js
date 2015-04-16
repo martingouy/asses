@@ -363,7 +363,7 @@ function k_answer(i, type)
 			// we store the name of the attribute
 		var method = 'PE';
 		var mon_k = asses_session.k_calculus[type].k[i];
-		alert(JSON.stringify(mon_k));
+		
 		var mode = "normal";
 
 		// we delete the slect div

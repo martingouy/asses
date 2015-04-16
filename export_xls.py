@@ -10,7 +10,7 @@ import xlsxwriter
 def generate_fichier(data):
     
     # On crée un "classeur"
-    classeur = xlsxwriter.Workbook('export/fichier.xlsx')
+    classeur = xlsxwriter.Workbook('/export/fichier.xlsx')
     # On ajoute une feuille au classeur
     feuille = classeur.add_worksheet("feuille 1")
     

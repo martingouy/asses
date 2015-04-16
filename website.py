@@ -74,7 +74,7 @@ def ajax():
 @app.route('/export_download/:path#.+#', name='export')
 def export(path):
     val = static_file(path, root='export')
-    os.remove("export/"+path)
+    os.remove(path)
     return val
 
 @app.route('/static/:path#.+#', name='static')
