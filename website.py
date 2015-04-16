@@ -71,10 +71,10 @@ def ajax():
 
 
 #exporter le fichier
-@app.route('/export_download/:path#.+#', name='export')
-def export(path):
-    val = static_file(path, root='export')
-    os.remove(path)
+@app.route('/export_download/fichier.xlsx', name='export')
+def export():
+    val = static_file('fichier.xlsx', root='')
+    os.remove('fichier.xlsx')
     return val
 
 @app.route('/static/:path#.+#', name='static')
