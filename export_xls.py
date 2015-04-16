@@ -9,7 +9,7 @@ import xlsxwriter
 
 def generate_fichier(data):
     
-    # On creer un "classeur"
+    # On crée un "classeur"
     classeur = xlsxwriter.Workbook('export/fichier.xlsx')
     # On ajoute une feuille au classeur
     feuille = classeur.add_worksheet("feuille 1")
@@ -33,7 +33,7 @@ def generate_fichier(data):
         formatNom.set_font_color('#D95152')
         formatNom.set_align('center')
         formatNom.set_bold()
-        #ici on va mettre toutes les infos sur l'attribu
+        #ici on va mettre toutes les infos sur l'attribut
         
         
         
