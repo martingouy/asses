@@ -66,14 +66,18 @@
 <script>
     $(function() {
 
-       
+       $('.del_simu').click(function() {
+            localStorage.clear();
+            window.location.reload();
+        });
+
 
         $('li.manage').addClass("active");
         var asses_session = JSON.parse(localStorage.getItem("asses_session"));
 
         
         if (!asses_session){
-            asses_session = {"attributes": [], "k_calculus": {"nb_quest": 0, "k" :[]} };
+            asses_session = {"attributes": [], "k_calculus": [{"method":"multiplicative", "active":"false", "k":[]},{"method":"multilinear","active":"false", "k":[]}]};
             localStorage.setItem("asses_session", JSON.stringify(asses_session));
         }
 
@@ -122,7 +126,7 @@
                 alert('Please fill correctly all the fields');
             }
             else {
-                asses_session.attributes.push({"name": name, 'unit': unit, 'val_min': val_min, 'val_max': val_max, 'method': method, 'mode' : mode ,'completed': 'False', 'questionnaire': {'number': 0, 'points': [], 'utility': {}}});
+                asses_session.attributes.push({"name": name, 'unit': unit, 'val_min': val_min, 'val_max': val_max, 'method': method, 'mode' : mode ,'completed': 'False', 'checked':false, 'questionnaire': {'number': 0, 'points': [], 'utility': {}}});
                 sync_table();
                 localStorage.setItem("asses_session", JSON.stringify(asses_session));
             }
@@ -138,6 +142,8 @@
             }
             return [false, 0];
         }
+		
+		
 
         
     });

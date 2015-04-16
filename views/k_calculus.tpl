@@ -1,63 +1,49 @@
 %include('header_init.tpl', heading='K calculus')
 
-<div role="tabpanel">
-<!-- Nav tabs -->
-<ul class="nav nav-tabs" role="tablist" >
-  <li role="presentation" class="active"><a href="#multiplicative" aria-controls="multiplicative" role="tab" data-toggle="tab">Multiplicative</a></li>
-  <li role="presentation"><a href="#multilinear" aria-controls="multilinear" role="tab" data-toggle="tab">Multilinear</a></li>
-
-</ul>
-
-
- <!-- Tab panes -->
-  <div class="tab-content">
-
-    <div role="tabpanel" class="tab-pane active" id="multiplicative">
-    	<table class="table">
-			<thead>
-				<tr>
-					<th>Attribute</th>
-					<th>Method</th>
-					<th>Unit</th>
-					<th>Utility function type</th>
-                    <th>K</th>
-                    <th><img src='/static/img/delete.ico' style='width:16px;'/></th>
-				</tr>
-			</thead>
-			<tbody id="table_attributes">
-			</tbody>
-		</table>
-
-<br />
-
-	<div id="error_message">
-	</div>
-	<div id="k_calculus_info">
-	</div>
-            <div id="trees">
-            </div>	
-    </div>
-    
-    
-     <!-- Panel for multiplicatif ! -->
-    <div role="tabpanel" class="tab-pane" id="multilinear">
-    <br/>
-    	<table class="table">
+<table class="table">
 			<thead>
 				<tr>
 					<th>Attribute</th>
 					<th>Method</th>
 					<th>Unit</th>
 					<th>Utility function type</th> 
+                    <th>check</th>
 				</tr>
 			</thead>
-			<tbody id="table_attributes_multiplicatif">
+			<tbody id="table_attributes">
 			</tbody>
 		</table>
-    </div> 
-  </div>
-  <div style="float:left;width:100%;height:50px;"></div>
+        
+<div id="error_message">
+	</div>
+    <div id="message">
+	</div>
+    
+    <div id="button_method" style="text-align:center;">
+    <button type="button" class="btn btn-default btn-lg" id="button_multiplicative">Multiplicative</button>
+    <button type="button" class="btn btn-default btn-lg" id="button_multilinear">Multilinear</button>
+	</div>
+<div id="k_list" style="display:none">
+<table class="table">
+		<thead>
+			<tr>
+				<th>K</th>
+				<th>Relative Attribute</th>
+				<th>Value</th>  
+                <th><img src="/static/img/delete.ico" style="width:16px;"/></th>
+			</tr>
+		</thead>
+		<tbody id="table_k_attributes">
+		</tbody>
+</table>
 </div>
+
+<div id="k_calculus_info">
+	</div>
+<div id="trees">
+</div>	
+
+
 
 %include('header_end.tpl')
 %include('js.tpl')
@@ -66,6 +52,7 @@
 
 <!-- Tree object -->
 <script src="{{ get_url('static', path='js/tree.js') }}"></script>
+<script src="{{ get_url('static', path='js/k_calculus.js') }}"></script>
 
 <script>
 $(function() { 
@@ -74,6 +61,23 @@ $(function() {
 
 	function isInArray(value, array) {
 		return array.indexOf(value) > -1;
+	}
+	
+	//we toggle the button we used
+	for(var i=0; i<asses_session.k_calculus.length; i++)
+	{ 
+		if(asses_session.k_calculus[i].active==true)
+		{
+			$("#button_"+asses_session.k_calculus[i].method).removeClass('btn-default');
+			$("#button_"+asses_session.k_calculus[i].method).addClass('btn-primary'); 
+			update_k_list(i);
+			show_list();
+		}
+		else
+		{
+			$("#button_"+asses_session.k_calculus[i].method).removeClass('btn-primary');
+			$("#button_"+asses_session.k_calculus[i].method).addClass('btn-default'); 
+		}
 	}
 	
 	// We Check the requirements
@@ -100,29 +104,22 @@ $(function() {
 	var numeroK=0;
 	// We fill the table
 	for (var i=0; i < asses_session.attributes.length; i++){
-		//If the utility fonction is not calculated we pass to the next one
-		if(asses_session.attributes[i].completed == 'False')
-			continue;
-			
+		
 		
 		var text = '<tr><td>' + asses_session.attributes[i].name + '</td>';
 			text += '<td>'+ asses_session.attributes[i].method + '</td>';
 			text += '<td>'+ asses_session.attributes[i].unit +'</td>';
 			text += '<td>'+ asses_session.attributes[i].questionnaire.utilityType + '</td>';
-			if(nb_quest>0 && typeof k_calculus.k[numeroK] != 'undefined') 
-				text += '<td>'+ k_calculus.k[numeroK] + '</td>'; 
+			
+			if(asses_session.attributes[i].checked)
+			text+='<td><input type="checkbox" id="checkbox_'+i+'" value="'+i+'" name="' + asses_session.attributes[i].name + '" checked></td></tr>';
 			else
-				text += '<td>not calculated</td>'; 
-			text+='<td><img id="deleteK'+numeroK+'" src="/static/img/delete.ico" style="width:16px;"/></td></tr>';
-	
+			text+='<td><input type="checkbox" id="checkbox_'+i+'" value="'+i+'" name="' + asses_session.attributes[i].name + '" ></td></tr>';
+			
 			$('#table_attributes').append(text);
 			
-		var text_multiplicatif = '<tr><td>' + asses_session.attributes[i].name + '</td>';
-			text_multiplicatif += '<td>'+ asses_session.attributes[i].method + '</td>';
-			text_multiplicatif += '<td>'+ asses_session.attributes[i].unit +'</td>'; 
-			text_multiplicatif += '<td>'+ asses_session.attributes[i].questionnaire.utilityType + '</td>';
-			$('#table_attributes_multiplicatif').append(text_multiplicatif);
-			
+			//we will define the action when we click on the check input
+			$('#checkbox_'+i).click(function(){checked_button_clicked($(this))});
 			
 			//we define the actions relatve of the delete img
 			(function(_numeroK){
@@ -142,8 +139,7 @@ $(function() {
 	
 	
 	
-
-
+/*
 	
 	if (req_nq < 3) {
 		$('#error_message').append('<p>Error: In order to complete this task, you should have at least 3 attributes, please delete some</p>');
@@ -186,149 +182,16 @@ $(function() {
 			$('#k_calculus_info').append(text_k);
 		}
 	}
-
+*/
 
 //select the different view
 
-	$('#multilinear').click(function (e) {
-  e.preventDefault()
-  $(this).tab('show')
-	})
-	
-	$('#multiplicatif a').click(function (e) {
-  e.preventDefault()
-  $(this).tab('show')
-	})
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////// CLICK ON THE ANSWER BUTTON //////////////////////////////////////////////////////////////// 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-  
-	$('.answer_quest').click(function() {
-		// we store the name of the attribute
-		var method = 'PE';
-		var numero_quest = nb_quest;
-		var nb_attributs = req_nq;
-		var mode = "normal";
 
-		// we delete the slect div
-		$('#k_calculus_info').hide();
-
-
-		function random_proba(proba1, proba2) {
-			var coin = Math.round(Math.random());
-			if (coin == 1) {
-				return proba1;
-			}
-			else {
-				return proba2;
-			}
-		}
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		///////////////////////////////////////////////////////////////// PE METHOD //////////////////////////////////////////////////////////////// 
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-		if (method == 'PE') {
-			(function(){
-
-				var probability = random_proba(0.25, 0.75);
-				var min_interval = 0;
-				var max_interval = 1;
-				
-				// VARIABLES
-				var gain_certain = asses_session.attributes[numero_quest].val_max + ' ' + asses_session.attributes[numero_quest].unit;
-				var gain_haut = asses_session.attributes[numero_quest].val_max + ' ' + asses_session.attributes[numero_quest].unit;
-				var gain_bas = asses_session.attributes[numero_quest].val_min + ' ' + asses_session.attributes[numero_quest].unit;
-
-				for (var i = 0; i < numero_quest; i++){
-					gain_certain += ' <br/> ' + asses_session.attributes[i].val_min + ' ' + asses_session.attributes[i].unit;
-					gain_haut += ' <br/> ' + asses_session.attributes[i].val_max + ' ' + asses_session.attributes[i].unit;
-					gain_bas += ' <br/> ' + asses_session.attributes[i].val_min + ' ' + asses_session.attributes[i].unit;
-
-				}
-
-				for (var i = numero_quest + 1 ; i < nb_attributs; i++){
-					gain_certain += ' <br/> ' + asses_session.attributes[i].val_min + ' ' + asses_session.attributes[i].unit;
-					gain_haut += ' <br/> ' + asses_session.attributes[i].val_max + ' ' + asses_session.attributes[i].unit;
-					gain_bas += ' <br/> ' + asses_session.attributes[i].val_min + ' ' + asses_session.attributes[i].unit;
-
-				}
-
-				// INTERFACE
-				var arbre_gauche = new Arbre('gauche', '#trees');
-
-				// SETUP ARBRE GAUCHE
-				arbre_gauche.questions_proba_haut = probability;
-				arbre_gauche.questions_val_max = gain_haut;
-				arbre_gauche.questions_val_min = gain_bas;
-				arbre_gauche.questions_val_mean = gain_certain;
-				arbre_gauche.display();
-				arbre_gauche.update();
-				
-				$('#trees').append('<br/><br/><br/><br/><button type="button" class="btn btn-default gain">Gain with certainty</button><button type="button" class="btn btn-default lottery">Lottery</button>');
-
-
-				function treat_answer(data){
-					min_interval = data.interval[0];
-					max_interval = data.interval[1];
-					probability = parseFloat(data.proba).toFixed(2);
-
-					if (max_interval - min_interval <= 0.05){
-						arbre_gauche.questions_proba_haut = probability;
-						arbre_gauche.update();
-						ask_final_value();
-					}
-					else {
-						arbre_gauche.questions_proba_haut = probability;
-						arbre_gauche.update();
-					}
-				}
-
-				function ask_final_value(){
-					// we delete the choice div
-					$('.btn').hide();
-					$('.container-fluid').append(
-						'<div id= "final_value" style="text-align: center;"><br /><br /><p>We are almost done, please now enter the value of the probability: <br /> '+ min_interval +'\
-						 <= <input type="text" class="form-control" id="final_proba" placeholder="Probability" style="width: 100px; display: inline-block"> <= '+ max_interval +'</p><button type="button" class="btn btn-default final_validation">Validate</button></div>'
-					);
-
-					// when the user validate
-					$('.final_validation').click(function(){
-						var final_proba = parseFloat($('#final_proba').val());
-
-						if (final_proba <= max_interval && final_proba >= min_interval) {
-							// we save it 
-							
-							
-							asses_session['k_calculus']['k'].push(final_proba);
-								
-							asses_session['k_calculus']['nb_quest']+= 1;
-							// backup local
-							localStorage.setItem("asses_session", JSON.stringify(asses_session));
-							// we reload the page
-							window.location.reload();
-						}
-					});
-				}
-
-				// HANDLE USERS ACTIONS
-				$('.gain').click(function() {
-					$.post('ajax', '{"type":"question", "method": "PE", "proba": '+ String(probability) + ', "min_interval": '+ min_interval+ ', "max_interval": '+ max_interval+' ,"choice": "0", "mode": "'+String(mode)+'"}', function(data) {
-						treat_answer(data);
-					});
-				});
-
-				$('.lottery').click(function() {
-					$.post('ajax', '{"type":"question","method": "PE", "proba": '+ String(probability) + ', "min_interval": '+ min_interval+ ', "max_interval": '+ max_interval+' ,"choice": "1" , "mode": "'+String(mode)+'"}', function(data) {
-						treat_answer(data);
-					});
-				});
-			})()
-		}
-
-	});
 });
 </script>
 
