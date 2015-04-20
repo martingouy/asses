@@ -461,10 +461,9 @@ $(function() {
 		json_2_send = {"type":"calc_util"};
 		json_2_send["points"] = points;
         
-        function reduce(nombre)
-        {
-              return Math.round(nombre*1000000)/1000000;
-        }
+        function reduce(nombre){return Math.round(nombre*1000000)/1000000;}
+        function signe(nombre){if(nombre>=0){return "+"+nombre}else{return nombre}};
+                          
         function addTextForm(div_function, copie)
         {
               var text=$('<div class="functions_text_form"><pre>'+copie+'</pre></div>');
@@ -491,29 +490,29 @@ $(function() {
 					$('#charts').show();
 					if (key == 'exp') {
 						var div_function = $('<div id="' + key +'" class="functions_graph"><h3 style="color:#401539">Exponential</h3><br />Coefficient of determination: ' + Math.round(data[key]['r2'] * 100) / 100 + '<br /><br/></div>');
-                        var copie=reduce(data[key]['a'])+"*exp(-"+reduce(data[key]['b'])+"x)+"+reduce(data[key]['c']);
+                        var copie=reduce(data[key]['a'])+"*exp("+signe(-reduce(data[key]['b']))+"x)"+signe(reduce(data[key]['c']));
                         addTextForm(div_function, copie);
                                            	}
 					else if (key == 'log') {
 						var div_function = $('<div id="' + key +'" class="functions_graph"><h3 style="color:#D9585A">Logarithmic</h3><br />Coefficient of determination: ' + Math.round(data[key]['r2'] * 100) / 100 + '<br /><br/></div>');
-                        var copie=reduce(data[key]['a'])+"*log("+reduce(data[key]['b'])+"x+"+reduce(data[key]['c'])+")+"+reduce(data[key]['d']);
+                        var copie=reduce(data[key]['a'])+"*log("+reduce(data[key]['b'])+"x"+signe(reduce(data[key]['c']))+")"+signe(reduce(data[key]['d']));
                         addTextForm(div_function, copie);
                  
 						
 					}
 					else if (key == 'pow') {
 						var div_function = $('<div id="' + key +'" class="functions_graph"><h3 style="color:#6DA63C">Power</h3><br />Coefficient of determination: ' + Math.round(data[key]['r2'] * 100) / 100 + '<br /><br/></div>');
-                        var copie=reduce(data[key]['a'])+"*(pow(x,"+reduce(1-data[key]['b'])+")-1)/"+reduce(1-data[key]['b'])+"+"+reduce(data[key]['c']);
+                        var copie=reduce(data[key]['a'])+"*(pow(x,"+reduce(1-data[key]['b'])+")-1)/("+reduce(1-data[key]['b'])+")"+signe(reduce(data[key]['c']));
                         addTextForm(div_function, copie);
 					}
 					else if (key == 'quad') {
 						var div_function = $('<div id="' + key +'" class="functions_graph"><h3 style="color:#458C8C">Quadratic</h3><br />Coefficient of determination: ' + Math.round(data[key]['r2'] * 100) / 100 + '<br /><br/></div>');
-                        var copie=reduce(data[key]['c'])+"*x-"+reduce(data[key]['b'])+"*pow(x,2)+"+reduce(data[key]['a']);
+                        var copie=reduce(data[key]['c'])+"*x"+signe(reduce(-data[key]['b']))+"*pow(x,2)"+signe(reduce(data[key]['a']));
                         addTextForm(div_function, copie);
 					}
 					else if (key == 'lin') {
 						var div_function = $('<div id="' + key +'" class="functions_graph"><h3 style="color:#D9B504">Linear</h3><br />Coefficient of determination: ' + Math.round(data[key]['r2'] * 100) / 100 + '<br /><br/></div>');
-                        var copie=reduce(data[key]['a'])+"*x+"+reduce(data[key]['b']);
+                        var copie=reduce(data[key]['a'])+"*x"+signe(reduce(data[key]['b']));
                         addTextForm(div_function, copie);
 					}
 				}
