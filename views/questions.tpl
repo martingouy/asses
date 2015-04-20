@@ -525,7 +525,7 @@ $(function() {
 });
 </script>
 <!-- Library to copy into clipboard -->
-<script src="{{ get_url('static', path='js/ZeroClipboard/zeroClipboard.js') }}"></script>
+<script src="{{ get_url('static', path='js/ZeroClipboard/ZeroClipboard.js') }}"></script>
 </body>
 
 </html>
