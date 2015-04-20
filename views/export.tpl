@@ -2,11 +2,9 @@
 
             <button type="button" class="btn btn-default"><a id="export_json">Click to export JSON</a></button>
             <br/><br/>
-            <button type="button" class="btn btn-default"><a id="export_xls">Click to export Excel</a></button>
-
+            <button type="button" class="btn btn-default"><a id="export_xls">Click to export Excel</a></button><br/>
 %include('header_end.tpl')
 %include('js.tpl')
-
 <script>
     $('li.export').addClass("active");
     $('#export_json').click(function() {
@@ -25,7 +23,15 @@
     });
 
 
+
 </script>
+
+
+
+
+
+
 </body>
+
 
 </html>

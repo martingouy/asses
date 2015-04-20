@@ -21,7 +21,7 @@ def regressions(liste_cord):
 	def funclog(x, a, b, c, d):			# fonction for the logarithmic regression
 		return a*np.log(b*x+c)+d
 
-	def funclin(x, a, b):				# fonction for the logarithmic regression
+	def funclin(x, a, b):				# fonction for the linear regression
 		return a*x+b
 
 

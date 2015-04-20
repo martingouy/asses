@@ -18,7 +18,6 @@
             </div>
             <div id="charts">
             	<h2>Select the regression function you want to use</h2>
-
             </div>	
 
 %include('header_end.tpl')
@@ -461,7 +460,28 @@ $(function() {
 		}
 		json_2_send = {"type":"calc_util"};
 		json_2_send["points"] = points;
+        
+        function reduce(nombre)
+        {
+              return Math.round(nombre*1000000)/1000000;
+        }
+        function addTextForm(div_function, copie)
+        {
+              var text=$('<div class="functions_text_form"><pre>'+copie+'</pre></div>');
+              var copy_button=$('<button class="btn functions_text_form" data-clipboard-text="'+copie+'" title="Click to copy me.">Copy to clipboard</button>');
+              
+              div_function.append(text);
+              div_function.append(copy_button);
+              $('#charts').append(div_function);
+              
+              var client = new ZeroClipboard(copy_button);
+              client.on( "aftercopy", function( event ) {
+                        copy_button.text("Done !");
+                        setTimeout(function(){copy_button.text("Copy to clipboard");}, 2000);
+                        } );
 
+        }
+                          
 		$.post('ajax', JSON.stringify(json_2_send), function(data) {
 
 			$.post('ajax', JSON.stringify({"type":"svg", "data": data, "min": val_min, "max": val_max, "liste_cord": points}), function(data2) {
@@ -470,49 +490,42 @@ $(function() {
 				for (var key in data) {
 					$('#charts').show();
 					if (key == 'exp') {
-						div_function = '<div id="' + key +'" class="functions_graph"><h3 style="color:#401539">Exponential</h3><br />Coefficient of determination: ' + Math.round(data[key]['r2'] * 100) / 100 + '<br /><button type="button" class="btn btn-default b_choose">Copy in Clipboard</button></div>';
-						$('#charts').append(div_function);
-					}
+						var div_function = $('<div id="' + key +'" class="functions_graph"><h3 style="color:#401539">Exponential</h3><br />Coefficient of determination: ' + Math.round(data[key]['r2'] * 100) / 100 + '<br /><br/></div>');
+                        var copie=reduce(data[key]['a'])+"*exp(-"+reduce(data[key]['b'])+"x)+"+reduce(data[key]['c']);
+                        addTextForm(div_function, copie);
+                                           	}
 					else if (key == 'log') {
-						div_function = '<div id="' + key +'" class="functions_graph"><h3 style="color:#D9585A">Logarithmic</h3><br />Coefficient of determination: ' + Math.round(data[key]['r2'] * 100) / 100 + '<br /><button type="button" class="btn btn-default b_choose">Copy in Clipboard</button></div>';
-						$('#charts').append(div_function);
+						var div_function = $('<div id="' + key +'" class="functions_graph"><h3 style="color:#D9585A">Logarithmic</h3><br />Coefficient of determination: ' + Math.round(data[key]['r2'] * 100) / 100 + '<br /><br/></div>');
+                        var copie=reduce(data[key]['a'])+"*log("+reduce(data[key]['b'])+"x+"+reduce(data[key]['c'])+")+"+reduce(data[key]['d']);
+                        addTextForm(div_function, copie);
+                 
+						
 					}
 					else if (key == 'pow') {
-						div_function = '<div id="' + key +'" class="functions_graph"><h3 style="color:#6DA63C">Power</h3><br />Coefficient of determination: ' + Math.round(data[key]['r2'] * 100) / 100 + '<br /><button type="button" class="btn btn-default b_choose">Copy in Clipboard</button></div>';
-						$('#charts').append(div_function);
+						var div_function = $('<div id="' + key +'" class="functions_graph"><h3 style="color:#6DA63C">Power</h3><br />Coefficient of determination: ' + Math.round(data[key]['r2'] * 100) / 100 + '<br /><br/></div>');
+                        var copie=reduce(data[key]['a'])+"*(pow(x,"+reduce(1-data[key]['b'])+")-1)/"+reduce(1-data[key]['b'])+"+"+reduce(data[key]['c']);
+                        addTextForm(div_function, copie);
 					}
 					else if (key == 'quad') {
-						div_function = '<div id="' + key +'" class="functions_graph"><h3 style="color:#458C8C">Quadratic</h3><br />Coefficient of determination: ' + Math.round(data[key]['r2'] * 100) / 100 + '<br /><button type="button" class="btn btn-default b_choose">Copy in Clipboard</button></div>';
-						$('#charts').append(div_function);
+						var div_function = $('<div id="' + key +'" class="functions_graph"><h3 style="color:#458C8C">Quadratic</h3><br />Coefficient of determination: ' + Math.round(data[key]['r2'] * 100) / 100 + '<br /><br/></div>');
+                        var copie=reduce(data[key]['c'])+"*x-"+reduce(data[key]['b'])+"*pow(x,2)+"+reduce(data[key]['a']);
+                        addTextForm(div_function, copie);
 					}
 					else if (key == 'lin') {
-						div_function = '<div id="' + key +'" class="functions_graph"><h3 style="color:#D9B504">Linear</h3><br />Coefficient of determination: ' + Math.round(data[key]['r2'] * 100) / 100 + '<br /><button type="button" class="btn btn-default b_choose">Copy in Clipboard</button></div>';
-						$('#charts').append(div_function);
+						var div_function = $('<div id="' + key +'" class="functions_graph"><h3 style="color:#D9B504">Linear</h3><br />Coefficient of determination: ' + Math.round(data[key]['r2'] * 100) / 100 + '<br /><br/></div>');
+                        var copie=reduce(data[key]['a'])+"*x+"+reduce(data[key]['b']);
+                        addTextForm(div_function, copie);
 					}
 				}
 
-				$('.b_choose').click(function(){
-					var selected_function = $(this).parent().attr('id');
-					
-					alert(JSON.stringify(selected_function));
-					// we save it
-					
-                    //asses_session.attributes[indice].questionnaire.utilityType = selected_function;
-					//asses_session.attributes[indice].questionnaire.utility[selected_function] = data[selected_function];
-					//asses_session.attributes[indice].completed = 'True';
-					// backup local
-					//localStorage.setItem("asses_session", JSON.stringify(asses_session));
-					// we reload the page
-					//window.location.reload();
-
-				});
-			});
+							});
 		});
 
 	});
 });
 </script>
-
+<!-- Library to copy into clipboard -->
+<script src="{{ get_url('static', path='js/ZeroClipboard/zeroClipboard.js') }}"></script>
 </body>
 
 </html>

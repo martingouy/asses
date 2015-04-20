@@ -331,6 +331,11 @@ ul.alert-dropdown {
 .functions_graph {
     display: inline-block;
     margin: 15px;
+    width:250px;
+}
+
+.functions_text_form { 
+    width:250px;
 }
 
 .lottery_a {
