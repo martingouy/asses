@@ -1,4 +1,7 @@
-%include('header_init.tpl', heading='K calculus')
+%include('header_init.tpl', heading='Multi Attributes')
+<div class="page-header">
+  <h3>Ki calculus</h3>
+</div>
 
 <div class="alert alert-info" role="alert" id="update_box" >
   
@@ -30,11 +33,28 @@
 </table>
 </div>
 
+
+
 <div id="k_calculus_info">
 	</div>
 <div id="trees">
 </div>	
 
+
+<br/>
+<div class="page-header">
+  <h3>K calculus</h3>
+</div>
+
+<div class="alert alert-info" role="alert" id="calculatek_box" >
+  You need to calculate all ki in order to calculate K.
+</div>
+
+<div style="text-align:center;" id="GK">
+
+	<span class="h4">K = <span id="GK_value"></span> </span><button type="button" class="btn btn-default btn-lg" id="button_calculate_k" style="text-align:center">Calculate</button>
+	<br/>
+</div>
 
 
 %include('header_end.tpl')

@@ -4,6 +4,7 @@
 
 
 
+
 function number_attributes_checked()
 {
 	var asses_session = JSON.parse(localStorage.getItem("asses_session"));
@@ -50,43 +51,49 @@ function update_method_button(type)
 
 
 
-///  ACTION FROM BUTTON UPDATE 
-$("#update").click(function(){ 
-	create_multiplicative_k();
-	create_multilinear_k();
-	//we show it in 
-	update_method_button("multiplicative");
-	update_k_list(0);
-	show_list();
-	$("#update_box").hide("slow");	
-});
+///  ACTION FROM BUTTON UPDATE
+$(function() {
 
-$("#update_box").ready(function(){
-	$("#update_box").hide();
-	var NAttri=number_attributes_checked();
-	var asses_session = JSON.parse(localStorage.getItem("asses_session"));
-	var NK=asses_session.k_calculus[0].k.length;
-	if(NAttri!=NK)//If we have different attribute number used and attribute numbe active we show the update box
-	{
-	$("#update_box").show("slow");	
-	$("#update_attributes_number").html(NAttri);
-	$("#update_k_number").html(NK);
-	}
-	
-});
+	$("#update").click(function () {
+		create_multiplicative_k();
+		create_multilinear_k();
+		//we show it in
+		update_method_button("multiplicative");
+		update_k_list(0);
+		show_list();
+		ki_calculated();
+		$("#update_box").hide("slow");
+	});
+
+	$("#update_box").ready(function () {
+		$("#update_box").hide();
+		var NAttri = number_attributes_checked();
+		var asses_session = JSON.parse(localStorage.getItem("asses_session"));
+		var NK = asses_session.k_calculus[0].k.length;
+		if (NAttri != NK)//If we have different attribute number used and attribute numbe active we show the update box
+		{
+			$("#update_box").show("slow");
+			$("#update_attributes_number").html(NAttri);
+			$("#update_k_number").html(NK);
+		}
+
+	});
 
 ///  ACTION FROM BUTTON MULTIPLICATIVE 
-$("#button_multiplicative").click(function(){
-	//update the active methode for k_kalculus
-	update_method_button("multiplicative");
-	update_k_list(0);
-	show_list();
+	$("#button_multiplicative").click(function () {
+		//update the active methode for k_kalculus
+		update_method_button("multiplicative");
+		update_k_list(0);
+		show_list();
+		ki_calculated();
+	});
 });
 
 function create_multiplicative_k()
 {
 	var asses_session = JSON.parse(localStorage.getItem("asses_session"));
 	asses_session.k_calculus[0].k=[];
+	asses_session.k_calculus[0].GK=null;
 	var counter=1;
 	//first we delete the array of k for multiplicative
 	for (var i=0; i < asses_session.attributes.length; i++){
@@ -103,12 +110,15 @@ function create_multiplicative_k()
 
 
 ///  ACTION FROM BUTTON MULTILINEAR
-$("#button_multilinear").click(function(){
-	//update the active methode for k_kalculus
-	update_method_button("multilinear");
-	update_k_list(1);
-	show_list();
-});	
+$(function() {
+	$("#button_multilinear").click(function () {
+		//update the active methode for k_kalculus
+		update_method_button("multilinear");
+		update_k_list(1);
+		show_list();
+		ki_calculated();
+	});
+});
 
 function generer_list_lvl_0(n)
 {
@@ -150,6 +160,7 @@ function create_multilinear_k()
 {
 	var asses_session = JSON.parse(localStorage.getItem("asses_session"));
 	asses_session.k_calculus[1].k=[];
+	asses_session.k_calculus[1].GK=null;
 
 	var checkedAttributeList=[];
 	//first we delete the array of k for multiplicative
@@ -218,7 +229,8 @@ function update_k_list(number)
 			
 			(function(_i){
 					$('#delete_K'+_i).click(function(){  
-						asses_session.k_calculus[number].k[_i].value=null; 
+						asses_session.k_calculus[number].k[_i].value=null;
+						asses_session.k_calculus[number].GK=null;
 						// backup local
 						localStorage.setItem("asses_session", JSON.stringify(asses_session));
 						//refresh the list
@@ -227,11 +239,20 @@ function update_k_list(number)
 					})(i);
 				
 	}
+	//then we show the message if the number of ki calculated is sufficient
+	ki_calculated();
 }
 
 function show_list()
 {
 	$("#k_list").fadeIn(500);
+
+}
+
+function get_Active_Method()
+{
+	var asses_session = JSON.parse(localStorage.getItem("asses_session"));
+	return ((asses_session.k_calculus[0].active) ? 0 : 1);
 }
 
 
@@ -505,3 +526,102 @@ function k_answer(i, type)
 		}
 
 }
+
+
+
+
+//#######################################################################################
+//#######################              CALCULATE K             ##########################
+//#######################################################################################
+
+
+function ki_calculated() {
+	var kiNumber = $("#table_k_attributes tr").length;
+	var kiNumberCalculated = 0;
+	var asses_session = JSON.parse(localStorage.getItem("asses_session"));
+	var method = (asses_session.k_calculus[0].active) ? 0 : 1;
+	var ma_list = asses_session.k_calculus[method].k;
+	for (var i = 0; i < kiNumber; i++) {
+		if (ma_list[i].value != null)//so we have calculated this value!
+			kiNumberCalculated++;
+	}
+
+	if (kiNumber != kiNumberCalculated) {
+		$("#calculatek_box").fadeIn("fast");
+		$("#GK").hide();
+		//we delete the K we have in memory
+		asses_session.k_calculus[get_Active_Method()].GK=null;
+	}
+	else {
+		$("#calculatek_box").hide();
+		$("#GK").show();
+		if (asses_session.k_calculus[get_Active_Method()].GK != null) {
+			$("#GK_value").html(asses_session.k_calculus[get_Active_Method()].GK);
+			$("#button_calculate_k").hide();
+		}
+		else {
+			$("#GK_value").html("");
+			$("#button_calculate_k").fadeIn("fast");
+		}
+	}
+
+}
+
+$(function(){
+	$("#button_calculate_k").click(function() {
+		if (get_Active_Method() == 0){//multiplicative
+
+			K_Calculate_Multiplicative();
+		}
+		else{
+			K_Calculate_Multilinear();
+		}
+	});
+});
+
+function K_Calculate_Multiplicative() {
+	var kiNumber = $("#table_k_attributes tr").length;
+
+	//k value
+	var asses_session = JSON.parse(localStorage.getItem("asses_session"));
+	var ma_list = asses_session.k_calculus[get_Active_Method()].k;
+
+	var mesK={};
+	if(kiNumber==3)
+	{
+		mesK['k1']=ma_list[0].value;
+		mesK['k2']=ma_list[1].value;
+		mesK['k3']=ma_list[2].value;
+	}
+	else if(kiNumber==4)
+	{
+		mesK['k1']=ma_list[0].value;
+		mesK['k2']=ma_list[1].value;
+		mesK['k3']=ma_list[2].value;
+		mesK['k4']=ma_list[3].value;
+	}
+	else if(kiNumber==5)
+	{
+		mesK['k1']=ma_list[0].value;
+		mesK['k2']=ma_list[1].value;
+		mesK['k3']=ma_list[2].value;
+		mesK['k4']=ma_list[3].value;
+		mesK['k5']=ma_list[4].value;
+	}
+
+
+	$.post('ajax', '{"type":"k_calculus", "number":'+kiNumber+', "k":'+JSON.stringify(mesK)+'}', function(data) {
+		asses_session.k_calculus[get_Active_Method()].GK=data.k;
+		localStorage.setItem("asses_session", JSON.stringify(asses_session));
+		//we update the view
+		ki_calculated();
+	});
+}
+
+function K_Calculate_Multilinear() {
+
+	alert("Not implemented yet !");
+}
+
+
+

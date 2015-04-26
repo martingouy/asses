@@ -6,6 +6,8 @@ import codecs
 import methods
 import plot
 import kcalc
+import kcal44
+import kcalc55
 import os
 import export_xls
 
@@ -56,7 +58,12 @@ def ajax():
 
     elif query['type'] == "k_calculus":
         print("on va calculer k_calculus sur le fichier kcalc")
-        return {'k':kcalc.calculk(query['k1'],query['k2'],query['k3'])}
+        if query['number'] == 3:
+            return {'k':kcalc.calculk(query['k']['k1'],query['k']['k2'],query['k']['k3'])}
+        elif query['number'] == 4:
+            return {'k':kcalc.calculk4(query['k']['k1'],query['k']['k2'],query['k']['k3'],query['k']['k4'])}
+        elif query['number'] == 5:
+            return {'k':kcalc.calculk4(query['k']['k1'],query['k']['k2'],query['k']['k3'],query['k']['k4'], query['k']['k5'])}
 
     elif query['type'] == "svg":
         dictionary = query['data']
@@ -81,5 +88,11 @@ def export():
 def static(path):
     return static_file(path, root='static')
 
-#run(app, host='localhost', port=8080, debug=True)
-app.run(host='0.0.0.0', port=argv[1])
+#for local or heroku app
+try:
+    if argv[1]=="local": #for local application, add local param: "$python website.py local"
+        run(app, host='localhost', port=8080, debug=True)
+    else:
+        app.run(host='0.0.0.0', port=argv[1])
+except:
+    print "You need to specify an argument (local for local testing: $python website.py local)"

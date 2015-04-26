@@ -1,7 +1,7 @@
 import numpy as np
 
 def calculk(k1,k2,k3):
-    coeff=[k1*k2*k3,k1*k2+k2*k3+k1*k3,k1+k2+k3-1]
+    coeff=[k1*k2*k3,k1*k2+k2*k3+k1*k3,k1+k2+k3-1] 
     solution = np.roots(coeff)
     liste=[solution[0],solution[1]]
     
@@ -20,3 +20,4 @@ def utilite(k1,k2,k3,k):
     U=k1*u1 + k2*u2 + k3*u3 + k*k1*k3*u1*u3 + k*k1*k2*u1*u2 + k*k2*k3*u2*u3 + k**2*k1*k2*k3*u1*u2*u3
     return (U)
     
+
