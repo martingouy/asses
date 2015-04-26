@@ -144,26 +144,27 @@ $(function() {
 
 					if (max_interval - min_interval <= 0.05){
 						sync_values();
-						ask_final_value();
+						ask_final_value(Math.round((max_interval + min_interval)*100/2)/100);
 					}
 					else {
 						sync_values();
 					}
 				}
 
-				function ask_final_value(){
+				function ask_final_value(val){
 					// we delete the choice div
 					$('.btn').hide();
 					$('.container-fluid').append(
 						'<div id= "final_value" style="text-align: center;"><br /><br /><p>We are almost done, please now enter the value of the probability: <br /> '+ min_interval +'\
-						 <= <input type="text" class="form-control" id="final_proba" placeholder="Probability" style="width: 100px; display: inline-block"> <= '+ max_interval +'</p><button type="button" class="btn btn-default final_validation">Validate</button></div>'
+						 <= <input type="text" class="form-control" id="final_proba" placeholder="Probability" value="'+val+'" style="width: 100px; display: inline-block"> <= '+ max_interval +'</p><button type="button" class="btn btn-default final_validation">Validate</button></div>'
 					);
+
 
 					// when the user validate
 					$('.final_validation').click(function(){
 						var final_proba = parseFloat($('#final_proba').val());
 
-						if (final_proba <= max_interval && final_proba >= min_interval) {
+						if (final_proba <= 1 && final_proba >= 0) {
 							// we save it 
 							asses_session.attributes[indice].questionnaire.points.push([gain_certain, final_proba]);
 							asses_session.attributes[indice].questionnaire.number += 1;
@@ -245,7 +246,7 @@ $(function() {
 					if (max_interval - min_interval <= 0.05){
 						arbre_gauche.questions_proba_haut = probability;
 						arbre_gauche.update();
-						ask_final_value();
+						ask_final_value(Math.round((max_interval + min_interval)*100/2)/100);
 					}
 					else {
 						arbre_gauche.questions_proba_haut = probability;
@@ -253,19 +254,19 @@ $(function() {
 					}
 				}
 
-				function ask_final_value(){
+				function ask_final_value(val){
 					$('.lottery_a').hide();
 					$('.lottery_b').hide();
 					$('.container-fluid').append(
 						'<div id= "final_value" style="text-align: center;"><br /><br /><p>We are almost done, please now enter the value of the probability: <br /> '+ min_interval +'\
-						 <= <input type="text" class="form-control" id="final_proba" placeholder="Probability" style="width: 100px; display: inline-block"> <= '+ max_interval +'</p><button type="button" class="btn btn-default final_validation">Validate</button></div>'
+						 <= <input type="text" class="form-control" id="final_proba" placeholder="Probability" value="'+val+'" style="width: 100px; display: inline-block"> <= '+ max_interval +'</p><button type="button" class="btn btn-default final_validation">Validate</button></div>'
 					);
 
 					// when the user validate
 					$('.final_validation').click(function(){
 						var final_proba = parseFloat($('#final_proba').val());
 
-						if (final_proba <= max_interval && final_proba >= min_interval) {
+						if (final_proba <= 1 && final_proba >= 0) {
 							// we save it 
 							asses_session.attributes[indice].questionnaire.points.push([arbre_droite.questions_val_max, final_proba * 2]);
 							asses_session.attributes[indice].questionnaire.number += 1;
@@ -372,7 +373,7 @@ $(function() {
 						$('.lottery').hide();
 						arbre_gauche.questions_val_mean = gain;
 						arbre_gauche.update();
-						ask_final_value();
+						ask_final_value(Math.round((max_interval + min_interval)*100/2)/100);
 					}
 					else {
 						arbre_gauche.questions_val_mean = gain;
@@ -380,12 +381,12 @@ $(function() {
 					}
 				}
 
-				function ask_final_value(){
+				function ask_final_value(val){
 					$('.lottery_a').hide();
 					$('.lottery_b').hide();
 					$('.container-fluid').append(
 						'<div id= "final_value" style="text-align: center;"><br /><br /><p>We are almost done, please now enter the value of the gain: <br /> '+ min_interval +'\
-						 <= <input type="text" class="form-control" id="final_proba" placeholder="Probability" style="width: 100px; display: inline-block"> <= '+ max_interval +'</p><button type="button" class="btn btn-default final_validation">Validate</button></div>'
+						 <= <input type="text" class="form-control" id="final_proba" placeholder="Probability" value="'+val+'" style="width: 100px; display: inline-block"> <= '+ max_interval +'</p><button type="button" class="btn btn-default final_validation">Validate</button></div>'
 					);
 
 					// when the user validate
