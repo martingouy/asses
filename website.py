@@ -70,7 +70,8 @@ def ajax():
         min = query['min']
         max = query['max']
         liste_cord = query['liste_cord']
-        return plot.generate_svg_plot(dictionary, min, max, liste_cord)
+        width=query['width']
+        return plot.generate_svg_plot(dictionary, min, max, liste_cord, width)
 
 
     elif query['type'] == "export_xls":

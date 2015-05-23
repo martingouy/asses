@@ -1,30 +1,35 @@
 %include('header_init.tpl', heading='Export')
 
-            <button type="button" class="btn btn-default"><a id="export_json">Click to export JSON</a></button>
-            <br/><br/>
-            <button type="button" class="btn btn-default"><a id="export_xls">Click to export Excel</a></button><br/>
+<div class="page-header">
+    <h3>export all</h3>
+</div>
+
+<button type="button" class="btn btn-default"><a id="export_xls">Click to export Excel</a></button><br/>
+
+<div class="page-header">
+    <h3>choose exportation</h3>
+</div>
+
+<div id="attribute" >
+    <table class="table">
+    <thead>
+    <tr>
+    <th>Attribute</th>
+    <th>Unit</th>
+    <th>Graph</th>
+    <th>Function</th>
+    </tr>
+    </thead>
+    <tbody id="table_attributes">
+    </tbody>
+    </table>
+</div>
+
+
+
 %include('header_end.tpl')
 %include('js.tpl')
-<script>
-    $('li.export').addClass("active");
-    $('#export_json').click(function() {
-        var data_2_export = localStorage['asses_session'];
-        var button  = $('#export_json');
-        button.attr('href', 'data:attachment/json,' + data_2_export);
-        button.attr('target', '_blank');
-        button.attr('download', 'myFile.json');
-    });
-
-    $('#export_xls').click(function() {
-        var data_2_export = localStorage['asses_session'];
-        $.post('ajax', '{"type":"export_xls", "data":'+data_2_export+'}', function(data) { 
-               document.location = "export_download/"+data;
-               });
-    });
-
-
-
-</script>
+<script src="{{ get_url('static', path='js/export.js') }}"></script>>
 
 
 

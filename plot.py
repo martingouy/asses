@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import io
 
-def generate_svg_plot(dictionary, min, max, liste_cord):
+def generate_svg_plot(dictionary, min, max, liste_cord, width):
 
 	# img
 	imgdata = io.StringIO()
@@ -34,7 +34,7 @@ def generate_svg_plot(dictionary, min, max, liste_cord):
 
 	def funclin(x, a, b):				# fonction for the logarithmic regression
 		return a*x+b
-
+	plt.figure(figsize=(width, width))
 	plt.plot(x1, y1, 'ko', label="Original Data")
 	x = np.linspace(min,max,100)
 	for func in dictionary.keys():

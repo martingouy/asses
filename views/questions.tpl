@@ -435,7 +435,7 @@ $(function() {
 		// we store the name of the attribute
 		var name = $(this).attr('id').slice(2);
 
-		// we delete the slect div
+		// we hide the slect div
 		$('#select').hide();
 
 		// which index is it ?
@@ -484,7 +484,7 @@ $(function() {
                           
 		$.post('ajax', JSON.stringify(json_2_send), function(data) {
 
-			$.post('ajax', JSON.stringify({"type":"svg", "data": data, "min": val_min, "max": val_max, "liste_cord": points}), function(data2) {
+			$.post('ajax', JSON.stringify({"type":"svg", "data": data, "min": val_min, "max": val_max, "liste_cord": points, "width":8}), function(data2) {
 				$('#charts').append('<div id="main_graph">'+ data2+'</div>');
 
 				for (var key in data) {
