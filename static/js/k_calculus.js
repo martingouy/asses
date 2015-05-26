@@ -180,7 +180,6 @@ function create_multilinear_k()
 			id_attribute.push(checkedAttributeList[maListeCombinaison[i][j]-1]);
 			attribute.push(asses_session.attributes[checkedAttributeList[maListeCombinaison[i][j]-1]].name);
 		}
-		maListeCombinaison[i]
 		asses_session.k_calculus[1].k.push({"ID":maListeCombinaison[i].join(), "ID_attribute":id_attribute, "attribute":attribute, "value":null});
 	}
 	
@@ -194,7 +193,6 @@ function create_multilinear_k()
 //// COMMUN FUNCTION FOR THE 2 METHODS
 function update_k_list(number)
 {
-	
 	//we delete the entire table
 	$('#table_k_attributes').html("");
 	var asses_session = JSON.parse(localStorage.getItem("asses_session"));
@@ -205,7 +203,13 @@ function update_k_list(number)
 		var text = '<tr id="line'+i+'"><td>K<sub>' + String(ma_list[i].ID).replace(/,/g, '') + '</sub></td>';
 			text += '<td> '+ JSON.stringify(ma_list[i].attribute).replace(/"/g, ' ').replace("[", '').replace("]", '').replace(/,/g, '|'); + '</td>';
 			if(ma_list[i].value==null)
-				text += '<td id="k_value_'+i+'"><button type="button" class="btn btn-default btn-xs" id="k_answer_'+i+'">Answer</button></td>';
+				if(number==1 && i==ma_list.length-1) //In the multilinear case and the last k
+				{
+					text += '<td id="k_value_' + i + '"><button type="button" class="btn btn-default btn-xs" id="k_answer_' + i + '">Calculate</button></td>';
+				}
+				else {
+					text += '<td id="k_value_' + i + '"><button type="button" class="btn btn-default btn-xs" id="k_answer_' + i + '">Answer</button></td>';
+				}
 			else
 				text += '<td>'+ ma_list[i].value +'</td>';
 				
@@ -222,15 +226,43 @@ function update_k_list(number)
 						if(number==0)//multiplicative
 						k_answer(_i, number);
 						else if(number==1)//multilinear
-						k_multilinear_answer(_i, number);
+						{
+							if (_i == ma_list.length - 1) {
+								k_multilinear_calculate_last_one(_i);
+							}
+							else {
+								k_multilinear_answer(_i, 1);
+							}
+						}
 					});
 			})(i); 
 			}
 			
 			(function(_i){
-					$('#delete_K'+_i).click(function(){  
+					$('#delete_K'+_i).click(function(){
+						if(confirm("All dependencies beetween k will be removed!") == false){return};
 						asses_session.k_calculus[number].k[_i].value=null;
 						asses_session.k_calculus[number].GK=null;
+
+						if(number==1)//in the case we are in multilinear we need to erase dependencies
+						{
+							var indices=String(asses_session.k_calculus[number].k[_i].ID).split(",");
+
+							for(var l=0; l<asses_session.k_calculus[number].k.length; l++)
+							{
+								var number_in_it=0;
+								for(var m=0; m<indices.length; m++) {
+									if (asses_session.k_calculus[number].k[l].ID.indexOf(indices[m]) != -1)
+										number_in_it++;
+								}
+								if(number_in_it==indices.length)//if we have all indices containing into an other one, we delete the parent
+								{
+									asses_session.k_calculus[number].k[l].value = null;
+								}
+							}
+
+						}
+
 						// backup local
 						localStorage.setItem("asses_session", JSON.stringify(asses_session));
 						//refresh the list
@@ -241,6 +273,8 @@ function update_k_list(number)
 	}
 	//then we show the message if the number of ki calculated is sufficient
 	ki_calculated();
+	if(number==1)
+		update_active_button_multilinear();
 }
 
 function show_list()
@@ -254,6 +288,34 @@ function get_Active_Method()
 	var asses_session = JSON.parse(localStorage.getItem("asses_session"));
 	return ((asses_session.k_calculus[0].active) ? 0 : 1);
 }
+
+
+
+function update_active_button_multilinear()
+{
+	var asses_session = JSON.parse(localStorage.getItem("asses_session"));
+	var ma_list=asses_session.k_calculus[1].k;
+	var last_entered=1;
+	for(var i=0; i<ma_list.length; i++)
+	{
+		if(ma_list[i].value==null)
+		{
+			last_entered=ma_list[i]["ID_attribute"].length;
+			break;
+		}
+	}
+
+
+	for(var i=0; i<ma_list.length; i++)
+	{
+		if(ma_list[i]["ID_attribute"].length<=last_entered)
+			$("#k_answer_"+i).prop('disabled', false);
+		else
+			$("#k_answer_"+i).prop('disabled', true);
+	}
+}
+
+
 
 
 function k_multilinear_answer(i)
@@ -353,26 +415,43 @@ function k_multilinear_answer(i)
 					// we delete the choice div
 					$('.gain').hide();$('.lottery').hide();
 					$("#k_value_"+i).append(
-						'<div id= "final_value" style="text-align: center;"><br /><br /><p>We are almost done, please now enter the value of the probability: <br /> '+ min_interval +'\
+						'<br/><br/><br/><br/><div id= "final_value" style="text-align: center;margin-top:90px;"><br /><br /><p>We are almost done, please now enter the value of the probability: <br /> '+ min_interval +'\
 						 <= <input type="text" class="form-control" id="final_proba" placeholder="Probability" value="'+val+'" style="width: 100px; display: inline-block"> <= '+ max_interval +'</p><button type="button" class="btn btn-default final_validation">Validate</button></div>'
 					);
 
 					// when the user validate
 					$('.final_validation').click(function(){
+						//here we are in multilinearity we must calculate K with dependencies
 						var final_proba = parseFloat($('#final_proba').val());
+						var indices=String(asses_session.k_calculus[1].k[i].ID).split(",");
+						var KASoustraire=[];
 
-						if (final_proba <= 1 && final_proba >= 0) {
-							// we save it 
-							asses_session.k_calculus[1].k[i].value=final_proba; //for multilinear it's 1
-							// backup local 
-							localStorage.setItem("asses_session", JSON.stringify(asses_session));
-							// we reload the list
-							$("#k_value_"+i).hide( "fast",function(){
-								update_k_list(1);
-							show_list();
-							});
-							 
+						for(var l=0; l<asses_session.k_calculus[1].k.length; l++) {
+							var nombreIndice=0;
+							for (var m = 0; m < indices.length; m++) {
+								if (asses_session.k_calculus[1].k[l].ID.indexOf(indices[m]) != -1 && asses_session.k_calculus[1].k[l].ID_attribute.length<indices.length)
+									nombreIndice++;
+							}
+
+							if(nombreIndice==asses_session.k_calculus[1].k[l].ID_attribute.length)
+								KASoustraire.push(asses_session.k_calculus[1].k[l])
 						}
+						var final_k=final_proba;
+						for(var m=0; m<KASoustraire.length; m++)
+						{
+							final_k-=KASoustraire[m].value;
+						}
+						final_k=Math.round(final_k*1000)/1000;
+
+						asses_session.k_calculus[1].k[i].value=final_k; //for multilinear it's 1
+						// backup local
+						localStorage.setItem("asses_session", JSON.stringify(asses_session));
+						// we reload the list
+						$("#k_value_"+i).hide( "fast",function(){
+							update_k_list(1);
+							show_list();
+						});
+
 					});
 				}
 
@@ -386,12 +465,46 @@ function k_multilinear_answer(i)
 				$('.lottery').click(function() {
 					$.post('ajax', '{"type":"question","method": "PE", "proba": '+ String(probability) + ', "min_interval": '+ min_interval+ ', "max_interval": '+ max_interval+' ,"choice": "1" , "mode": "'+String(mode)+'"}', function(data) {
 						treat_answer(data);
-						alert(data)
 					});
 				});
 			})()
 		}
 }
+
+function k_multilinear_calculate_last_one(i)
+{
+	var asses_session = JSON.parse(localStorage.getItem("asses_session"));
+	var indices=String(asses_session.k_calculus[1].k[i].ID).split(",");
+	var KASoustraire=[];
+
+	for(var l=0; l<asses_session.k_calculus[1].k.length; l++) {
+		var nombreIndice=0;
+		for (var m = 0; m < indices.length; m++) {
+			if (asses_session.k_calculus[1].k[l].ID.indexOf(indices[m]) != -1 && asses_session.k_calculus[1].k[l].ID_attribute.length<indices.length)
+				nombreIndice++;
+		}
+
+		if(nombreIndice==asses_session.k_calculus[1].k[l].ID_attribute.length)
+			KASoustraire.push(asses_session.k_calculus[1].k[l])
+	}
+
+	var final_k=1;
+	for(var m=0; m<KASoustraire.length; m++)
+	{
+		final_k-=KASoustraire[m].value;
+	}
+	final_k=Math.round(final_k*1000)/1000;
+
+	asses_session.k_calculus[1].k[i].value=final_k; //for multilinear it's 1
+	// backup local
+	localStorage.setItem("asses_session", JSON.stringify(asses_session));
+	// we reload the list
+	$("#k_value_"+i).hide( "fast",function(){
+		update_k_list(1);
+		show_list();
+	});
+}
+
 
 function k_answer(i, type)
 {
@@ -489,7 +602,7 @@ function k_answer(i, type)
 					// we delete the choice div
 					$('.gain').hide();$('.lottery').hide();
 					$("#k_value_"+i).append(
-						'<div id= "final_value" style="text-align: center;"><br /><br /><p>We are almost done, please now enter the value of the probability: <br /> '+ min_interval +'\
+						'<div id= "final_value" style="text-align: center; "><br /><br /><p>We are almost done, please now enter the value of the probability: <br /> '+ min_interval +'\
 						 <= <input type="text" class="form-control" id="final_proba" placeholder="Probability" value="'+val+'" style="width: 100px; display: inline-block"> <= '+ max_interval +'</p><button type="button" class="btn btn-default final_validation">Validate</button></div>'
 					);
 
@@ -498,16 +611,17 @@ function k_answer(i, type)
 						var final_proba = parseFloat($('#final_proba').val());
 
 						if (final_proba <= 1 && final_proba >= 0) {
-							// we save it 
-							asses_session.k_calculus[type].k[i].value=final_proba; 
-							// backup local 
+
+							// we save it
+							asses_session.k_calculus[type].k[i].value = final_proba;
+							// backup local
 							localStorage.setItem("asses_session", JSON.stringify(asses_session));
 							// we reload the list
-							$("#k_value_"+i).hide( "fast",function(){
+							$("#k_value_" + i).hide("fast", function () {
 								update_k_list(type);
-							show_list();
+								show_list();
 							});
-							 
+
 						}
 					});
 				}
@@ -549,21 +663,39 @@ function ki_calculated() {
 	}
 
 	if (kiNumber != kiNumberCalculated) {
-		$("#calculatek_box").fadeIn("fast");
+		if (get_Active_Method() == 0) {
+			$("#calculatek_box_multiplicative").fadeIn("fast");
+			$("#calculatek_box_multilinear").fadeOut("fast");
+		}
+		else{
+			$("#calculatek_box_multilinear").fadeIn("fast");
+			$("#calculatek_box_multiplicative").fadeOut("fast");
+		}
+
 		$("#GK").hide();
 		//we delete the K we have in memory
 		asses_session.k_calculus[get_Active_Method()].GK=null;
 	}
 	else {
-		$("#calculatek_box").hide();
+		$("#calculatek_box_multiplicative").fadeOut("fast");
 		$("#GK").show();
 		if (asses_session.k_calculus[get_Active_Method()].GK != null) {
 			$("#GK_value").html(asses_session.k_calculus[get_Active_Method()].GK);
 			$("#button_calculate_k").hide();
 		}
 		else {
-			$("#GK_value").html("");
-			$("#button_calculate_k").fadeIn("fast");
+			if(get_Active_Method()==0)//in multiplicative method
+			{
+				$("#GK_value").html("");
+				$("#button_calculate_k").fadeIn("fast");
+				$("#calculatek_box_multilinear").fadeOut("fast");
+			}
+			else //but in multilineaire
+			{
+				$("#calculatek_box_multiplicative").fadeOut("fast");
+				$("#GK").hide();
+				$("#calculatek_box_multilinear").fadeIn("fast");
+			}
 		}
 	}
 
@@ -574,9 +706,6 @@ $(function(){
 		if (get_Active_Method() == 0){//multiplicative
 
 			K_Calculate_Multiplicative();
-		}
-		else{
-			K_Calculate_Multilinear();
 		}
 	});
 });
@@ -620,10 +749,121 @@ function K_Calculate_Multiplicative() {
 	});
 }
 
-function K_Calculate_Multilinear() {
 
-	alert("Not implemented yet !");
+
+
+
+
+
+
+
+//#######################################################################################
+//###########   Choose utility function corresponding to attribute     ##################
+//#######################################################################################
+
+
+$(function(){
+	$("#button_generate_list").click(function() {
+			list();
+	});
+});
+
+
+function list()
+{
+	var asses_session = JSON.parse(localStorage.getItem("asses_session"));
+
+	// We fill the table
+	for (var i=0; i < asses_session.attributes.length; i++){
+
+		var text = '<tr><td>' + asses_session.attributes[i].name + '</td>';
+		text+='<td>'+ asses_session.attributes[i].unit + '</td>';
+		text+='<td id="charts_'+i+'"></td>';
+		text+='<td id="functions_'+i+'"></td>';
+		text+='</tr>';
+
+		$('#table_attributes').append(text);
+
+		(function(_i) {
+			var json_2_send = {"type": "calc_util", "points":[]};
+			var points = asses_session.attributes[_i].questionnaire.points.slice();
+			var mode = asses_session.attributes[_i].mode;
+			var val_max=asses_session.attributes[_i].val_max;
+			var val_min=asses_session.attributes[_i].val_min;
+			if (points.length > 0 && asses_session.attributes[i].checked) {
+				if (mode=="normal") {
+					points.push([val_max, 1]);
+					points.push([val_min, 0]);
+				}
+				else {
+					points.push([val_max, 0]);
+					points.push([val_min, 1]);
+				}
+				json_2_send["points"] = points;
+				$.post('ajax', JSON.stringify(json_2_send), function (data) {
+					$.post('ajax', JSON.stringify({
+						"type": "svg",
+						"data": data,
+						"min": val_min,
+						"max": val_max,
+						"liste_cord": points,
+						"width": 3
+					}), function (data2) {
+
+						$('#charts_' + _i).append('<div>' + data2 + '</div>');
+						for (var key in data) {
+
+							var functions = "";
+							if (key == 'exp') {
+								functions= '<label style="color:#401539"><input type="checkbox" id="checkbox_'+_i+'_exp"> Exponential (' + Math.round(data[key]['r2'] * 100) / 100 + ')</label><br/>';
+								$('#functions_' + _i).append(functions);
+								data[key]['type']='exp';
+								(function(_data){$('#checkbox_'+_i+'_exp').click(function(){update_data_export_option(_i, "exp", _data)});})(data[key]);
+
+							}
+							else if (key == 'log'){
+								functions='<label style="color:#D9585A"><input type="checkbox" id="checkbox_'+_i+'_log"> Logarithmic (' + Math.round(data[key]['r2'] * 100) / 100 + ')</label><br/>';
+								$('#functions_' + _i).append(functions);
+								data[key]['type']='log';
+								(function(_data){$('#checkbox_'+_i+'_log').click(function(){update_data_export_option(_i, "log", _data)});})(data[key]);
+							}
+							else if (key == 'pow'){
+								functions='<label style="color:#6DA63C"><input type="checkbox" id="checkbox_'+_i+'_pow"> Power (' + Math.round(data[key]['r2'] * 100) / 100 + ')</label><br/>';
+								$('#functions_' + _i).append(functions);
+								data[key]['type']='pow';
+								(function(_data){$('#checkbox_'+_i+'_pow').click(function(){update_data_export_option(_i, "pow", _data)});})(data[key]);
+							}
+							else if (key == 'quad'){
+								functions='<label style="color:#458C8C"><input type="checkbox" id="checkbox_'+_i+'_quad"> Quadratic (' + Math.round(data[key]['r2'] * 100) / 100 + ')</label><br/>';
+								$('#functions_' + _i).append(functions);
+								data[key]['type']='quad';
+								(function(_data){$('#checkbox_'+_i+'_quad').click(function(){update_data_export_option(_i, "quad", _data)});})(data[key]);
+							}
+							else if (key == 'lin'){
+								functions='<label style="color:#D9B504"><input type="checkbox" id="checkbox_'+_i+'_lin"> Linear (' + Math.round(data[key]['r2'] * 100) / 100 + ')</label><br/>';
+								$('#functions_' + _i).append(functions);
+								data[key]['type']='lin';
+								(function(_data){$('#checkbox_'+_i+'_lin').click(function(){update_data_export_option(_i, "lin", _data)});})(data[key]);
+							}
+
+						}
+
+					})
+				});
+			}
+			else
+			{
+				if(points.length == 0 && asses_session.attributes[i].checked)
+					$('#charts_' + _i).append("Please answer questionnaire");
+				else if(!asses_session.attributes[i].checked)
+					$('#charts_' + _i).append("The attribute is inactive");
+
+				$('#functions_' + _i).append('<input type="checkbox" id="checkbox_'+_i+'_0"> Add just the attribute');
+				$('#checkbox_'+_i+'_0').click(function(){update_data_export_option(_i, "0", null)});
+			}
+		})(i);
+
+
+
+	}
 }
-
-
-

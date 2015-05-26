@@ -103,7 +103,8 @@
 					$('#checkbox_'+i).click(function(){checked_button_clicked($(this))});
 			
 					(function(_i){
-					$('#deleteK'+_i).click(function(){ 
+					$('#deleteK'+_i).click(function(){
+					    if(confirm("Are you sure ?") == false){return};
 						asses_session.attributes.splice(_i,1); 
 						// backup local
 						localStorage.setItem("asses_session", JSON.stringify(asses_session));

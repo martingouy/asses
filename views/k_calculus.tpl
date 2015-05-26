@@ -46,8 +46,12 @@
   <h3>K calculus</h3>
 </div>
 
-<div class="alert alert-info" role="alert" id="calculatek_box" >
+<div class="alert alert-info" role="alert" id="calculatek_box_multiplicative" >
   You need to calculate all ki in order to calculate K.
+</div>
+
+<div class="alert alert-info" role="alert" id="calculatek_box_multilinear" >
+  There is no need to calculate K in multilinear.
 </div>
 
 <div style="text-align:center;" id="GK">
@@ -55,6 +59,34 @@
 	<span class="h4">K = <span id="GK_value"></span> </span><button type="button" class="btn btn-default btn-lg" id="button_calculate_k" style="text-align:center">Calculate</button>
 	<br/>
 </div>
+
+
+<br/>
+<div class="page-header">
+  <h3>Choose utility function for each attributes</h3>
+</div>
+<div id="attribute" >
+    <table class="table">
+    <thead>
+    <tr>
+    <th>Attribute</th>
+    <th>Unit</th>
+    <th>Graph</th>
+    <th>Function</th>
+    </tr>
+    </thead>
+    <tbody id="table_attributes">
+    </tbody>
+    </table>
+</div>
+
+
+<div style="text-align:center;" id="button_generate_list">
+
+	<button type="button" class="btn btn-default btn-lg" id="button_calculate_k" style="text-align:center">Generate list</button>
+	<br/>
+</div>
+
 
 
 %include('header_end.tpl')
