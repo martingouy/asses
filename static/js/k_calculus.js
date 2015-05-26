@@ -684,6 +684,7 @@ function ki_calculated() {
 		if (asses_session.k_calculus[get_Active_Method()].GK != null) {
 			$("#GK_value").html(asses_session.k_calculus[get_Active_Method()].GK);
 			$("#button_calculate_k").hide();
+			$("#calculatek_box_multilinear").fadeOut("fast");
 		}
 		else {
 			if(get_Active_Method()==0)//in multiplicative method
@@ -803,7 +804,7 @@ function list()
 	{
 		maList=listk;
 		for(var i=0; i< listk.length; i++) {
-			k_utility_multiliplicative.push({k:i+1, utility:null});
+			k_utility_multiliplicative.push(null);
 		}
 	}
 	else {
@@ -811,12 +812,11 @@ function list()
 			if (listk[i].ID_attribute.length == 1) //if we have a k with jsute 1 indice
 			{
 				maList.push(listk[i]);
-				k_utility_multilinear.push({k:i+1, utility:null});
+				k_utility_multilinear.push(null);
 			}
 		}
 	}
 
-	alert(JSON.stringify(maList));
 
 	$('#table_attributes').html("");
 	// We fill the table
@@ -920,13 +920,11 @@ function update_utility(i, type, data)
 
 	if(get_Active_Method()==0)//multiplicative
 	{
-		k_utility_multiliplicative[i].utility=data;
-		alert(JSON.stringify(k_utility_multiliplicative));
+		k_utility_multiliplicative[i]=data;
 	}
 	else
 	{
-		k_utility_multilinear[i].utility=data;
-		alert(JSON.stringify(k_utility_multilinear));
+		k_utility_multilinear[i]=data; 
 	}
 
 
@@ -935,14 +933,61 @@ function update_utility(i, type, data)
 
 
 $(function(){
+	var asses_session = JSON.parse(localStorage.getItem("asses_session"));
 	$("#button_calculate_utility").click(function() {
+
 		if(get_Active_Method()==0)//multiplicative
 		{
+			if(k_utility_multiliplicative.length==0)
+			{
+				alert("You need to choose a utility function for all your attribute in the list below");
+				return;
+			}
+			if(asses_session.k_calculus[get_Active_Method()].GK==null){
+				alert("You need to calculate K first");
+				return;
+			}
+
+			for(var i=0; i<k_utility_multiliplicative.length; i++)
+			{
+				if(k_utility_multiliplicative[i]==null)
+				{
+					alert("You need to choose a utility function for all your attribute in the list below");
+					return;
+				}
+			}
+
+			//then we pass here so we can send the ajax request
+			var mesK=asses_session.k_calculus[get_Active_Method()].k.slice();
+			mesK.push({value:asses_session.k_calculus[get_Active_Method()].GK});
+			var requete={"type": "utility_calculus_multiplicative", "k":mesK, "utility":k_utility_multiliplicative};
+			alert(JSON.stringify(requete));
+			$.post('ajax', JSON.stringify(requete), function (data) {
+				$("#utility_function").html('<div ><pre>'+data.U+'</pre></div>')
+				//alert(JSON.stringify(data));
+			});
 
 		}
-		else
-		{
+		else {
+			if (k_utility_multilinear.length == 0) {
+				alert("You need to choose a utility function for all your attribute in the list below");
+				return;
+			}
 
+
+			for(var i=0; i<k_utility_multilinear.length; i++)
+			{
+				if(k_utility_multilinear[i]==null)
+				{
+					alert("You need to choose a utility function for all your attribute in the list below");
+					return;
+				}
+			}
+
+			var requete={"type": "utility_calculus_multilinear", "k":asses_session.k_calculus[get_Active_Method()].k, "utility":k_utility_multiliplicative};
+			$.post('ajax', JSON.stringify(requete), function (data) {
+				alert(JSON.stringify(data));
+			});
 		}
 
 	});
