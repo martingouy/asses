@@ -3,8 +3,9 @@ from sympy import *
 
 def calculk4(k1,k2,k3,k4):
     k = symbols('k')
-    solution=solve(k1*k2*k3*k4*k**3+(k1*k2*k3+k1*k2*k4+k2*k3*k4+k1*k3*k4)*k**2+(k1*k2+k2*k3+k1*k3+k1*k4+k2*k4+k3*k4)*k+k1+k2+k3+k4-1, k)
-    return (solution)
+    solution=solve(k1*k2*k3*k4*k**3+(k1*k2*k3+k1*k2*k4+k2*k3*k4+k1*k3*k4)*k**2+(k1*k2+k2*k3+k1*k3+k1*k4+k2*k4+k3*k4)*k+k1+k2+k3+k4-1,k)
+    return (solution[0])
+
 
 def utilite(k1,k2,k3,k4,k):
     u1=u1.get()
