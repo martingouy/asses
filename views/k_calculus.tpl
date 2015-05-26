@@ -69,8 +69,8 @@
     <table class="table">
     <thead>
     <tr>
+    <th>K</th>
     <th>Attribute</th>
-    <th>Unit</th>
     <th>Graph</th>
     <th>Function</th>
     </tr>
@@ -85,6 +85,18 @@
 
 	<button type="button" class="btn btn-default btn-lg" id="button_calculate_k" style="text-align:center">Generate list</button>
 	<br/>
+</div>
+
+
+<div class="page-header">
+  <h3>Calcul Utility function</h3>
+</div>
+
+<div style="text-align:center;" id="button_generate_list">
+
+	<button type="button" class="btn btn-default btn-lg" id="button_calculate_utility" style="text-align:center">Calcul general utility function</button>
+	<br/><br/>
+	<span class="h4" id="utility_function"></span>
 </div>
 
 

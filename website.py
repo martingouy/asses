@@ -63,11 +63,13 @@ def ajax():
     elif query['type'] == "k_calculus":
         print("on va calculer k_calculus sur le fichier kcalc")
         if query['number'] == 2:
-            return 0
+            return {'k':kcalc.calculk(query['k']['k1'],query['k']['k2'],query['k']['k3'])}
         elif query['number'] == 3:
             return {'k':kcalc.calculk(query['k']['k1'],query['k']['k2'],query['k']['k3'])}
         elif query['number'] == 4:
             return {'k':kcalc.calculk4(query['k']['k1'],query['k']['k2'],query['k']['k3'],query['k']['k4'])}
+        elif query['number'] == 5:
+            return {'k':kcalc.calculk5(query['k']['k1'],query['k']['k2'],query['k']['k3'],query['k']['k4'], query['k']['k5'])}
         elif query['number'] == 5:
             return {'k':kcalc.calculk5(query['k']['k1'],query['k']['k2'],query['k']['k3'],query['k']['k4'], query['k']['k5'])}
 

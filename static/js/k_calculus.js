@@ -86,6 +86,7 @@ $(function() {
 		update_k_list(0);
 		show_list();
 		ki_calculated();
+		$('#table_attributes').html("");
 	});
 });
 
@@ -117,6 +118,7 @@ $(function() {
 		update_k_list(1);
 		show_list();
 		ki_calculated();
+		$('#table_attributes').html("");
 	});
 });
 
@@ -718,7 +720,12 @@ function K_Calculate_Multiplicative() {
 	var ma_list = asses_session.k_calculus[get_Active_Method()].k;
 
 	var mesK={};
-	if(kiNumber==3)
+	if(kiNumber==2)
+	{
+		mesK['k1']=ma_list[0].value;
+		mesK['k2']=ma_list[1].value;
+	}
+	else if(kiNumber==3)
 	{
 		mesK['k1']=ma_list[0].value;
 		mesK['k2']=ma_list[1].value;
@@ -738,6 +745,15 @@ function K_Calculate_Multiplicative() {
 		mesK['k3']=ma_list[2].value;
 		mesK['k4']=ma_list[3].value;
 		mesK['k5']=ma_list[4].value;
+	}
+	else if(kiNumber==6)
+	{
+		mesK['k1']=ma_list[0].value;
+		mesK['k2']=ma_list[1].value;
+		mesK['k3']=ma_list[2].value;
+		mesK['k4']=ma_list[3].value;
+		mesK['k5']=ma_list[4].value;
+		mesK['k6']=ma_list[5].value;
 	}
 
 
@@ -761,7 +777,8 @@ function K_Calculate_Multiplicative() {
 //###########   Choose utility function corresponding to attribute     ##################
 //#######################################################################################
 
-
+var k_utility_multilinear=[];
+var k_utility_multiliplicative=[];
 $(function(){
 	$("#button_generate_list").click(function() {
 			list();
@@ -773,11 +790,41 @@ function list()
 {
 	var asses_session = JSON.parse(localStorage.getItem("asses_session"));
 
-	// We fill the table
-	for (var i=0; i < asses_session.attributes.length; i++){
+	var listk = asses_session.k_calculus[get_Active_Method()].k;
 
-		var text = '<tr><td>' + asses_session.attributes[i].name + '</td>';
-		text+='<td>'+ asses_session.attributes[i].unit + '</td>';
+	k_utility_multilinear=[];
+	k_utility_multiliplicative=[];
+
+	//list of K with corresponding attribute:
+
+	var maList=[];
+	var type=get_Active_Method();
+	if(type==0)
+	{
+		maList=listk;
+		for(var i=0; i< listk.length; i++) {
+			k_utility_multiliplicative.push({k:i+1, utility:null});
+		}
+	}
+	else {
+		for (var i = 0; i < listk.length; i++) {
+			if (listk[i].ID_attribute.length == 1) //if we have a k with jsute 1 indice
+			{
+				maList.push(listk[i]);
+				k_utility_multilinear.push({k:i+1, utility:null});
+			}
+		}
+	}
+
+	alert(JSON.stringify(maList));
+
+	$('#table_attributes').html("");
+	// We fill the table
+	for (var i=0; i < maList.length; i++){
+
+		var monAttribut=asses_session.attributes[maList[i].ID_attribute];
+		var text = '<tr><td>K' + maList[i].ID + '</td>';
+		text+='<td>'+ monAttribut.name + '</td>';
 		text+='<td id="charts_'+i+'"></td>';
 		text+='<td id="functions_'+i+'"></td>';
 		text+='</tr>';
@@ -786,11 +833,11 @@ function list()
 
 		(function(_i) {
 			var json_2_send = {"type": "calc_util", "points":[]};
-			var points = asses_session.attributes[_i].questionnaire.points.slice();
-			var mode = asses_session.attributes[_i].mode;
-			var val_max=asses_session.attributes[_i].val_max;
-			var val_min=asses_session.attributes[_i].val_min;
-			if (points.length > 0 && asses_session.attributes[i].checked) {
+			var points = monAttribut.questionnaire.points.slice();
+			var mode = monAttribut.mode;
+			var val_max=monAttribut.val_max;
+			var val_min=monAttribut.val_min;
+			if (points.length > 0 && monAttribut.checked) {
 				if (mode=="normal") {
 					points.push([val_max, 1]);
 					points.push([val_min, 0]);
@@ -815,35 +862,35 @@ function list()
 
 							var functions = "";
 							if (key == 'exp') {
-								functions= '<label style="color:#401539"><input type="checkbox" id="checkbox_'+_i+'_exp"> Exponential (' + Math.round(data[key]['r2'] * 100) / 100 + ')</label><br/>';
+								functions= '<label style="color:#401539"><input type="radio" name="radio_'+_i+'" id="checkbox_'+_i+'_exp"> Exponential (' + Math.round(data[key]['r2'] * 100) / 100 + ')</label><br/>';
 								$('#functions_' + _i).append(functions);
 								data[key]['type']='exp';
-								(function(_data){$('#checkbox_'+_i+'_exp').click(function(){update_data_export_option(_i, "exp", _data)});})(data[key]);
+								(function(_data){$('#checkbox_'+_i+'_exp').click(function(){update_utility(_i, "exp", _data)});})(data[key]);
 
 							}
 							else if (key == 'log'){
-								functions='<label style="color:#D9585A"><input type="checkbox" id="checkbox_'+_i+'_log"> Logarithmic (' + Math.round(data[key]['r2'] * 100) / 100 + ')</label><br/>';
+								functions='<label style="color:#D9585A"><input type="radio" name="radio_'+_i+'" id="checkbox_'+_i+'_log"> Logarithmic (' + Math.round(data[key]['r2'] * 100) / 100 + ')</label><br/>';
 								$('#functions_' + _i).append(functions);
 								data[key]['type']='log';
-								(function(_data){$('#checkbox_'+_i+'_log').click(function(){update_data_export_option(_i, "log", _data)});})(data[key]);
+								(function(_data){$('#checkbox_'+_i+'_log').click(function(){update_utility(_i, "log", _data)});})(data[key]);
 							}
 							else if (key == 'pow'){
-								functions='<label style="color:#6DA63C"><input type="checkbox" id="checkbox_'+_i+'_pow"> Power (' + Math.round(data[key]['r2'] * 100) / 100 + ')</label><br/>';
+								functions='<label style="color:#6DA63C"><input type="radio" name="radio_'+_i+'" id="checkbox_'+_i+'_pow"> Power (' + Math.round(data[key]['r2'] * 100) / 100 + ')</label><br/>';
 								$('#functions_' + _i).append(functions);
 								data[key]['type']='pow';
-								(function(_data){$('#checkbox_'+_i+'_pow').click(function(){update_data_export_option(_i, "pow", _data)});})(data[key]);
+								(function(_data){$('#checkbox_'+_i+'_pow').click(function(){update_utility(_i, "pow", _data)});})(data[key]);
 							}
 							else if (key == 'quad'){
-								functions='<label style="color:#458C8C"><input type="checkbox" id="checkbox_'+_i+'_quad"> Quadratic (' + Math.round(data[key]['r2'] * 100) / 100 + ')</label><br/>';
+								functions='<label style="color:#458C8C"><input type="radio" name="radio_'+_i+'" id="checkbox_'+_i+'_quad"> Quadratic (' + Math.round(data[key]['r2'] * 100) / 100 + ')</label><br/>';
 								$('#functions_' + _i).append(functions);
 								data[key]['type']='quad';
-								(function(_data){$('#checkbox_'+_i+'_quad').click(function(){update_data_export_option(_i, "quad", _data)});})(data[key]);
+								(function(_data){$('#checkbox_'+_i+'_quad').click(function(){update_utility(_i, "quad", _data)});})(data[key]);
 							}
 							else if (key == 'lin'){
-								functions='<label style="color:#D9B504"><input type="checkbox" id="checkbox_'+_i+'_lin"> Linear (' + Math.round(data[key]['r2'] * 100) / 100 + ')</label><br/>';
+								functions='<label style="color:#D9B504"><input type="radio" name="radio_'+_i+'" id="checkbox_'+_i+'_lin"> Linear (' + Math.round(data[key]['r2'] * 100) / 100 + ')</label><br/>';
 								$('#functions_' + _i).append(functions);
 								data[key]['type']='lin';
-								(function(_data){$('#checkbox_'+_i+'_lin').click(function(){update_data_export_option(_i, "lin", _data)});})(data[key]);
+								(function(_data){$('#checkbox_'+_i+'_lin').click(function(){update_utility(_i, "lin", _data)});})(data[key]);
 							}
 
 						}
@@ -853,13 +900,11 @@ function list()
 			}
 			else
 			{
-				if(points.length == 0 && asses_session.attributes[i].checked)
-					$('#charts_' + _i).append("Please answer questionnaire");
-				else if(!asses_session.attributes[i].checked)
+				if(points.length == 0 && monAttribut.checked)
+					$('#charts_' + _i).append("Please answer questionnaire in \"Treat attributes\"");
+				else if(!monAttribut.checked)
 					$('#charts_' + _i).append("The attribute is inactive");
 
-				$('#functions_' + _i).append('<input type="checkbox" id="checkbox_'+_i+'_0"> Add just the attribute');
-				$('#checkbox_'+_i+'_0').click(function(){update_data_export_option(_i, "0", null)});
 			}
 		})(i);
 
@@ -867,3 +912,38 @@ function list()
 
 	}
 }
+
+
+
+function update_utility(i, type, data)
+{
+
+	if(get_Active_Method()==0)//multiplicative
+	{
+		k_utility_multiliplicative[i].utility=data;
+		alert(JSON.stringify(k_utility_multiliplicative));
+	}
+	else
+	{
+		k_utility_multilinear[i].utility=data;
+		alert(JSON.stringify(k_utility_multilinear));
+	}
+
+
+}
+
+
+
+$(function(){
+	$("#button_calculate_utility").click(function() {
+		if(get_Active_Method()==0)//multiplicative
+		{
+
+		}
+		else
+		{
+
+		}
+
+	});
+});

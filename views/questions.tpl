@@ -462,7 +462,7 @@ $(function() {
 		json_2_send = {"type":"calc_util"};
 		json_2_send["points"] = points;
         
-        function reduce(nombre){return Math.round(nombre*1000000)/1000000;}
+        function reduce(nombre){return Math.round(nombre*100000000)/100000000;}
         function signe(nombre){if(nombre>=0){return "+"+nombre}else{return nombre}};
                           
         function addTextForm(div_function, copie)
