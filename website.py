@@ -13,6 +13,7 @@ import kcalc55
 import os
 import export_xlsx
 import import_xlsx
+import traceback
 
 app = Bottle()
 
@@ -103,7 +104,7 @@ def do_upload():
         upload = request.files.get('upload')
         name, ext = os.path.splitext(upload.filename)
         if ext not in ('.xlsx'):
-            return { 'get_url':  app.get_url, 'success':'false', 'data':"File extension not allowed. You must import xlsx only"}
+            return { 'get_url':  app.get_url, 'success':'false', 'data_fail':"File extension not allowed. You must import xlsx only", 'data':''}
         
         #we add a random name to the file:
         r = random.randint(1,1000)
@@ -112,11 +113,11 @@ def do_upload():
         val=import_xlsx.importation(file_path)
         if val['success']==True:
             print("import ok")
-            return { 'get_url':  app.get_url, 'success':'true', 'data':json.dumps(val['data'])}
+            return { 'get_url':  app.get_url, 'success':'true', 'data':json.dumps(val['data']), 'data_fail':''}
         else:
-            return { 'get_url':  app.get_url, 'success':'false', 'data':val['data']}
-    except:
-        return { 'get_url':  app.get_url, 'success':'false', 'data':sys.exc_info()[0]}
+            return { 'get_url':  app.get_url, 'success':'false', 'data_fail':val['data'], 'data':''}
+    except Exception, err:
+        return { 'get_url':  app.get_url, 'success':'false', 'data_fail':traceback.format_exc(), 'data':''}
 
 
 

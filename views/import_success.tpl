@@ -6,7 +6,7 @@
 
 <div class="alert alert-danger" role="alert" id="import_fail" >
   Error during importation <br/>
-  {{data}}
+  {{data_fail}}
 </div>
 
 
@@ -29,10 +29,11 @@
   $(function() {
   $("#import_ok").hide();
   $("#import_fail").hide();
-  var data='{{!data}}';
+
   var success={{success}}
   if(success==true)
   {
+    var data='{{!data}}';
     console.log("test");
     console.log(JSON.parse(data));
     $("#import_ok").show();

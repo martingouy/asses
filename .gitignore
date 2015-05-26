@@ -32,3 +32,5 @@ plot.pyc
 .idea/jsLibraryMappings.xml
 
 .idea/templateLanguages.xml
+
+*.xlsx

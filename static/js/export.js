@@ -2,7 +2,7 @@
 
 
 
-var data_export_option=[];
+var data_export_option={'attributes':[], 'k_calculus':[]};
 
 ///  ACTION FROM BUTTON UPDATE
 $(function() {
@@ -24,12 +24,18 @@ $(function() {
 	});
 
 	$('#export_xls_option').click(function() {
-		var data_2_export = JSON.stringify({'attributes':data_export_option});
+		var data_2_export = JSON.stringify(data_export_option);
 		$.post('ajax', '{"type":"export_xlsx_option", "data":'+data_2_export+'}', function(data) {
 			document.location = "export_download/"+data;
 		});
 	});
 
+	$('#checkbox_multiplicative').click(function() {
+		checkbox_multiplicative();
+	});
+	$('#checkbox_multilinear').click(function(){
+		checkbox_multilinear();
+	});
 
 	list();
 });
@@ -143,9 +149,9 @@ function update_data_export_option(i, type, data)
 
 	var myAttributI=null;
 	//we verify if we are in data_export_option
-	for(var l=0; l<data_export_option.length; l++)
+	for(var l=0; l<data_export_option['attributes'].length; l++)
 	{
-		if(data_export_option[l].indice==i)
+		if(data_export_option['attributes'][l].indice==i)
 		{
 			myAttributI=l;
 		}
@@ -154,20 +160,20 @@ function update_data_export_option(i, type, data)
 	if(myAttributI!=null) //we have an attribut
 	{
 		if(checked)//we are going to add this data in utilities
-		data_export_option[myAttributI].utilities.push(data);
+		data_export_option['attributes'][myAttributI].utilities.push(data);
 		else //we are goine to remove this type of utilities
 		{
-			for(var k=0; k<data_export_option[myAttributI].utilities.length; k++)
+			for(var k=0; k<data_export_option['attributes'][myAttributI].utilities.length; k++)
 			{
-				if(data_export_option[myAttributI].utilities[k].type==type)
+				if(data_export_option['attributes'][myAttributI].utilities[k].type==type)
 				{
 					//we remove it because we are unchecked
-					data_export_option[myAttributI].utilities.splice(k);
+					data_export_option['attributes'][myAttributI].utilities.splice(k);
 				}
 			}
 			//if we have no utilites we also delete the atrtibute
-			if(data_export_option[myAttributI].utilities.length==0)
-				data_export_option.splice(myAttributI);
+			if(data_export_option['attributes'][myAttributI].utilities.length==0)
+				data_export_option['attributes'].splice(myAttributI);
 		}
 	}
 	else //we are going to add the good one.
@@ -179,10 +185,45 @@ function update_data_export_option(i, type, data)
 		myAttribut.utilities=[data];
 		else
 		myAttribut.utilities=[];
-		data_export_option.push(myAttribut);
+		data_export_option['attributes'].push(myAttribut);
 	}
 
-	alert(JSON.stringify(data_export_option));
+}
+
+
+function checkbox_multiplicative()
+{
+	var checked=$('#checkbox_multiplicative').is(":checked");
+	if(checked)
+	{
+		var asses_session = JSON.parse(localStorage.getItem("asses_session"));
+		data_export_option['k_calculus'].push(asses_session['k_calculus'][0]);
+	}
+	else {
+		for (var l = 0; l < data_export_option['k_calculus'].length; l++) {
+			if (data_export_option['k_calculus'][l].method == "multiplicative") {
+				data_export_option['k_calculus'].splice(l);
+			}
+		}
+	}
+
+}
+
+function checkbox_multilinear()
+{
+	var checked=$('#checkbox_multilinear').is(":checked");
+	if(checked)
+	{
+		var asses_session = JSON.parse(localStorage.getItem("asses_session"));
+		data_export_option['k_calculus'].push(asses_session['k_calculus'][1]);
+	}
+	else {
+		for (var l = 0; l < data_export_option['k_calculus'].length; l++) {
+			if (data_export_option['k_calculus'][l].method == "multilinear") {
+				data_export_option['k_calculus'].splice(l);
+			}
+		}
+	}
 
 
 }

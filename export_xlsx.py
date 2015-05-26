@@ -180,7 +180,41 @@ def generate_fichier(data):
             
             ligne+=15;
 
+    for mesK in data['k_calculus']:
+        feuille = classeur.add_worksheet("Multi attribute "+mesK['method'])
+    
 
+        
+        formatTitre = classeur.add_format()
+        formatTitre.set_bg_color('#C0C0C0')
+        formatTitre.set_bold()
+        
+        formatNom = classeur.add_format()
+        formatNom.set_font_color('#D95152')
+        formatNom.set_align('center')
+        formatNom.set_font_size(12)
+        formatNom.set_bold()
+        #ici on va mettre toutes les infos sur l'attribut
+        
+        feuille.write(0,0, 'K', formatTitre);
+        feuille.set_column(0, 0, 15);
+        feuille.write(0,1, 'Value', formatTitre);
+        feuille.write(0,2, 'Attribute', formatTitre);
+        feuille.set_column(2, 2, 50);
+        feuille.write(0,3, 'IDAttribute', formatTitre);
+        feuille.set_column(3, 3, 15);
+
+        ligne=1
+        for monK in mesK['k']:
+            feuille.write(ligne, 0, monK['ID'], formatNom)
+            feuille.write(ligne, 1, monK['value'])
+            feuille.write(ligne, 2, json.dumps(monK['attribute']))
+            feuille.write(ligne, 3, json.dumps(monK['ID_attribute']))
+            ligne=ligne+1
+    
+
+        feuille.write(ligne, 0, "K", formatNom)
+        feuille.write(ligne, 1, mesK['GK'])
 
     # Ecriture du classeur sur le disque
     classeur.close()
@@ -345,6 +379,43 @@ def generate_fichier_with_specification(data):
             feuille.insert_chart('I'+str(1+ligne), chart5, {'x_offset': 25, 'y_offset': 10})
             
             ligne+=15;
+
+
+    for mesK in data['k_calculus']:
+        feuille = classeur.add_worksheet("Multi attribute "+mesK['method'])
+    
+
+        
+        formatTitre = classeur.add_format()
+        formatTitre.set_bg_color('#C0C0C0')
+        formatTitre.set_bold()
+        
+        formatNom = classeur.add_format()
+        formatNom.set_font_color('#D95152')
+        formatNom.set_align('center')
+        formatNom.set_font_size(12)
+        formatNom.set_bold()
+        #ici on va mettre toutes les infos sur l'attribut
+        
+        feuille.write(0,0, 'K', formatTitre);
+        feuille.set_column(0, 0, 15);
+        feuille.write(0,1, 'Value', formatTitre);
+        feuille.write(0,2, 'Attribute', formatTitre);
+        feuille.set_column(2, 2, 50);
+        feuille.write(0,3, 'IDAttribute', formatTitre);
+        feuille.set_column(3, 3, 15);
+
+        ligne=1
+        for monK in mesK['k']:
+            feuille.write(ligne, 0, monK['ID'], formatNom)
+            feuille.write(ligne, 1, monK['value'])
+            feuille.write(ligne, 2, json.dumps(monK['attribute']))
+            feuille.write(ligne, 3, json.dumps(monK['ID_attribute']))
+            ligne=ligne+1
+
+        feuille.write(ligne, 0, "K", formatNom)
+        feuille.write(ligne, 1, mesK['GK'])
+
 
 
 
