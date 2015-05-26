@@ -1,5 +1,6 @@
 from bottle import run, template, static_file, view, Bottle, request
 from sys import argv
+import random
 import json
 import fit
 import codecs
@@ -9,7 +10,8 @@ import kcalc
 import kcal44
 import kcalc55
 import os
-import export_xls
+import export_xlsx
+import import_xlsx
 
 app = Bottle()
 
@@ -58,12 +60,14 @@ def ajax():
 
     elif query['type'] == "k_calculus":
         print("on va calculer k_calculus sur le fichier kcalc")
-        if query['number'] == 3:
+        if query['number'] == 2:
+            return 0
+        elif query['number'] == 3:
             return {'k':kcalc.calculk(query['k']['k1'],query['k']['k2'],query['k']['k3'])}
         elif query['number'] == 4:
             return {'k':kcalc.calculk4(query['k']['k1'],query['k']['k2'],query['k']['k3'],query['k']['k4'])}
         elif query['number'] == 5:
-            return {'k':kcalc.calculk4(query['k']['k1'],query['k']['k2'],query['k']['k3'],query['k']['k4'], query['k']['k5'])}
+            return {'k':kcalc.calculk5(query['k']['k1'],query['k']['k2'],query['k']['k3'],query['k']['k4'], query['k']['k5'])}
 
     elif query['type'] == "svg":
         dictionary = query['data']
@@ -74,17 +78,39 @@ def ajax():
         return plot.generate_svg_plot(dictionary, min, max, liste_cord, width)
 
 
-    elif query['type'] == "export_xls":
-        return export_xls.generate_fichier(query['data'])
+    elif query['type'] == "export_xlsx":
+        return export_xlsx.generate_fichier(query['data'])
+
+    elif query['type'] == "export_xlsx_option":
+        return export_xlsx.generate_fichier_with_specification(query['data'])
 
 
-#exporter le fichier
-@app.route('/export_download/fichier.xlsx', name='export')
-def export():
-    val = static_file('fichier.xlsx', root='')
-    os.remove('fichier.xlsx')
+#export a file (download)
+@app.route('/export_download/fichier:path#.+#', name='export')
+def export(path):
+    val = static_file('fichier'+path+'.xlsx', root='')
+    os.remove('fichier'+path+'.xlsx')
     return val
 
+
+#import a file (upload)
+@app.route('/upload', method='POST')
+@view('import_success')
+def do_upload():
+    upload = request.files.get('upload')
+    name, ext = os.path.splitext(upload.filename)
+    if ext not in ('.xlsx'):
+        return "File extension not allowed."
+    
+    #we add a random name to the file:
+    r = random.randint(1,1000)
+    file_path = str(r)+"{file}".format(path="", file=upload.filename)
+    upload.save(file_path)
+    import_xlsx.importation(file_path)
+    return { 'get_url':  app.get_url}
+
+
+#all static files for the website
 @app.route('/static/:path#.+#', name='static')
 def static(path):
     return static_file(path, root='static')

@@ -1,15 +1,30 @@
 %include('header_init.tpl', heading='Import Excel file')
 
+<div class="alert alert-success" role="alert" id="calculatek_box" >
+  File sucessfully imported
+</div>
 
 
 <form action="/upload" method="post" enctype="multipart/form-data">
   <div class="form-group">
     <label for="exampleInputFile">File input</label>
     <input type="file" name="upload">
-    <p class="help-block">Only xlsx files are supporter. Files must have the datas must have the same position as when we export xlsx files (position of attributes, points, ...).</p>
+    <p class="help-block">Example block-level help text here.</p>
+  </div>
+  <div class="checkbox">
+    <label>
+      <input type="checkbox"> Check me out
+    </label>
   </div>
   <button type="submit" class="btn btn-default">Submit</button>
 </form>
+
+
+
+	<form action="/upload" method="post" enctype="multipart/form-data">
+      Select a file: <input type="file" name="upload" />
+      <button type="submit" class="btn btn-default btn-lg">Import</button>
+    </form>
 
 
 

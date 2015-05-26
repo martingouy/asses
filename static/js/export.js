@@ -2,7 +2,7 @@
 
 
 
-
+var data_export_option=[];
 
 ///  ACTION FROM BUTTON UPDATE
 $(function() {
@@ -18,7 +18,14 @@ $(function() {
 
 	$('#export_xls').click(function() {
 		var data_2_export = localStorage['asses_session'];
-		$.post('ajax', '{"type":"export_xls", "data":'+data_2_export+'}', function(data) {
+		$.post('ajax', '{"type":"export_xlsx", "data":'+data_2_export+'}', function(data) {
+			document.location = "export_download/"+data;
+		});
+	});
+
+	$('#export_xls_option').click(function() {
+		var data_2_export = JSON.stringify({'attributes':data_export_option});
+		$.post('ajax', '{"type":"export_xlsx_option", "data":'+data_2_export+'}', function(data) {
 			document.location = "export_download/"+data;
 		});
 	});
@@ -37,8 +44,7 @@ function list()
 
 	// We fill the table
 	for (var i=0; i < asses_session.attributes.length; i++){
-		if(!asses_session.attributes[i].checked)//if note activated
-			continue;//we pass to the next one
+
 		var text = '<tr><td>' + asses_session.attributes[i].name + '</td>';
 		text+='<td>'+ asses_session.attributes[i].unit + '</td>';
 		text+='<td id="charts_'+i+'"></td>';
@@ -53,7 +59,7 @@ function list()
 			var mode = asses_session.attributes[_i].mode;
 			var val_max=asses_session.attributes[_i].val_max;
 			var val_min=asses_session.attributes[_i].val_min;
-			if (points.length > 0) {
+			if (points.length > 0 && asses_session.attributes[i].checked) {
 			if (mode=="normal") {
 				points.push([val_max, 1]);
 				points.push([val_min, 0]);
@@ -74,31 +80,109 @@ function list()
 					}), function (data2) {
 
 						$('#charts_' + _i).append('<div>' + data2 + '</div>');
-						var functions="";
 						for (var key in data) {
-							$('#charts').show();
-							if (key == 'exp')
-								functions+='<label style="color:#401539"><input type="checkbox"> Exponential (' + Math.round(data[key]['r2'] * 100) / 100 + ')</label><br/>';
-							else if (key == 'log')
-								functions+='<label style="color:#D9585A"><input type="checkbox"> Logarithmic (' + Math.round(data[key]['r2'] * 100) / 100 + ')</label><br/>';
-							else if (key == 'pow')
-								functions+='<label style="color:#6DA63C"><input type="checkbox"> Power (' + Math.round(data[key]['r2'] * 100) / 100 + ')</label><br/>';
-							else if (key == 'quad')
-								functions+='<label style="color:#458C8C"><input type="checkbox"> Quadratic (' + Math.round(data[key]['r2'] * 100) / 100 + ')</label><br/>';
-							else if (key == 'lin')
-								functions+='<label style="color:#D9B504"><input type="checkbox"> Linear (' + Math.round(data[key]['r2'] * 100) / 100 + ')</label><br/>';
+
+							var functions = "";
+							if (key == 'exp') {
+								functions= '<label style="color:#401539"><input type="checkbox" id="checkbox_'+_i+'_exp"> Exponential (' + Math.round(data[key]['r2'] * 100) / 100 + ')</label><br/>';
+								$('#functions_' + _i).append(functions);
+								data[key]['type']='exp';
+								(function(_data){$('#checkbox_'+_i+'_exp').click(function(){update_data_export_option(_i, "exp", _data)});})(data[key]);
+
+							}
+							else if (key == 'log'){
+								functions='<label style="color:#D9585A"><input type="checkbox" id="checkbox_'+_i+'_log"> Logarithmic (' + Math.round(data[key]['r2'] * 100) / 100 + ')</label><br/>';
+								$('#functions_' + _i).append(functions);
+								data[key]['type']='log';
+								(function(_data){$('#checkbox_'+_i+'_log').click(function(){update_data_export_option(_i, "log", _data)});})(data[key]);
+							}
+							else if (key == 'pow'){
+								functions='<label style="color:#6DA63C"><input type="checkbox" id="checkbox_'+_i+'_pow"> Power (' + Math.round(data[key]['r2'] * 100) / 100 + ')</label><br/>';
+								$('#functions_' + _i).append(functions);
+								data[key]['type']='pow';
+								(function(_data){$('#checkbox_'+_i+'_pow').click(function(){update_data_export_option(_i, "pow", _data)});})(data[key]);
+							}
+							else if (key == 'quad'){
+								functions='<label style="color:#458C8C"><input type="checkbox" id="checkbox_'+_i+'_quad"> Quadratic (' + Math.round(data[key]['r2'] * 100) / 100 + ')</label><br/>';
+								$('#functions_' + _i).append(functions);
+								data[key]['type']='quad';
+								(function(_data){$('#checkbox_'+_i+'_quad').click(function(){update_data_export_option(_i, "quad", _data)});})(data[key]);
+							}
+							else if (key == 'lin'){
+								functions='<label style="color:#D9B504"><input type="checkbox" id="checkbox_'+_i+'_lin"> Linear (' + Math.round(data[key]['r2'] * 100) / 100 + ')</label><br/>';
+								$('#functions_' + _i).append(functions);
+								data[key]['type']='lin';
+								(function(_data){$('#checkbox_'+_i+'_lin').click(function(){update_data_export_option(_i, "lin", _data)});})(data[key]);
+							}
+
 						}
-						$('#functions_' + _i).append(functions);
+
 					})
 				});
 			}
 			else
 			{
-				$('#charts_' + _i).append("Please answer questionnaire first");
+				if(points.length == 0 && asses_session.attributes[i].checked)
+				$('#charts_' + _i).append("Please answer questionnaire");
+				else if(!asses_session.attributes[i].checked)
+				$('#charts_' + _i).append("The attribute is inactive");
+
+				$('#functions_' + _i).append('<input type="checkbox" id="checkbox_'+_i+'_0"> Add just the attribute');
+				$('#checkbox_'+_i+'_0').click(function(){update_data_export_option(_i, "0", null)});
 			}
 		})(i);
 
 
 
 	}
+}
+
+function update_data_export_option(i, type, data)
+{
+	var checked=$('#checkbox_'+i+'_'+type).is(":checked");
+
+	var myAttributI=null;
+	//we verify if we are in data_export_option
+	for(var l=0; l<data_export_option.length; l++)
+	{
+		if(data_export_option[l].indice==i)
+		{
+			myAttributI=l;
+		}
+	}
+
+	if(myAttributI!=null) //we have an attribut
+	{
+		if(checked)//we are going to add this data in utilities
+		data_export_option[myAttributI].utilities.push(data);
+		else //we are goine to remove this type of utilities
+		{
+			for(var k=0; k<data_export_option[myAttributI].utilities.length; k++)
+			{
+				if(data_export_option[myAttributI].utilities[k].type==type)
+				{
+					//we remove it because we are unchecked
+					data_export_option[myAttributI].utilities.splice(k);
+				}
+			}
+			//if we have no utilites we also delete the atrtibute
+			if(data_export_option[myAttributI].utilities.length==0)
+				data_export_option.splice(myAttributI);
+		}
+	}
+	else //we are going to add the good one.
+	{
+		var asses_session = JSON.parse(localStorage.getItem("asses_session"));
+		myAttribut=asses_session.attributes[i];
+		myAttribut.indice=i;
+		if (data!=null)
+		myAttribut.utilities=[data];
+		else
+		myAttribut.utilities=[];
+		data_export_option.push(myAttribut);
+	}
+
+	alert(JSON.stringify(data_export_option));
+
+
 }

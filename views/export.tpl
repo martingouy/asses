@@ -7,9 +7,10 @@
 <button type="button" class="btn btn-default"><a id="export_xls">Click to export Excel</a></button><br/>
 
 <div class="page-header">
-    <h3>choose exportation</h3>
+    <h3>choose your exportation in detail</h3>
 </div>
 
+<h4>Choose specific utility function for attribute</h4>
 <div id="attribute" >
     <table class="table">
     <thead>
@@ -25,6 +26,13 @@
     </table>
 </div>
 
+<br/>
+<h4>Choose K</h4>
+
+<label><input type="checkbox"> Multi-Attribut multilinearite</label><br/>
+<label><input type="checkbox"> Multi-Attribut multiplicatif</label><br/>
+<br/>
+<button type="button" class="btn btn-default"><a id="export_xls_option">Click to export in Excel</a></button><br/>
 
 
 %include('header_end.tpl')
