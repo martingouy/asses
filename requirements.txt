@@ -4,3 +4,4 @@ bottle
 matplotlib
 XlsxWriter
 openpyxl
+sympy

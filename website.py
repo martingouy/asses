@@ -1,5 +1,6 @@
 from bottle import run, template, static_file, view, Bottle, request
 from sys import argv
+import sys
 import random
 import json
 import fit
@@ -97,17 +98,26 @@ def export(path):
 @app.route('/upload', method='POST')
 @view('import_success')
 def do_upload():
-    upload = request.files.get('upload')
-    name, ext = os.path.splitext(upload.filename)
-    if ext not in ('.xlsx'):
-        return "File extension not allowed."
+    try:
     
-    #we add a random name to the file:
-    r = random.randint(1,1000)
-    file_path = str(r)+"{file}".format(path="", file=upload.filename)
-    upload.save(file_path)
-    import_xlsx.importation(file_path)
-    return { 'get_url':  app.get_url}
+        upload = request.files.get('upload')
+        name, ext = os.path.splitext(upload.filename)
+        if ext not in ('.xlsx'):
+            return { 'get_url':  app.get_url, 'success':'false', 'data':"File extension not allowed. You must import xlsx only"}
+        
+        #we add a random name to the file:
+        r = random.randint(1,1000)
+        file_path = str(r)+"{file}".format(path="", file=upload.filename)
+        upload.save(file_path)
+        val=import_xlsx.importation(file_path)
+        if val['success']==True:
+            print("import ok")
+            return { 'get_url':  app.get_url, 'success':'true', 'data':json.dumps(val['data'])}
+        else:
+            return { 'get_url':  app.get_url, 'success':'false', 'data':val['data']}
+    except:
+        return { 'get_url':  app.get_url, 'success':'false', 'data':sys.exc_info()[0]}
+
 
 
 #all static files for the website

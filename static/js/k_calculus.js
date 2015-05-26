@@ -386,6 +386,7 @@ function k_multilinear_answer(i)
 				$('.lottery').click(function() {
 					$.post('ajax', '{"type":"question","method": "PE", "proba": '+ String(probability) + ', "min_interval": '+ min_interval+ ', "max_interval": '+ max_interval+' ,"choice": "1" , "mode": "'+String(mode)+'"}', function(data) {
 						treat_answer(data);
+						alert(data)
 					});
 				});
 			})()
@@ -393,7 +394,8 @@ function k_multilinear_answer(i)
 }
 
 function k_answer(i, type)
-{ 
+{
+
 	 	var asses_session = JSON.parse(localStorage.getItem("asses_session"));
 		
 			// we store the name of the attribute
