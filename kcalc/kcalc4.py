@@ -11,7 +11,7 @@ def calculk4(k1,k2,k3,k4):
     if solution[0]==x0 :
         print("please change your ki values")
     else:
-        return (solution[0])
+        return (round(solution[0], 4))
 
 
 def utilite(k1,k2,k3,k4,k):

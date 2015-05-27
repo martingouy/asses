@@ -39,7 +39,7 @@ def calculUtilityMultilinear(myK, myU):
 def calculk2(k1,k2):
     k = symbols('k')
     solution=solve(k1*k2*k+k1+k2-1,k)
-    return {'success':True, 'k':float(solution[0])}
+    return {'success':True, 'k':round(float(solution[0]),4)}
 
 
 ##def utilite2(k1,k2,k):
@@ -87,7 +87,7 @@ def calculk4(k1,k2,k3,k4):
     if solution[0]==x0:
         return {'success':False, 'k':"Unable to calculate K, please change your ki values"}
     else: 
-        return {'success':True, 'k':float(solution[0])}
+        return {'success':True, 'k':float(round(solution[0], 4))}
 
 
 ##def utilite4(k1,k2,k3,k4,k):
@@ -126,7 +126,7 @@ def calculk5(k1,k2,k3,k4,k5):
     if solution[0]==x0:
         return {'success':False, 'k':"Unable to calculate K, please change your ki values"}
     else: 
-        return {'success':True, 'k':float(solution[0])}
+        return {'success':True, 'k':float(round(solution[0]),4)}
 
 
 ##def utilite5(k1,k2,k3,k4,k5,k):
@@ -184,8 +184,8 @@ def calculk6(k1,k2,k3,k4,k5,k6):
     f= k1+k2+k3+k4+k5+k6-1
     p_k=lambda k: a*k**5+b*k**4+c*k**3+d*k**2+e*k+f
     
-    solutions=fsolve(p_k, 0, xtol=1.49012e-08, maxfev=100000000)
-    return {'success':True, 'k':float(solutions[0])}
+    solutions=fsolve(p_k, 0, xtol=1.49012e-08, maxfev=1000)
+    return {'success':True, 'k':float(round(solutions[0]),4)}
 
 
 
