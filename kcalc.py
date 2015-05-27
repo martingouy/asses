@@ -11,7 +11,7 @@ def calculUtilityMultiplicative(myK, myU):
     elif len(myK)-1==3:
         print("ok 3")
         print(json.dumps(myK))
-        return utilite3(myK[0]['value'],myK[1]['value'],myK[2]['value'],myK[3]['value'],convert_to_text(myU[0],"x1"),convert_to_text(myU[1], "x2"),convert_to_text(myU[2], "x3"))
+        return {'U':utilite3(myK[0]['value'],myK[1]['value'],myK[2]['value'],myK[3]['value'],convert_to_text(myU[0],"x1"),convert_to_text(myU[1], "x2"),convert_to_text(myU[2], "x3")), 'k':myK, 'utilities':myU}
     elif len(myK)-1==4:
         return 4
     elif len(myK)-1==5:
@@ -61,7 +61,13 @@ def calculk3(k1,k2,k3):
         return (k)
 
 def utilite3(k1,k2,k3,k,u1,u2,u3):
-    U=str(k1)+"*"+u1 + str(k2)+"*"+u2 + str(k3)+"*"+u3 + str(k*k1*k3)+"*"+u1+"*"+u3 + str(k*k1*k2)+"*"+u1+"*"+u2 + str(k*k2*k3)+"*"+u2+"*"+u3 + str(k**2*k1*k2*k3)+"*"+u1+"*"+u2+"*"+u3
+    U =str(k1)+"*"+u1+"+"
+    U+=str(k2)+"*"+u2+"+"
+    U+=str(k3)+"*"+u3+"+"
+    U+=str(k*k1*k3)+"*"+u1+"*"+u3+"+"
+    U+=str(k*k1*k2)+"*"+u1+"*"+u2+"+"
+    U+=str(k*k2*k3)+"*"+u2+"*"+u3+"+"
+    U+=str(k**2*k1*k2*k3)+"*"+u1+"*"+u2+"*"+u3
     return (U)
     
 

@@ -961,10 +961,13 @@ $(function(){
 			var mesK=asses_session.k_calculus[get_Active_Method()].k.slice();
 			mesK.push({value:asses_session.k_calculus[get_Active_Method()].GK});
 			var requete={"type": "utility_calculus_multiplicative", "k":mesK, "utility":k_utility_multiliplicative};
-			alert(JSON.stringify(requete));
+
 			$.post('ajax', JSON.stringify(requete), function (data) {
+
 				$("#utility_function").html('<div ><pre>'+data.U+'</pre></div>')
 				//alert(JSON.stringify(data));
+				asses_session.k_calculus[get_Active_Method()].GU=data;
+				localStorage.setItem("asses_session", JSON.stringify(asses_session));
 			});
 
 		}

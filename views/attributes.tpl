@@ -77,7 +77,7 @@
 
         
         if (!asses_session){
-            asses_session = {"attributes": [], "k_calculus": [{"method":"multiplicative", "active":"false", "k":[], "GK":null},{"method":"multilinear","active":"false", "k":[], "GK":null}]};
+            asses_session = {"attributes": [], "k_calculus": [{"method":"multiplicative", "active":"false", "k":[], "GK":null, "GU":null},{"method":"multilinear","active":"false", "k":[], "GK":null, "GU":null}]};
             localStorage.setItem("asses_session", JSON.stringify(asses_session));
         }
 

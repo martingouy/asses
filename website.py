@@ -73,9 +73,9 @@ def ajax():
             return {'k':kcalc.calculk6(query['k']['k1'],query['k']['k2'],query['k']['k3'],query['k']['k4'], query['k']['k5'], query['k']['k6'])}
 
     elif query['type'] == "utility_calculus_multiplicative":
-        return {'U':kcalc.calculUtilityMultiplicative(query['k'],query['utility'])}
+        return kcalc.calculUtilityMultiplicative(query['k'],query['utility'])
     elif query['type'] == "utility_calculus_multilinear":
-        return {'U':kcalc.calculUtilityMultilinear(query['k'],query['utility'])}
+        return kcalc.calculUtilityMultilinear(query['k'],query['utility'])
     
     elif query['type'] == "svg":
         dictionary = query['data']

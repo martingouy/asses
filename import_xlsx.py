@@ -10,7 +10,7 @@ def importation(file):
         wb = load_workbook(filename=file, read_only=True)
         
     
-        mySession={'attributes':[], 'k_calculus':[{'method':'multiplicative', 'active':True, 'k':[], 'GK':None},{'method':'multilinear','active':False, 'k':[], 'GK':None}]}
+        mySession={'attributes':[], 'k_calculus':[{'method':'multiplicative', 'active':True, 'k':[], 'GK':None, 'GU':None},{'method':'multilinear','active':False, 'k':[], 'GK':None, 'GU':None}]}
         
         
         for sheet in wb:
