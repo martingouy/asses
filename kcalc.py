@@ -75,10 +75,14 @@ def utilite3(k1,k2,k3,k,u1,u2,u3):
 
 # ---- 4 -----
 def calculk4(k1,k2,k3,k4):
-    k = symbols('k')
-    solution=solve(k1*k2*k3*k4*k**3+(k1*k2*k3+k1*k2*k4+k2*k3*k4+k1*k3*k4)*k**2+(k1*k2+k2*k3+k1*k3+k1*k4+k2*k4+k3*k4)*k+k1+k2+k3+k4-1,k)
-    print(solution)
-    return float(solution[0])
+    x0=0
+    p_k=lambda k: k1*k2*k3*k4*k**3+(k1*k2*k3+k1*k2*k4+k2*k3*k4+k1*k3*k4)*k**2+(k1*k2+k2*k3+k1*k3+k1*k4+k2*k4+k3*k4)*k+k1+k2+k3+k4-1
+    solution=fsolve(p_k, x0, xtol=1.49012e-12, maxfev=1000)
+
+    if solution[0]==x0 :
+        print("please change your ki values")
+    else:
+        return float(solution[0])
 
 
 ##def utilite4(k1,k2,k3,k4,k):
@@ -110,10 +114,14 @@ def utilite4(k1,k2,k3,k4,k,u1,u2,u3, u4):
 
 # ---- 5 -----
 def calculk5(k1,k2,k3,k4,k5):
-    k = symbols('k')
-    solution=solve(k1*k2*k3*k4*k5*k**4+(k1*k2*k3*k5 + k1*k2*k4*k5 + k2*k3*k4*k5 + k1*k3*k4*k5 + k1*k2*k3*k4)*k**3+(k1*k2*k3 + k1*k2*k4 + k1*k2*k5 + k1*k3*k4 +k1*k3*k5 + k1*k4*k5 + k2*k3*k4 + k2*k3*k5 + k2*k4*k5 + k3*k4*k5)*k**2+ (k2*k3 + k1*k3 + k1*k4 + k2*k4 + k3*k4 + k1*k2 + k1*k5 + k2*k5 + k3*k5 + k4*k5)*k + k1+k2+k3+k4+k5-1, k)
-    
-    return float(solution[0])
+    x0=0
+    p_k=lambda k:k1*k2*k3*k4*k5*k**4+(k1*k2*k3*k5 + k1*k2*k4*k5 + k2*k3*k4*k5 + k1*k3*k4*k5 + k1*k2*k3*k4)*k**3+(k1*k2*k3 + k1*k2*k4 + k1*k2*k5 + k1*k3*k4 +k1*k3*k5 + k1*k4*k5 + k2*k3*k4 + k2*k3*k5 + k2*k4*k5 + k3*k4*k5)*k**2+ (k2*k3 + k1*k3 + k1*k4 + k2*k4 + k3*k4 + k1*k2 + k1*k5 + k2*k5 + k3*k5 + k4*k5)*k + k1+k2+k3+k4+k5-1
+    solution=fsolve(p_k, x0, xtol=1.49012e-12, maxfev=1000)
+      
+    if solution[0]==x0 :
+        print("please change your ki values")
+    else:
+        return float(solution[0])
 
 
 ##def utilite5(k1,k2,k3,k4,k5,k):
@@ -163,7 +171,6 @@ def utilite5(k1,k2,k3,k4, k5,k,u1,u2,u3, u4, u5):
 
 # ---- 6 -----
 def calculk6(k1,k2,k3,k4,k5,k6):
-    k = symbols('k')
     a=k1*k2*k3*k4*k5*k6
     b=(k1*k2*k3*k5*k6 + k1*k2*k3*k4*k5 + k1*k2*k4*k5*k6 + k2*k3*k4*k5*k6 + k1*k3*k4*k5*k6 + k1*k2*k3*k4*k6)
     c=(k1*k2*k3*k5 + k1*k2*k4*k5 + k2*k3*k4*k5 + k1*k3*k4*k5 + k1*k2*k3*k4 + k1*k2*k3*k6 + k1*k2*k4*k6 + k1*k2*k5*k6 + k1*k3*k4*k6 + k1*k3*k5*k6 + k1*k4*k5*k6 + k2*k3*k4*k6 + k2*k3*k5*k6  + k2*k4*k5*k6 + k3*k4*k5*k6)
