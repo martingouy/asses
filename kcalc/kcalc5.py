@@ -4,7 +4,7 @@ from sympy import *
 def calculk5(k1,k2,k3,k4,k5):
     k = symbols('k')
     solution=solve(k1*k2*k3*k4*k5*k**4+(k1*k2*k3*k5 + k1*k2*k4*k5 + k2*k3*k4*k5 + k1*k3*k4*k5 + k1*k2*k3*k4)*k**3+(k1*k2*k3 + k1*k2*k4 + k1*k2*k5 + k1*k3*k4 +k1*k3*k5 + k1*k4*k5 + k2*k3*k4 + k2*k3*k5 + k2*k4*k5 + k3*k4*k5)*k**2+ (k2*k3 + k1*k3 + k1*k4 + k2*k4 + k3*k4 + k1*k2 + k1*k5 + k2*k5 + k3*k5 + k4*k5)*k + k1+k2+k3+k4+k5-1, k)
-       
+      
     return (solution)
 
     
