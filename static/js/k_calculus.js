@@ -55,6 +55,16 @@ function update_method_button(type)
 $(function() {
 
 	$("#update").click(function () {
+		//we delete the general utility function
+		var asses_session = JSON.parse(localStorage.getItem("asses_session"));
+		asses_session.k_calculus[0].GU=null;
+		asses_session.k_calculus[1].GU=null;
+		//we update the assess_session storage
+		localStorage.setItem("asses_session", JSON.stringify(asses_session));
+
+		//we erase the table
+		$('#table_attributes').html("");
+
 		create_multiplicative_k();
 		create_multilinear_k();
 		//we show it in

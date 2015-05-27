@@ -48,7 +48,7 @@ def calculk2(k1,k2):
 ##    U=k*k1*k2*u1*u2+k1*u1+k2*u2
 ##    return (U)
 
-def utilite3(k1,k2,k,u1,u2):
+def utilite2(k1,k2,k,u1,u2):
     U=str(k1)+"*"+u1 + str(k2)+"*"+u2 + str(k*k1*k2)+"*"+u1+"*"+u2
     return (U)
 
@@ -87,7 +87,7 @@ def calculk4(k1,k2,k3,k4):
     if solution[0]==x0:
         return {'success':False, 'k':"Unable to calculate K, please change your ki values"}
     else: 
-        return {'success':True, 'k':float(round(solution[0], 4))}
+        return {'success':True, 'k':float(solution[0])}
 
 
 ##def utilite4(k1,k2,k3,k4,k):
@@ -126,7 +126,7 @@ def calculk5(k1,k2,k3,k4,k5):
     if solution[0]==x0:
         return {'success':False, 'k':"Unable to calculate K, please change your ki values"}
     else: 
-        return {'success':True, 'k':float(round(solution[0]),4)}
+        return {'success':True, 'k':float(solution[0])}
 
 
 ##def utilite5(k1,k2,k3,k4,k5,k):
@@ -185,7 +185,7 @@ def calculk6(k1,k2,k3,k4,k5,k6):
     p_k=lambda k: a*k**5+b*k**4+c*k**3+d*k**2+e*k+f
     
     solutions=fsolve(p_k, 0, xtol=1.49012e-08, maxfev=1000)
-    return {'success':True, 'k':float(round(solutions[0]),4)}
+    return {'success':True, 'k':float(solutions[0])}
 
 
 
@@ -199,7 +199,7 @@ def calculk6(k1,k2,k3,k4,k5,k6):
 ##   	U= k**5*k1*k2*k3*k4*k5*k6 + k**4(k1*k2*k3*k5*k6*u1*u2*u3*u5*u6 + k1*k2*k3*k4*k5*u1*u2*u3*u4*u5 + k1*k2*k4*k5*k6*u1*u2*u4*u5*u6 + k2*k3*k4*k5*k6*u2*u3*u4*u5*u6 + k1*k3*k4*k5*k6*u1*u3*u4*u5*u6 + k1*k2*k3*k4*k6*u1*u2*u3*u4*u6) +  k^3(k1*k2*k3*k5*u1*u2*u3*u5 + k1*k2*k4*k5*u1*u2*u4*u5 + k2*k3*k4*k5*u2*u3*u4*u5 + k1*k3*k4*k5*u1*u3*u4*u5 + k1*k2*k3*k4*u1*u2*u3*u4 + k1*k2*k3*k6*u1*u2*u3*u6 + k1*k2*k4*k6*u1*u2*u4*u6 + k1*k2*k5*k6*u1*u2*u5*u6 + k1*k3*k4*k6*u1*u3*u4*u6 + k1*k3*k5*k6*u1*u3*u5*u6 + k1*k4*k5*k6*u1*u4*u5*u6 + k2*k3*k4*k6*u2*u3*u4*u6 + k2*k3*k5*k6*u2*u3*u5*u6  + k2*k4*k5*k6*u2*u4*u5*u6 + k3*k4*k5*k6*u3*u4*u5*u6) + k**(k1*k2*k3*u1*u2*u3 + k1*k2*k4*u1*u2*u4 + k1*k2*k5*u1*u2*u5 + k1*k3*k4*u1*u3*u4 +k1*k3*k5*u1*u3*u5 + k1*k4*k5*u1*u4*u5 + k2*k3*k4*u2*u3*u4 + k2*k3*k5*u2*u3*u5 + k2*k4*k5*u2*u4*u5 + k3*k4*k5*u3*u4*u5 + k3*k4*k6*u3*u4*u6 + k1*k2*k6*u1*u2*u6 + k1*k3*k6*u1*u3*u6 + k1*k4*k6*u1*u4*u6 + k1*k5*k6*u1*u5*u6 + k3*k4*k6*u3*u4*u6 + k3*k5*k6*u3*u5*u6 + k2*k4*k6*u2*u4*u6 + k2*k5*k6*u2*u5*u6 + k4*k5*k6*u4*u5*u6) + k*(k2*k3*u2*u3 + k1*k3*u1*u3 + k1*k4*u1*u4 + k1*k6*u1*u6 + k1*k5*u1*u5 + k1*k2*u1*u2 + k2*k4*u2*u4 + k3*k4*u3*u4 + k2*k5*u2*u5 + k3*k5*u3*u5 + k4*k5*u4*u5 + k2*k6*u2*u6 + k3*k6*u3*u6 + k4*k6*u4*u6 + k5*k6*u5*u6) + k1*u1 +k2*u2 +k3*u3 +k4*u4 +k5*u5 +k6*u6
 ##
 ##	return (U)
-def utilite5(k1,k2,k3,k4, k5,k,u1,u2,u3, u4, u5):
+def utilite6(k1,k2,k3,k4, k5, k6,k,u1,u2,u3, u4, u5, u6):
 
     U =str(k1)+"*"+u1+"+"
     U+=str(k2)+"*"+u2+"+"
@@ -264,6 +264,7 @@ def utilite5(k1,k2,k3,k4, k5,k,u1,u2,u3, u4, u5):
     U+=str(k**4*k1*k3*k4*k5*k6)+"*"+u1+"*"+u3+"*"+u4+"*"+u5+"+"+u6+"+"
     U+=str(k**4*k2*k3*k4*k5*k6)+"*"+u2+"*"+u3+"*"+u4+"*"+u5+"+"+u6+"+"
     U+=str(k**5*k1*k2*k3*k4*k5*k6)+"*"+u1+"*"+u2+"*"+u3+"*"+u4+"*"+u5+"+"+u6
+    return U
 
 
 def reduce(nombre):
