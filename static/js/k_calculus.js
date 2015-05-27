@@ -85,8 +85,8 @@ $(function() {
 		update_method_button("multiplicative");
 		update_k_list(0);
 		show_list();
-		ki_calculated();
 		$('#table_attributes').html("");
+		ki_calculated();
 	});
 });
 
@@ -117,8 +117,9 @@ $(function() {
 		update_method_button("multilinear");
 		update_k_list(1);
 		show_list();
-		ki_calculated();
 		$('#table_attributes').html("");
+		ki_calculated();
+
 	});
 });
 
@@ -264,6 +265,10 @@ function update_k_list(number)
 							}
 
 						}
+
+						//we also erase datas of global utility function
+						asses_session.k_calculus[get_Active_Method()].GU=null;
+						localStorage.setItem("asses_session", JSON.stringify(asses_session));
 
 						// backup local
 						localStorage.setItem("asses_session", JSON.stringify(asses_session));
@@ -701,6 +706,7 @@ function ki_calculated() {
 			}
 		}
 	}
+	GK_calculated();
 
 }
 
@@ -784,6 +790,7 @@ var k_utility_multiliplicative=[];
 $(function(){
 	$("#button_generate_list").click(function() {
 			list();
+			$("#button_generate_list").hide();
 	});
 });
 
@@ -934,9 +941,9 @@ function update_utility(i, type, data)
 
 
 $(function(){
-	var asses_session = JSON.parse(localStorage.getItem("asses_session"));
-	$("#button_calculate_utility").click(function() {
 
+	$("#button_calculate_utility").click(function() {
+		var asses_session = JSON.parse(localStorage.getItem("asses_session"));
 		if(get_Active_Method()==0)//multiplicative
 		{
 			if(k_utility_multiliplicative.length==0)
@@ -969,6 +976,9 @@ $(function(){
 				//alert(JSON.stringify(data));
 				asses_session.k_calculus[get_Active_Method()].GU=data;
 				localStorage.setItem("asses_session", JSON.stringify(asses_session));
+				$('html, body').animate({
+					scrollTop: $("#utility_function").offset().top
+				}, 1000);
 			});
 
 		}
@@ -994,8 +1004,75 @@ $(function(){
 				//alert(JSON.stringify(data));
 				asses_session.k_calculus[get_Active_Method()].GU=data;
 				localStorage.setItem("asses_session", JSON.stringify(asses_session));
+				$('html, body').animate({
+					scrollTop: $("#utility_function").offset().top
+				}, 1000);
 			});
 		}
 
 	});
 });
+
+
+
+
+
+
+
+
+
+function GK_calculated() {
+	var asses_session = JSON.parse(localStorage.getItem("asses_session"));
+	if (asses_session.k_calculus[get_Active_Method()].GU != null) {
+		var listk = asses_session.k_calculus[get_Active_Method()].k;
+
+
+
+		if(get_Active_Method()==1)
+			k_utility_multilinear=asses_session.k_calculus[1].GU.utilities;
+		else if(get_Active_Method()==0)
+			k_utility_multiliplicative=asses_session.k_calculus[0].GU.utilities;
+
+		$('#table_attributes').html("");
+
+
+		//list of K with corresponding attribute:
+
+		var maList=[];
+		var type=get_Active_Method();
+		if(type==0)
+		{
+			maList=listk;
+		}
+		else {
+			for (var i = 0; i < listk.length; i++) {
+				if (listk[i].ID_attribute.length == 1) //if we have a k with jsute 1 indice
+				{
+					maList.push(listk[i]);
+				}
+			}
+		}
+
+
+		for (var i=0; i < maList.length; i++) {
+
+			var monAttribut = asses_session.attributes[maList[i].ID_attribute];
+			var text = '<tr><td>K' + maList[i].ID + '</td>';
+			text += '<td>' + monAttribut.name + '</td>';
+			text += '<td id="charts_' + i + '"></td>';
+			text += '<td id="functions_' + i + '">'+asses_session.k_calculus[get_Active_Method()].GU.utilities[i].type+' (r2='+asses_session.k_calculus[get_Active_Method()].GU.utilities[i].r2+')</td>';
+			text += '</tr>';
+
+			$('#table_attributes').append(text);
+
+		}
+
+
+				//we show the value of the global utility function
+		$("#utility_function").html('<div ><pre>' + asses_session.k_calculus[get_Active_Method()].GU.U + '</pre></div>')
+	}
+	else
+	{
+		$("#utility_function").html('');
+	}
+}

@@ -72,7 +72,7 @@
     <th>K</th>
     <th>Attribute</th>
     <th>Graph</th>
-    <th>Function</th>
+    <th>Utility function</th>
     </tr>
     </thead>
     <tbody id="table_attributes">
@@ -81,9 +81,9 @@
 </div>
 
 
-<div style="text-align:center;" id="button_generate_list">
+<div style="text-align:center;" >
 
-	<button type="button" class="btn btn-default btn-lg" id="button_calculate_k" style="text-align:center">Generate list</button>
+	<button type="button" class="btn btn-default btn-lg" id="button_generate_list" style="text-align:center">Generate graph</button>
 	<br/>
 </div>
 
