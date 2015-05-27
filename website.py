@@ -8,8 +8,7 @@ import codecs
 import methods
 import plot
 import kcalc
-import kcal44
-import kcalc55
+#import kcal44#import kcalc55
 import os
 import export_xlsx
 import import_xlsx
@@ -136,7 +135,7 @@ def static(path):
 #for local or heroku app
 try:
     if argv[1]=="local": #for local application, add local param: "$python website.py local"
-        run(app, host='localhost', port=8080, debug=True)
+         run(app, host='localhost', port=8080, debug=True)
     else:
         app.run(host='0.0.0.0', port=argv[1])
 except:
