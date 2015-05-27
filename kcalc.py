@@ -7,17 +7,15 @@ from scipy.optimize import fsolve
 def calculUtilityMultiplicative(myK, myU):
     print("utility Multiplicative")
     if len(myK)-1==2:
-        return 2
+        return {'U':utilite2(myK[0]['value'],myK[1]['value'],myK[2]['value'],convert_to_text(myU[0],"x1"),convert_to_text(myU[1], "x2")), 'k':myK, 'utilities':myU}
     elif len(myK)-1==3:
-        print("ok 3")
-        print(json.dumps(myK))
         return {'U':utilite3(myK[0]['value'],myK[1]['value'],myK[2]['value'],myK[3]['value'],convert_to_text(myU[0],"x1"),convert_to_text(myU[1], "x2"),convert_to_text(myU[2], "x3")), 'k':myK, 'utilities':myU}
     elif len(myK)-1==4:
-        return 4
+        return {'U':utilite4(myK[0]['value'],myK[1]['value'],myK[2]['value'],myK[3]['value'],myK[4]['value'],convert_to_text(myU[0],"x1"),convert_to_text(myU[1], "x2"),convert_to_text(myU[2], "x3"),convert_to_text(myU[3], "x4")), 'k':myK, 'utilities':myU}
     elif len(myK)-1==5:
-        return utilite3(k1,k2,k3,k,convert_to_text(u1),convert_to_text(u2),convert_to_text(u3))
+        return {'U':utilite5(myK[0]['value'],myK[1]['value'],myK[2]['value'],myK[3]['value'],myK[4]['value'],myK[5]['value'],convert_to_text(myU[0],"x1"),convert_to_text(myU[1], "x2"),convert_to_text(myU[2], "x3"),convert_to_text(myU[3], "x4"),convert_to_text(myU[4], "x5")), 'k':myK, 'utilities':myU}
     elif len(myK)-1==6:
-        return utilite3(k1,k2,k3,k,convert_to_text(u1),convert_to_text(u2),convert_to_text(u3))
+        return {'U':utilite6(myK[0]['value'],myK[1]['value'],myK[2]['value'],myK[3]['value'],myK[4]['value'],myK[5]['value'],myK[6]['value'],convert_to_text(myU[0],"x1"),convert_to_text(myU[1], "x2"),convert_to_text(myU[2], "x3"),convert_to_text(myU[3], "x4"),convert_to_text(myU[4], "x5"),convert_to_text(myU[5], "x6")), 'k':myK, 'utilities':myU}
     
     print(len(myK))
     print(len(myU))
