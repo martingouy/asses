@@ -220,48 +220,53 @@ def generate_fichier(data):
             ligne=ligne+1
     
 
-        feuille.write(ligne, 0, "K", formatNom)
-        feuille.write(ligne, 1, mesK['GK'])
+        if mesK['method']=="multiplicative":
+            feuille.write(ligne, 0, "K", formatNom)
+            feuille.write(ligne, 1, mesK['GK'])
+        else:
+            feuille.write(ligne, 0, " ", formatNom)
+            feuille.write(ligne, 1, mesK['GK'])
 
         ligne=ligne+3
-        if mesK['method']=="multiplicative":
-            if mesK['GU']!=None:
-                feuille.write(ligne,0, 'DPL', formatNom);
-                feuille.write(ligne,1, mesK['GU']['U']);
+        if mesK['GU']!=None:
+            feuille.write(ligne,0, 'DPL', formatNom);
+            feuille.write(ligne,1, mesK['GU']['U']);
 
-                ligne=0
+            ligne=0
+            
+            utilities=mesK['GU']['utilities']
+            numberUtilities=len(utilities)
+            k=mesK['GU']['k']
+
+            numero=1
+            for myUtility in utilities:
+                feuille.write(ligne,4+numero, "x"+str(numero), formatTitre)
+                feuille.write(ligne+1,4+numero, 1)
                 
-                utilities=mesK['GU']['utilities']
-                numberUtilities=len(utilities)
-                k=mesK['GU']['k']
-
-                numero=1
-                for myUtility in utilities:
-                    feuille.write(ligne,4+numero, "x"+str(numero), formatTitre)
-                    feuille.write(ligne+1,4+numero, 1)
-                    
-                    feuille.write(ligne,4+numero+numberUtilities, "u"+str(numero)+"(x"+str(numero)+")", formatTitre)
-                    if myUtility['type']=='exp':
-                        feuille.write_formula(ligne+1, 4+numero+numberUtilities, funcexp_excel(xl_rowcol_to_cell(ligne+1,4+numero), str(myUtility['a']), str(myUtility['b']), str(myUtility['c'])))
-                    elif myUtility['type']=='quad':
-                        feuille.write_formula(ligne+1, 4+numero+numberUtilities, funcquad_excel(xl_rowcol_to_cell(ligne+1,4+numero), str(myUtility['a']), str(myUtility['b']), str(myUtility['c'])))
-                    elif myUtility['type']=='pow':
-                        feuille.write_formula(ligne+1, 4+numero+numberUtilities, funcpuis_excel(xl_rowcol_to_cell(ligne+1,4+numero), str(myUtility['a']), str(myUtility['b']), str(myUtility['c'])))
-                    elif myUtility['type']=='log':
-                        feuille.write_formula(ligne+1, 4+numero+numberUtilities, funclog_excel(xl_rowcol_to_cell(ligne+1,4+numero), str(myUtility['a']), str(myUtility['b']), str(myUtility['c']), str(myUtility['d'])))
-                    elif myUtility['type']=='lin':
-                        feuille.write_formula(ligne+1, 4+numero+numberUtilities, funclin_excel(xl_rowcol_to_cell(ligne+1,4+numero), str(myUtility['a']), str(myUtility['b'])))
-                    
-                    numero=numero+1
-
-
-                feuille.write(ligne,4+numero+numberUtilities, "U", formatTitre)
+                feuille.write(ligne,4+numero+numberUtilities, "u"+str(numero)+"(x"+str(numero)+")", formatTitre)
+                if myUtility['type']=='exp':
+                    feuille.write_formula(ligne+1, 4+numero+numberUtilities, funcexp_excel(xl_rowcol_to_cell(ligne+1,4+numero), str(myUtility['a']), str(myUtility['b']), str(myUtility['c'])))
+                elif myUtility['type']=='quad':
+                    feuille.write_formula(ligne+1, 4+numero+numberUtilities, funcquad_excel(xl_rowcol_to_cell(ligne+1,4+numero), str(myUtility['a']), str(myUtility['b']), str(myUtility['c'])))
+                elif myUtility['type']=='pow':
+                    feuille.write_formula(ligne+1, 4+numero+numberUtilities, funcpuis_excel(xl_rowcol_to_cell(ligne+1,4+numero), str(myUtility['a']), str(myUtility['b']), str(myUtility['c'])))
+                elif myUtility['type']=='log':
+                    feuille.write_formula(ligne+1, 4+numero+numberUtilities, funclog_excel(xl_rowcol_to_cell(ligne+1,4+numero), str(myUtility['a']), str(myUtility['b']), str(myUtility['c']), str(myUtility['d'])))
+                elif myUtility['type']=='lin':
+                    feuille.write_formula(ligne+1, 4+numero+numberUtilities, funclin_excel(xl_rowcol_to_cell(ligne+1,4+numero), str(myUtility['a']), str(myUtility['b'])))
                 
-                def K(i):
-                    return xl_rowcol_to_cell(i,1)
-                def U(i):
-                    return xl_rowcol_to_cell(ligne+1,4+i+numberUtilities)
-                
+                numero=numero+1
+
+
+            feuille.write(ligne,4+numero+numberUtilities, "U", formatTitre)
+            
+            def K(i):
+                return xl_rowcol_to_cell(i,1)
+            def U(i):
+                return xl_rowcol_to_cell(ligne+1,4+i+numberUtilities)
+            
+            
+            if mesK['method']=="multiplicative":
                 if numberUtilities==2:
                     GU=utilite2_excel(K(1), K(2), K(3), U(1), U(2))
                     feuille.write_formula(ligne+1,4+numero+numberUtilities, GU)
@@ -279,6 +284,18 @@ def generate_fichier(data):
                     GU=utilite6_excel(K(1), K(2), K(3), K(4), K(5), K(6), K(7), U(1), U(2), U(3), U(4), U(5), U(6))
                     feuille.write_formula(ligne+1,4+numero+numberUtilities, GU)
 
+            else:
+                nombre=1
+                GU=""
+                for monK in k:
+                    GU+=K(nombre)
+                    for dk in monK['ID'].split(','):
+                        GU+="*"+U(int(dk))
+                    GU+="+"
+                    nombre=nombre+1
+                    
+                GU=GU[:-1]
+                feuille.write_formula(ligne+1,4+numero+numberUtilities, GU)
 
 
     # Ecriture du classeur sur le disque
@@ -482,65 +499,82 @@ def generate_fichier_with_specification(data):
             feuille.write(ligne, 3, json.dumps(monK['ID_attribute']))
             ligne=ligne+1
 
-        feuille.write(ligne, 0, "K", formatNom)
-        feuille.write(ligne, 1, mesK['GK'])
+        if mesK['method']=="multiplicative":
+            feuille.write(ligne, 0, "K", formatNom)
+            feuille.write(ligne, 1, mesK['GK'])
+        else:
+            feuille.write(ligne, 0, " ", formatNom)
+            feuille.write(ligne, 1, mesK['GK'])
 
         ligne=ligne+3
-        if mesK['method']=="multiplicative":
-            if mesK['GU']!=None:
-                feuille.write(ligne,0, 'DPL', formatNom);
-                feuille.write(ligne,1, mesK['GU']['U']);
+        if mesK['GU']!=None:
+            feuille.write(ligne,0, 'DPL', formatNom);
+            feuille.write(ligne,1, mesK['GU']['U']);
 
-                ligne=0
+            ligne=0
+            
+            utilities=mesK['GU']['utilities']
+            numberUtilities=len(utilities)
+            k=mesK['GU']['k']
+
+            numero=1
+            for myUtility in utilities:
+                feuille.write(ligne,4+numero, "x"+str(numero), formatTitre)
+                feuille.write(ligne+1,4+numero, 1)
                 
-                utilities=mesK['GU']['utilities']
-                numberUtilities=len(utilities)
-                k=mesK['GU']['k']
-
-                numero=1
-                for myUtility in utilities:
-                    feuille.write(ligne,4+numero, "x"+str(numero), formatTitre)
-                    feuille.write(ligne+1,4+numero, 1)
-                    
-                    feuille.write(ligne,4+numero+numberUtilities, "u"+str(numero)+"(x"+str(numero)+")", formatTitre)
-                    if myUtility['type']=='exp':
-                        feuille.write_formula(ligne+1, 4+numero+numberUtilities, funcexp_excel(xl_rowcol_to_cell(ligne+1,4+numero), str(myUtility['a']), str(myUtility['b']), str(myUtility['c'])))
-                    elif myUtility['type']=='quad':
-                        feuille.write_formula(ligne+1, 4+numero+numberUtilities, funcquad_excel(xl_rowcol_to_cell(ligne+1,4+numero), str(myUtility['a']), str(myUtility['b']), str(myUtility['c'])))
-                    elif myUtility['type']=='pow':
-                        feuille.write_formula(ligne+1, 4+numero+numberUtilities, funcpuis_excel(xl_rowcol_to_cell(ligne+1,4+numero), str(myUtility['a']), str(myUtility['b']), str(myUtility['c'])))
-                    elif myUtility['type']=='log':
-                        feuille.write_formula(ligne+1, 4+numero+numberUtilities, funclog_excel(xl_rowcol_to_cell(ligne+1,4+numero), str(myUtility['a']), str(myUtility['b']), str(myUtility['c']), str(myUtility['d'])))
-                    elif myUtility['type']=='lin':
-                        feuille.write_formula(ligne+1, 4+numero+numberUtilities, funclin_excel(xl_rowcol_to_cell(ligne+1,4+numero), str(myUtility['a']), str(myUtility['b'])))
-                    
-                    numero=numero+1
-
-
-                feuille.write(ligne,4+numero+numberUtilities, "U", formatTitre)
+                feuille.write(ligne,4+numero+numberUtilities, "u"+str(numero)+"(x"+str(numero)+")", formatTitre)
+                if myUtility['type']=='exp':
+                    feuille.write_formula(ligne+1, 4+numero+numberUtilities, funcexp_excel(xl_rowcol_to_cell(ligne+1,4+numero), str(myUtility['a']), str(myUtility['b']), str(myUtility['c'])))
+                elif myUtility['type']=='quad':
+                    feuille.write_formula(ligne+1, 4+numero+numberUtilities, funcquad_excel(xl_rowcol_to_cell(ligne+1,4+numero), str(myUtility['a']), str(myUtility['b']), str(myUtility['c'])))
+                elif myUtility['type']=='pow':
+                    feuille.write_formula(ligne+1, 4+numero+numberUtilities, funcpuis_excel(xl_rowcol_to_cell(ligne+1,4+numero), str(myUtility['a']), str(myUtility['b']), str(myUtility['c'])))
+                elif myUtility['type']=='log':
+                    feuille.write_formula(ligne+1, 4+numero+numberUtilities, funclog_excel(xl_rowcol_to_cell(ligne+1,4+numero), str(myUtility['a']), str(myUtility['b']), str(myUtility['c']), str(myUtility['d'])))
+                elif myUtility['type']=='lin':
+                    feuille.write_formula(ligne+1, 4+numero+numberUtilities, funclin_excel(xl_rowcol_to_cell(ligne+1,4+numero), str(myUtility['a']), str(myUtility['b'])))
                 
-                def K(i):
-                    return xl_rowcol_to_cell(i,1)
-                def U(i):
-                    return xl_rowcol_to_cell(ligne+1,4+i+numberUtilities)
-                
+                numero=numero+1
+
+
+            feuille.write(ligne,4+numero+numberUtilities, "U", formatTitre)
+            
+            def K(i):
+                return xl_rowcol_to_cell(i,1)
+            def U(i):
+                return xl_rowcol_to_cell(ligne+1,4+i+numberUtilities)
+            
+            
+            if mesK['method']=="multiplicative":
                 if numberUtilities==2:
-                    GU=utilite3_excel(K(1), K(2), K(3), U(1), U(2))
+                    GU=utilite2_excel(K(1), K(2), K(3), U(1), U(2))
                     feuille.write_formula(ligne+1,4+numero+numberUtilities, GU)
                 if numberUtilities==3:
                     #in reality K(4) is K
                     GU=utilite3_excel(K(1), K(2), K(3), K(4), U(1), U(2), U(3))
                     feuille.write_formula(ligne+1,4+numero+numberUtilities, GU)
                 if numberUtilities==4:
-                    GU=utilite3_excel(K(1), K(2), K(3), K(4), K(5), U(1), U(2), U(3), U(4))
+                    GU=utilite4_excel(K(1), K(2), K(3), K(4), K(5), U(1), U(2), U(3), U(4))
                     feuille.write_formula(ligne+1,4+numero+numberUtilities, GU)
                 if numberUtilities==5:
-                    GU=utilite3_excel(K(1), K(2), K(3), K(4), K(5), K(6), U(1), U(2), U(3), U(4), U(5))
+                    GU=utilite5_excel(K(1), K(2), K(3), K(4), K(5), K(6), U(1), U(2), U(3), U(4), U(5))
                     feuille.write_formula(ligne+1,4+numero+numberUtilities, GU)
                 if numberUtilities==6:
-                    GU=utilite3_excel(K(1), K(2), K(3), K(4), K(5), K(6), K(7), U(1), U(2), U(3), U(4), U(5), U(6))
+                    GU=utilite6_excel(K(1), K(2), K(3), K(4), K(5), K(6), K(7), U(1), U(2), U(3), U(4), U(5), U(6))
                     feuille.write_formula(ligne+1,4+numero+numberUtilities, GU)
 
+            else:
+                nombre=1
+                GU=""
+                for monK in k:
+                    GU+=K(nombre)
+                    for dk in monK['ID'].split(','):
+                        GU+="*"+U(int(dk))
+                    GU+="+"
+                    nombre=nombre+1
+                    
+                GU=GU[:-1]
+                feuille.write_formula(ligne+1,4+numero+numberUtilities, GU)
 
 
     # Ecriture du classeur sur le disque

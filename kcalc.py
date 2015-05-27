@@ -16,24 +16,21 @@ def calculUtilityMultiplicative(myK, myU):
         return {'U':utilite5(myK[0]['value'],myK[1]['value'],myK[2]['value'],myK[3]['value'],myK[4]['value'],myK[5]['value'],convert_to_text(myU[0],"x1"),convert_to_text(myU[1], "x2"),convert_to_text(myU[2], "x3"),convert_to_text(myU[3], "x4"),convert_to_text(myU[4], "x5")), 'k':myK, 'utilities':myU}
     elif len(myK)-1==6:
         return {'U':utilite6(myK[0]['value'],myK[1]['value'],myK[2]['value'],myK[3]['value'],myK[4]['value'],myK[5]['value'],myK[6]['value'],convert_to_text(myU[0],"x1"),convert_to_text(myU[1], "x2"),convert_to_text(myU[2], "x3"),convert_to_text(myU[3], "x4"),convert_to_text(myU[4], "x5"),convert_to_text(myU[5], "x6")), 'k':myK, 'utilities':myU}
-    
-    print(len(myK))
-    print(len(myU))
+
     U=1
     return "Error : nothing was done"
 
 def calculUtilityMultilinear(myK, myU):
     print("utility Multilinear")
-    print(json.dumps(myK))
-    print(json.dumps(myU))
     U=""
     for monK in myK:
         U+=str(monK['value'])
         for dk in monK['ID'].split(','):
             U+="*"+convert_to_text(myU[int(dk)-1], "x"+dk)
         U+="+"
-    print(U)
-    return (U)
+    #In order to delete the last + character
+    U=U[:-1]
+    return {'U':U, 'k':myK, 'utilities':myU}
 
 
 
@@ -42,7 +39,7 @@ def calculUtilityMultilinear(myK, myU):
 def calculk2(k1,k2):
     k = symbols('k')
     solution=solve(k1*k2*k+k1+k2-1,k)
-    return float(solution[0])
+    return {'success':True, 'k':float(solution[0])}
 
 
 ##def utilite2(k1,k2,k):
@@ -64,10 +61,10 @@ def calculk3(k1,k2,k3):
     
     if k1+k2+k3>1:
         k=float(round(liste[0],1))
-        return (k)
+        return {'success':True, 'k':k}
     else:
         k=float(round(liste[1],1))
-        return (k)
+        return {'success':True, 'k':k}
 
 def utilite3(k1,k2,k3,k,u1,u2,u3):
     U =str(k1)+"*"+u1+"+"
@@ -87,10 +84,10 @@ def calculk4(k1,k2,k3,k4):
     p_k=lambda k: k1*k2*k3*k4*k**3+(k1*k2*k3+k1*k2*k4+k2*k3*k4+k1*k3*k4)*k**2+(k1*k2+k2*k3+k1*k3+k1*k4+k2*k4+k3*k4)*k+k1+k2+k3+k4-1
     solution=fsolve(p_k, x0, xtol=1.49012e-12, maxfev=1000)
 
-    if solution[0]==x0 :
-        print("please change your ki values")
-    else:
-        return float(solution[0])
+    if solution[0]==x0:
+        return {'success':False, 'k':"Unable to calculate K, please change your ki values"}
+    else: 
+        return {'success':True, 'k':float(solution[0])}
 
 
 ##def utilite4(k1,k2,k3,k4,k):
@@ -126,10 +123,10 @@ def calculk5(k1,k2,k3,k4,k5):
     p_k=lambda k:k1*k2*k3*k4*k5*k**4+(k1*k2*k3*k5 + k1*k2*k4*k5 + k2*k3*k4*k5 + k1*k3*k4*k5 + k1*k2*k3*k4)*k**3+(k1*k2*k3 + k1*k2*k4 + k1*k2*k5 + k1*k3*k4 +k1*k3*k5 + k1*k4*k5 + k2*k3*k4 + k2*k3*k5 + k2*k4*k5 + k3*k4*k5)*k**2+ (k2*k3 + k1*k3 + k1*k4 + k2*k4 + k3*k4 + k1*k2 + k1*k5 + k2*k5 + k3*k5 + k4*k5)*k + k1+k2+k3+k4+k5-1
     solution=fsolve(p_k, x0, xtol=1.49012e-12, maxfev=1000)
       
-    if solution[0]==x0 :
-        print("please change your ki values")
-    else:
-        return float(solution[0])
+    if solution[0]==x0:
+        return {'success':False, 'k':"Unable to calculate K, please change your ki values"}
+    else: 
+        return {'success':True, 'k':float(solution[0])}
 
 
 ##def utilite5(k1,k2,k3,k4,k5,k):
@@ -188,7 +185,8 @@ def calculk6(k1,k2,k3,k4,k5,k6):
     p_k=lambda k: a*k**5+b*k**4+c*k**3+d*k**2+e*k+f
     
     solutions=fsolve(p_k, 0, xtol=1.49012e-08, maxfev=100000000)
-    return float(solutions[0])
+    return {'success':True, 'k':float(solutions[0])}
+
 
 
 ##def utilite6(k1,k2,k3,k4,k):
@@ -279,8 +277,6 @@ def signe(nombre):
 
 
 def convert_to_text(data, x):
-    print("convert")
-    print(json.dumps(data))
     if data['type']=="exp":
         return "("+str(reduce(data['a']))+"*exp("+signe(-reduce(data['b']))+"*"+x+")"+signe(reduce(data['c']))+")";
     elif data['type']=="log":

@@ -759,6 +759,7 @@ function K_Calculate_Multiplicative() {
 
 
 	$.post('ajax', '{"type":"k_calculus", "number":'+kiNumber+', "k":'+JSON.stringify(mesK)+'}', function(data) {
+
 		asses_session.k_calculus[get_Active_Method()].GK=data.k;
 		localStorage.setItem("asses_session", JSON.stringify(asses_session));
 		//we update the view
@@ -989,7 +990,10 @@ $(function(){
 
 			var requete={"type": "utility_calculus_multilinear", "k":asses_session.k_calculus[get_Active_Method()].k, "utility":k_utility_multilinear};
 			$.post('ajax', JSON.stringify(requete), function (data) {
-				alert(JSON.stringify(data));
+				$("#utility_function").html('<div ><pre>'+data.U+'</pre></div>')
+				//alert(JSON.stringify(data));
+				asses_session.k_calculus[get_Active_Method()].GU=data;
+				localStorage.setItem("asses_session", JSON.stringify(asses_session));
 			});
 		}
 

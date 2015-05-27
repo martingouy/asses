@@ -62,15 +62,15 @@ def ajax():
     elif query['type'] == "k_calculus":
         print("on va calculer k_calculus sur le fichier kcalc")
         if query['number'] == 2:
-            return {'k':kcalc.calculk2(query['k']['k1'],query['k']['k2'])}
+            return kcalc.calculk2(query['k']['k1'],query['k']['k2'])
         elif query['number'] == 3:
-            return {'k':kcalc.calculk3(query['k']['k1'],query['k']['k2'],query['k']['k3'])}
+            return kcalc.calculk3(query['k']['k1'],query['k']['k2'],query['k']['k3'])
         elif query['number'] == 4:
-            return {'k':kcalc.calculk4(query['k']['k1'],query['k']['k2'],query['k']['k3'],query['k']['k4'])}
+            return kcalc.calculk4(query['k']['k1'],query['k']['k2'],query['k']['k3'],query['k']['k4'])
         elif query['number'] == 5:
-            return {'k':kcalc.calculk5(query['k']['k1'],query['k']['k2'],query['k']['k3'],query['k']['k4'], query['k']['k5'])}
+            return kcalc.calculk5(query['k']['k1'],query['k']['k2'],query['k']['k3'],query['k']['k4'], query['k']['k5'])
         elif query['number'] == 6:
-            return {'k':kcalc.calculk6(query['k']['k1'],query['k']['k2'],query['k']['k3'],query['k']['k4'], query['k']['k5'], query['k']['k6'])}
+            return kcalc.calculk6(query['k']['k1'],query['k']['k2'],query['k']['k3'],query['k']['k4'], query['k']['k5'], query['k']['k6'])
 
     elif query['type'] == "utility_calculus_multiplicative":
         return kcalc.calculUtilityMultiplicative(query['k'],query['utility'])
