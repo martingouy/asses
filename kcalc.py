@@ -24,7 +24,15 @@ def calculUtilityMultiplicative(myK, myU):
 
 def calculUtilityMultilinear(myK, myU):
     print("utility Multilinear")
-    U=1
+    print(json.dumps(myK))
+    print(json.dumps(myU))
+    U=""
+    for monK in myK:
+        U+=str(monK['value'])
+        for dk in monK['ID'].split(','):
+            U+="*"+convert_to_text(myU[int(dk)-1], "x"+dk)
+        U+="+"
+    print(U)
     return (U)
 
 
@@ -274,15 +282,15 @@ def convert_to_text(data, x):
     print("convert")
     print(json.dumps(data))
     if data['type']=="exp":
-        return "("+str(reduce(data['a']))+"*exp("+signe(-reduce(data['b']))+x+")"+signe(reduce(data['c']))+")";
+        return "("+str(reduce(data['a']))+"*exp("+signe(-reduce(data['b']))+"*"+x+")"+signe(reduce(data['c']))+")";
     elif data['type']=="log":
-        return "("+str(reduce(data['a']))+"*log("+str(reduce(data['b']))+x+signe(reduce(data['c']))+")"+signe(reduce(data['d']))+")";
+        return "("+str(reduce(data['a']))+"*log("+str(reduce(data['b']))+"*"+x+signe(reduce(data['c']))+")"+signe(reduce(data['d']))+")";
     elif data['type']=="pow":
         return "("+str(reduce(data['a']))+"*(pow("+x+","+str(reduce(1-data['b']))+")-1)/("+str(reduce(1-data['b']))+")"+signe(reduce(data['c']))+")";
     elif data['type']=="quad":
         return "("+str(reduce(data['c']))+"*"+x+signe(reduce(-data['b']))+"*pow("+x+",2)"+signe(reduce(data['a']))+")";
     elif data['type']=="lin":
-        return "("+str(reduce(data['a']))+"*"+x+signe(reduce(data['b']))+")";
+        return "("+str(reduce(data['a']))+"*"+x+"+"+signe(reduce(data['b']))+")";
 
 
 

@@ -604,7 +604,7 @@ function k_answer(i, type)
 					// we delete the choice div
 					$('.gain').hide();$('.lottery').hide();
 					$("#k_value_"+i).append(
-						'<div id= "final_value" style="text-align: center; "><br /><br /><p>We are almost done, please now enter the value of the probability: <br /> '+ min_interval +'\
+						'<br/><br/><br/><br/><div id= "final_value" style="text-align: center;margin-top:90px;"><br /><br /><p>We are almost done, please now enter the value of the probability: <br /> '+ min_interval +'\
 						 <= <input type="text" class="form-control" id="final_proba" placeholder="Probability" value="'+val+'" style="width: 100px; display: inline-block"> <= '+ max_interval +'</p><button type="button" class="btn btn-default final_validation">Validate</button></div>'
 					);
 
@@ -987,7 +987,7 @@ $(function(){
 				}
 			}
 
-			var requete={"type": "utility_calculus_multilinear", "k":asses_session.k_calculus[get_Active_Method()].k, "utility":k_utility_multiliplicative};
+			var requete={"type": "utility_calculus_multilinear", "k":asses_session.k_calculus[get_Active_Method()].k, "utility":k_utility_multilinear};
 			$.post('ajax', JSON.stringify(requete), function (data) {
 				alert(JSON.stringify(data));
 			});
