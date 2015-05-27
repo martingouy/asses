@@ -924,7 +924,7 @@ function update_utility(i, type, data)
 	}
 	else
 	{
-		k_utility_multilinear[i]=data; 
+		k_utility_multilinear[i]=data;
 	}
 
 

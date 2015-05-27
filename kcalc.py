@@ -11,7 +11,7 @@ def calculUtilityMultiplicative(myK, myU):
     elif len(myK)-1==3:
         print("ok 3")
         print(json.dumps(myK))
-        return utilite3(myK[0]['value'],myK[1]['value'],myK[2]['value'],myK[3]['value'],convert_to_text(myU[0]),convert_to_text(myU[1]),convert_to_text(myU[2]))
+        return utilite3(myK[0]['value'],myK[1]['value'],myK[2]['value'],myK[3]['value'],convert_to_text(myU[0],"x1"),convert_to_text(myU[1], "x2"),convert_to_text(myU[2], "x3"))
     elif len(myK)-1==4:
         return 4
     elif len(myK)-1==5:
@@ -139,19 +139,19 @@ def signe(nombre):
         return str(nombre)
 
 
-def convert_to_text(data):
+def convert_to_text(data, x):
     print("convert")
     print(json.dumps(data))
     if data['type']=="exp":
-        return str(reduce(data['a']))+"*exp("+signe(-reduce(data['b']))+"x)"+signe(reduce(data['c']));
+        return "("+str(reduce(data['a']))+"*exp("+signe(-reduce(data['b']))+x+")"+signe(reduce(data['c']))+")";
     elif data['type']=="log":
-        return str(reduce(data['a']))+"*log("+str(reduce(data['b']))+"x"+signe(reduce(data['c']))+")"+signe(reduce(data['d']));
+        return "("+str(reduce(data['a']))+"*log("+str(reduce(data['b']))+x+signe(reduce(data['c']))+")"+signe(reduce(data['d']))+")";
     elif data['type']=="pow":
-        return str(reduce(data['a']))+"*(pow(x,"+str(reduce(1-data['b']))+")-1)/("+str(reduce(1-data['b']))+")"+signe(reduce(data['c']));
+        return "("+str(reduce(data['a']))+"*(pow("+x+","+str(reduce(1-data['b']))+")-1)/("+str(reduce(1-data['b']))+")"+signe(reduce(data['c']))+")";
     elif data['type']=="quad":
-        return str(reduce(data['c']))+"*x"+signe(reduce(-data['b']))+"*pow(x,2)"+signe(reduce(data['a']));
+        return "("+str(reduce(data['c']))+"*"+x+signe(reduce(-data['b']))+"*pow("+x+",2)"+signe(reduce(data['a']))+")";
     elif data['type']=="lin":
-        return str(reduce(data['a']))+"*x"+signe(reduce(data['b']));
+        return "("+str(reduce(data['a']))+"*"+x+signe(reduce(data['b']))+")";
 
 
 

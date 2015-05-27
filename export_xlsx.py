@@ -143,15 +143,17 @@ def generate_fichier(data):
             for i in range(0,11):
                 feuille.write(ligne+1+i, 6, i*amplitude )
                 if utility['type']=='exp':
-                    feuille.write(ligne+1+i, 7, funcexp(i*amplitude, utility['a'], utility['b'], utility['c']))
+                    feuille.write(ligne+1+i, 7, funcexp_excel(i*amplitude, utility['a'], utility['b'], utility['c']))
                 elif utility['type']=='quad':
-                    feuille.write(ligne+1+i, 7, funcquad(i*amplitude, utility['a'], utility['b'], utility['c']))
+                    feuille.write(ligne+1+i, 7, funcquad_excel(i*amplitude, utility['a'], utility['b'], utility['c']))
                 elif utility['type']=='pow':
-                    feuille.write(ligne+1+i, 7, funcpuis(i*amplitude, utility['a'], utility['b'], utility['c']))
+                    feuille.write(ligne+1+i, 7, funcpuis_excel(i*amplitude, utility['a'], utility['b'], utility['c']))
                 elif utility['type']=='log':
-                    feuille.write(ligne+1+i, 7, funclog(i*amplitude, utility['a'], utility['b'], utility['c'], utility['d']))
+                    feuille.write(ligne+1+i, 7, funclog_excel(i*amplitude, utility['a'], utility['b'], utility['c'], utility['d']))
                 elif utility['type']=='lin':
-                    feuille.write(ligne+1+i, 7, funclin(i*amplitude, utility['a'], utility['b']))
+                    feuille.write(ligne+1+i, 7, funclin_excel(i*amplitude, utility['a'], utility['b']))
+
+            feuille.write_formula(ligne+12, 7, '=EXP(G'+str(ligne+12+1)+')')
 
             #Ensuite on fait le Chart ! (le diagramme)
             chart5 = classeur.add_chart({'type': 'scatter',
@@ -432,9 +434,18 @@ def generate_fichier_with_specification(data):
 # Fucntions
 def funcexp(x, a, b, c):			# fonction for the exponential regression
     return a * np.exp(-b * x) + c
+
+def funcexp_excel(x, a, b, c):			# fonction for the exponential regression
+    return "="+a+"*EXP(-"+b+"*"+x+")+"+c;
         
 def funcquad(x, a, b, c):			# fonction for the quadratic regression
     return c*x-b*x**2+a
+
+def funcquad_excel(x, a, b, c):			# fonction for the quadratic regression
+    return "="+c+"*"+x+"-"+b+"*"+x+"^2"+a
+
+def funcpuis(x, a, b, c):			# fonction for the puissance regression
+    return a*(x**(1-b)-1)/(1-b) + c
 
 def funcpuis(x, a, b, c):			# fonction for the puissance regression
     return a*(x**(1-b)-1)/(1-b) + c
