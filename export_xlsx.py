@@ -225,7 +225,6 @@ def generate_fichier(data):
 
         ligne=ligne+3
         if mesK['method']=="multiplicative":
-            print(json.dumps(mesK['GU']))
             if mesK['GU']!=None:
                 feuille.write(ligne,0, 'DPL', formatNom);
                 feuille.write(ligne,1, mesK['GU']['U']);
@@ -258,17 +257,27 @@ def generate_fichier(data):
 
                 feuille.write(ligne,4+numero+numberUtilities, "U", formatTitre)
                 
+                def K(i):
+                    return xl_rowcol_to_cell(i,1)
+                def U(i):
+                    return xl_rowcol_to_cell(ligne+1,4+i+numberUtilities)
+                
                 if numberUtilities==2:
-                    pass
+                    GU=utilite2_excel(K(1), K(2), K(3), U(1), U(2))
+                    feuille.write_formula(ligne+1,4+numero+numberUtilities, GU)
                 if numberUtilities==3:
-                    GU=utilite3_excel(k[0]['value'], k[1]['value'], k[2]['value'], k[3]['value'], xl_rowcol_to_cell(ligne+1,4+1+numberUtilities), xl_rowcol_to_cell(ligne+1,4+2+numberUtilities), xl_rowcol_to_cell(ligne+1,4+3+numberUtilities))
+                    #in reality K(4) is K
+                    GU=utilite3_excel(K(1), K(2), K(3), K(4), U(1), U(2), U(3))
                     feuille.write_formula(ligne+1,4+numero+numberUtilities, GU)
                 if numberUtilities==4:
-                    pass
+                    GU=utilite4_excel(K(1), K(2), K(3), K(4), K(5), U(1), U(2), U(3), U(4))
+                    feuille.write_formula(ligne+1,4+numero+numberUtilities, GU)
                 if numberUtilities==5:
-                    pass
+                    GU=utilite5_excel(K(1), K(2), K(3), K(4), K(5), K(6), U(1), U(2), U(3), U(4), U(5))
+                    feuille.write_formula(ligne+1,4+numero+numberUtilities, GU)
                 if numberUtilities==6:
-                    pass
+                    GU=utilite6_excel(K(1), K(2), K(3), K(4), K(5), K(6), K(7), U(1), U(2), U(3), U(4), U(5), U(6))
+                    feuille.write_formula(ligne+1,4+numero+numberUtilities, GU)
 
 
 
@@ -476,13 +485,63 @@ def generate_fichier_with_specification(data):
         feuille.write(ligne, 0, "K", formatNom)
         feuille.write(ligne, 1, mesK['GK'])
 
-
         ligne=ligne+3
         if mesK['method']=="multiplicative":
-            print(json.dumps(mesK['GU']))
             if mesK['GU']!=None:
                 feuille.write(ligne,0, 'DPL', formatNom);
                 feuille.write(ligne,1, mesK['GU']['U']);
+
+                ligne=0
+                
+                utilities=mesK['GU']['utilities']
+                numberUtilities=len(utilities)
+                k=mesK['GU']['k']
+
+                numero=1
+                for myUtility in utilities:
+                    feuille.write(ligne,4+numero, "x"+str(numero), formatTitre)
+                    feuille.write(ligne+1,4+numero, 1)
+                    
+                    feuille.write(ligne,4+numero+numberUtilities, "u"+str(numero)+"(x"+str(numero)+")", formatTitre)
+                    if myUtility['type']=='exp':
+                        feuille.write_formula(ligne+1, 4+numero+numberUtilities, funcexp_excel(xl_rowcol_to_cell(ligne+1,4+numero), str(myUtility['a']), str(myUtility['b']), str(myUtility['c'])))
+                    elif myUtility['type']=='quad':
+                        feuille.write_formula(ligne+1, 4+numero+numberUtilities, funcquad_excel(xl_rowcol_to_cell(ligne+1,4+numero), str(myUtility['a']), str(myUtility['b']), str(myUtility['c'])))
+                    elif myUtility['type']=='pow':
+                        feuille.write_formula(ligne+1, 4+numero+numberUtilities, funcpuis_excel(xl_rowcol_to_cell(ligne+1,4+numero), str(myUtility['a']), str(myUtility['b']), str(myUtility['c'])))
+                    elif myUtility['type']=='log':
+                        feuille.write_formula(ligne+1, 4+numero+numberUtilities, funclog_excel(xl_rowcol_to_cell(ligne+1,4+numero), str(myUtility['a']), str(myUtility['b']), str(myUtility['c']), str(myUtility['d'])))
+                    elif myUtility['type']=='lin':
+                        feuille.write_formula(ligne+1, 4+numero+numberUtilities, funclin_excel(xl_rowcol_to_cell(ligne+1,4+numero), str(myUtility['a']), str(myUtility['b'])))
+                    
+                    numero=numero+1
+
+
+                feuille.write(ligne,4+numero+numberUtilities, "U", formatTitre)
+                
+                def K(i):
+                    return xl_rowcol_to_cell(i,1)
+                def U(i):
+                    return xl_rowcol_to_cell(ligne+1,4+i+numberUtilities)
+                
+                if numberUtilities==2:
+                    GU=utilite3_excel(K(1), K(2), K(3), U(1), U(2))
+                    feuille.write_formula(ligne+1,4+numero+numberUtilities, GU)
+                if numberUtilities==3:
+                    #in reality K(4) is K
+                    GU=utilite3_excel(K(1), K(2), K(3), K(4), U(1), U(2), U(3))
+                    feuille.write_formula(ligne+1,4+numero+numberUtilities, GU)
+                if numberUtilities==4:
+                    GU=utilite3_excel(K(1), K(2), K(3), K(4), K(5), U(1), U(2), U(3), U(4))
+                    feuille.write_formula(ligne+1,4+numero+numberUtilities, GU)
+                if numberUtilities==5:
+                    GU=utilite3_excel(K(1), K(2), K(3), K(4), K(5), K(6), U(1), U(2), U(3), U(4), U(5))
+                    feuille.write_formula(ligne+1,4+numero+numberUtilities, GU)
+                if numberUtilities==6:
+                    GU=utilite3_excel(K(1), K(2), K(3), K(4), K(5), K(6), K(7), U(1), U(2), U(3), U(4), U(5), U(6))
+                    feuille.write_formula(ligne+1,4+numero+numberUtilities, GU)
+
+
 
     # Ecriture du classeur sur le disque
     classeur.close()
@@ -548,16 +607,69 @@ def convert_to_text(data, x):
 
 
 #utilite pour le excel
-
-def utilite3_excel(k1,k2,k3,k,u1,u2,u3):
-    U = "k1*u1 + k2*u2 + k3*u3 + k*k1*k3*u1*u3 + k*k1*k2*u1*u2 + k*k2*k3*u2*u3 + k**2*k1*k2*k3*u1*u2*u3"
-    U.replace("k1", k1)
-    U.replace("k2", k2)
-    U.replace("k3", k3)
-    U.replace("k", k)
-    U.replace("u1", k1)
-    U.replace("u2", k2)
-    U.replace("u3", k3)
+def utilite2_excel(k1,k2,k,u1,u2):
+    U = "=k*k1*k2*u1*u2 + k1*u1 + k2*u2"
+    U=U.replace("k1", k1)
+    U=U.replace("k2", k2)
+    U=U.replace("k", k)
+    U=U.replace("u1", u1)
+    U=U.replace("u2", u2)
     return (U)
 
+
+def utilite3_excel(k1,k2,k3,k,u1,u2,u3):
+    U = "=k1*u1 + k2*u2 + k3*u3 + k*k1*k3*u1*u3 + k*k1*k2*u1*u2 + k*k2*k3*u2*u3 + k^2*k1*k2*k3*u1*u2*u3"
+    U=U.replace("k1", k1)
+    U=U.replace("k2", k2)
+    U=U.replace("k3", k3)
+    U=U.replace("k", k)
+    U=U.replace("u1", u1)
+    U=U.replace("u2", u2)
+    U=U.replace("u3", u3)
+    return (U)
+
+def utilite4_excel(k1,k2,k3,k4,k,u1,u2,u3,u4):
+    U= "=k^3*k1*k2*k3*k4*u1*u2*u3*u4 + k^2*(k1*k2*k3*u1*u2*u3+k1*k2*k4*u1*u2*u4+k2*k3*k4*u2*u3*u4+k1*k3*k4*u1*u3*u4) + k*(k1*k2*u1*u2+k2*k3*u2*u3+k1*k3*u1*u3+k1*k4*u1*u4+k2*k4*u2*u4+k3*k4*u3*u4) + k1*u1+k2*u2+k3*u3+k4*u4"
+    U=U.replace("k1", k1)
+    U=U.replace("k2", k2)
+    U=U.replace("k3", k3)
+    U=U.replace("k4", k4)
+    U=U.replace("k", k)
+    U=U.replace("u1", u1)
+    U=U.replace("u2", u2)
+    U=U.replace("u3", u3)
+    U=U.replace("u4", u4)
+    return (U)
+
+def utilite5_excel(k1,k2,k3,k4,k5,k,u1,u2,u3,u4,u5):
+    U = "=k^4*k1*k2*k3*k4*k5*u1*u2*u3*u4*u5 + k^3(k1*k2*k3*k5*u1*u2*u3*u5 + k1*k2*k4*k5*u1*u2*u4*u5 + k2*k3*k4*k5*u2*u3*u5*u4 + k1*k3*k4*k5*u1*u5*u3*u4 + k1*k2*k3*k4*u1*u2*u3*u4) + k^2*(k1*k2*k3*u1*u2*u3 + k1*k2*k4*u1*u2*u4 + k1*k2*k5*u1*u2*u5 + k1*k3*k4*u1*u3*u4 +k1*k3*k5*u1*u3*u5 + k1*k4*k5*u1*u4*u5 + k2*k3*k4*u2*u3*u4 + k2*k3*k5*u2*u3*u5 + k2*k4*k5*u2*u4*u5 + k3*k4*k5*u3*u4*u5) + k(k2*k3*u2*u3 + k1*k3*u1*u3 + k1*k4*u4*u4 + k2*k4*u2*u4 + k3*k4*u3*u4 + k1*k2*u1*u2 + k1*k5*u1*u5 + k2*k5*u2*u5 + k3*k5*u3*u5 + k4*k5*u4*u5) + k1*u1 + k2*u2 + k3*u3 + k4*u4 + k5*u5"
+    U=U.replace("k1", k1)
+    U=U.replace("k2", k2)
+    U=U.replace("k3", k3)
+    U=U.replace("k4", k4)
+    U=U.replace("k5", k5)
+    U=U.replace("k", k)
+    U=U.replace("u1", u1)
+    U=U.replace("u2", u2)
+    U=U.replace("u3", u3)
+    U=U.replace("u4", u4)
+    U=U.replace("u5", u5)
+    return (U)
+
+def utilite6_excel(k1,k2,k3,k4,k5,k6,k,u1,u2,u3,u4,u5,u6):
+    U = "=k^5*k1*k2*k3*k4*k5*k6 + k^4(k1*k2*k3*k5*k6*u1*u2*u3*u5*u6 + k1*k2*k3*k4*k5*u1*u2*u3*u4*u5 + k1*k2*k4*k5*k6*u1*u2*u4*u5*u6 + k2*k3*k4*k5*k6*u2*u3*u4*u5*u6 + k1*k3*k4*k5*k6*u1*u3*u4*u5*u6 + k1*k2*k3*k4*k6*u1*u2*u3*u4*u6) +  k^3(k1*k2*k3*k5*u1*u2*u3*u5 + k1*k2*k4*k5*u1*u2*u4*u5 + k2*k3*k4*k5*u2*u3*u4*u5 + k1*k3*k4*k5*u1*u3*u4*u5 + k1*k2*k3*k4*u1*u2*u3*u4 + k1*k2*k3*k6*u1*u2*u3*u6 + k1*k2*k4*k6*u1*u2*u4*u6 + k1*k2*k5*k6*u1*u2*u5*u6 + k1*k3*k4*k6*u1*u3*u4*u6 + k1*k3*k5*k6*u1*u3*u5*u6 + k1*k4*k5*k6*u1*u4*u5*u6 + k2*k3*k4*k6*u2*u3*u4*u6 + k2*k3*k5*k6*u2*u3*u5*u6  + k2*k4*k5*k6*u2*u4*u5*u6 + k3*k4*k5*k6*u3*u4*u5*u6) + k^2(k1*k2*k3*u1*u2*u3 + k1*k2*k4*u1*u2*u4 + k1*k2*k5*u1*u2*u5 + k1*k3*k4*u1*u3*u4 +k1*k3*k5*u1*u3*u5 + k1*k4*k5*u1*u4*u5 + k2*k3*k4*u2*u3*u4 + k2*k3*k5*u2*u3*u5 + k2*k4*k5*u2*u4*u5 + k3*k4*k5*u3*u4*u5 + k3*k4*k6*u3*u4*u6 + k1*k2*k6*u1*u2*u6 + k1*k3*k6*u1*u3*u6 + k1*k4*k6*u1*u4*u6 + k1*k5*k6*u1*u5*u6 + k3*k4*k6*u3*u4*u6 + k3*k5*k6*u3*u5*u6 + k2*k4*k6*u2*u4*u6 + k2*k5*k6*u2*u5*u6 + k4*k5*k6*u4*u5*u6) + k*(k2*k3*u2*u3 + k1*k3*u1*u3 + k1*k4*u1*u4 + k1*k6*u1*u6 + k1*k5*u1*u5 + k1*k2*u1*u2 + k2*k4*u2*u4 + k3*k4*u3*u4 + k2*k5*u2*u5 + k3*k5*u3*u5 + k4*k5*u4*u5 + k2*k6*u2*u6 + k3*k6*u3*u6 + k4*k6*u4*u6 + k5*k6*u5*u6) + k1*u1 +k2*u2 +k3*u3 +k4*u4 +k5*u5 +k6*u6"
+    U=U.replace("k1", k1)
+    U=U.replace("k2", k2)
+    U=U.replace("k3", k3)
+    U=U.replace("k4", k4)
+    U=U.replace("k5", k5)
+    U=U.replace("k6", k6)
+    U=U.replace("k", k)
+    U=U.replace("u1", u1)
+    U=U.replace("u2", u2)
+    U=U.replace("u3", u3)
+    U=U.replace("u4", u4)
+    U=U.replace("u5", u5)
+    U=U.replace("u6", u6)
+    return (U)
 
