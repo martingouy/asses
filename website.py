@@ -1,4 +1,4 @@
-from bottle import run, template, static_file, view, Bottle, request
+from bottle import run, template, static_file, view, Bottle, request, response
 from sys import argv
 import sys
 import random
@@ -15,35 +15,79 @@ import import_xlsx
 import traceback
 
 app = Bottle()
+mdp=[]
+
+@app.route('/admin')
+@view('authentification')
+def export():
+    return { 'get_url':  app.get_url }
+
+@app.route('/auth', method="POST")
+def auth():
+    global mdp
+    reader = codecs.getreader("utf-8")
+    query = json.load(reader(request.body))
+    if query['type']=="authentification":
+        if check_passwd(query['mdp']):
+            response.set_cookie("mdp", query['mdp'])
+            return {'success':True}
+        elif check_admin(query['mdp']):
+            return {'success':"admin", 'mdp':mdp}
+        else:
+            return {'success':False}
+
+    elif query['type']=="admin":
+        if check_admin(query['mdp']):
+            mdp=query['newmdp']
+            f = open('passwd.txt', 'w')
+            f.write(";;".join(mdp))
+            f.close()
+            return {'success':True}
+        else:
+            return {'success':False}
+
+
 
 @app.route('/export')
 @view('export')
 def export():
+    if check_passwd(request.get_cookie("mdp"))==False:
+        return template('authentification', get_url=app.get_url)
     return { 'get_url':  app.get_url }
 
 @app.route('/import')
 @view('import')
-def export():
+def imports():
+    if check_passwd(request.get_cookie("mdp"))==False:
+        return template('authentification', get_url=app.get_url)
     return { 'get_url':  app.get_url }
 
 @app.route('/')
 @app.route('/attributes')
 @view('attributes')
-def attributs():
+def attributes():
+    if check_passwd(request.get_cookie("mdp"))==False:
+        return template('authentification', get_url=app.get_url)
     return { 'get_url':  app.get_url }
 
 @app.route('/questions')
 @view('questions')
 def questions():
+    if check_passwd(request.get_cookie("mdp"))==False:
+        return template('authentification', get_url=app.get_url)
     return { 'get_url':  app.get_url }
 
 @app.route('/k_calculus')
 @view('k_calculus')
 def k_calculus():
+    if check_passwd(request.get_cookie("mdp"))==False:
+        return template('authentification', get_url=app.get_url)
     return { 'get_url':  app.get_url }
 
 @app.route('/ajax', method="POST")
 def ajax():
+    if check_passwd(request.get_cookie("mdp"))==False:
+        return template('authentification', get_url=app.get_url)
     reader = codecs.getreader("utf-8")
     query = json.load(reader(request.body))
     
@@ -96,6 +140,8 @@ def ajax():
 #export a file (download)
 @app.route('/export_download/fichier:path#.+#', name='export')
 def export(path):
+    if check_passwd(request.get_cookie("mdp"))==False:
+        return template('authentification', get_url=app.get_url)
     val = static_file('fichier'+path+'.xlsx', root='')
     os.remove('fichier'+path+'.xlsx')
     return val
@@ -105,6 +151,8 @@ def export(path):
 @app.route('/upload', method='POST')
 @view('import_success')
 def do_upload():
+    if check_passwd(request.get_cookie("mdp"))==False:
+        return template('authentification', get_url=app.get_url)
     try:
     
         upload = request.files.get('upload')
@@ -131,6 +179,27 @@ def do_upload():
 @app.route('/static/:path#.+#', name='static')
 def static(path):
     return static_file(path, root='static')
+
+
+#for authentification
+def check_passwd(passwd):
+    for m in mdp:
+        if m==passwd:
+            return True
+    return False
+
+
+def check_admin(passwd):
+    if passwd=="assess2admin2015":
+        return True
+    return False
+
+
+with open("passwd.txt") as f:
+    mdp = f.readline().split(";;")
+    print(mdp)
+
+
 
 #for local or heroku app
 try:
