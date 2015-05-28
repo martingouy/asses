@@ -1,6 +1,6 @@
 %include('header_init.tpl', heading='Multi Attributes')
 <div class="page-header">
-  <h3>Ki calculus</h3>
+  <h3>Ki computation</h3>
 </div>
 
 <div class="alert alert-info" role="alert" id="update_box" >
@@ -43,7 +43,7 @@
 
 <br/>
 <div class="page-header">
-  <h3>K calculus</h3>
+  <h3>K computation</h3>
 </div>
 
 <div class="alert alert-info" role="alert" id="calculatek_box_multiplicative" >
@@ -56,7 +56,7 @@
 
 <div style="text-align:center;" id="GK">
 
-	<span class="h4">K = <span id="GK_value"></span> </span><button type="button" class="btn btn-default btn-lg" id="button_calculate_k" style="text-align:center">Calculate</button>
+	<span class="h4">K = <span id="GK_value"></span> </span><button type="button" class="btn btn-default btn-lg" id="button_calculate_k" style="text-align:center">Compute</button>
 	<br/>
 </div>
 

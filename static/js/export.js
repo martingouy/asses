@@ -37,7 +37,8 @@ $(function() {
 		checkbox_multilinear();
 	});
 
-	list();
+	$('#generate_list').click(function(){ list(); });
+
 });
 
 

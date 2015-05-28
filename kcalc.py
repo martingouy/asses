@@ -37,6 +37,8 @@ def calculUtilityMultilinear(myK, myU):
 
 # ---- 2 -----
 def calculk2(k1,k2):
+    if k1+k2==1:
+        return {'success':True, 'k':0}
     k = symbols('k')
     solution=solve(k1*k2*k+k1+k2-1,k)
     return {'success':True, 'k':round(float(solution[0]),4)}
@@ -54,6 +56,8 @@ def utilite2(k1,k2,k,u1,u2):
 
 # ---- 3 -----
 def calculk3(k1,k2,k3):
+    if k1+k2+k3==1:
+        return {'success':True, 'k':0}
     coeff=[k1*k2*k3,k1*k2+k2*k3+k1*k3,k1+k2+k3-1] 
     solution = np.roots(coeff)
     liste=[solution[0],solution[1]]
@@ -80,6 +84,8 @@ def utilite3(k1,k2,k3,k,u1,u2,u3):
 
 # ---- 4 -----
 def calculk4(k1,k2,k3,k4):
+    if k1+k2+k3+k4==1:
+        return {'success':True, 'k':0}
     x0=0
     p_k=lambda k: k1*k2*k3*k4*k**3+(k1*k2*k3+k1*k2*k4+k2*k3*k4+k1*k3*k4)*k**2+(k1*k2+k2*k3+k1*k3+k1*k4+k2*k4+k3*k4)*k+k1+k2+k3+k4-1
     solution=fsolve(p_k, x0, xtol=1.49012e-12, maxfev=1000)
@@ -119,6 +125,8 @@ def utilite4(k1,k2,k3,k4,k,u1,u2,u3, u4):
 
 # ---- 5 -----
 def calculk5(k1,k2,k3,k4,k5):
+    if k1+k2+k3+k4+k5==1:
+        return {'success':True, 'k':0}
     x0=0
     p_k=lambda k:k1*k2*k3*k4*k5*k**4+(k1*k2*k3*k5 + k1*k2*k4*k5 + k2*k3*k4*k5 + k1*k3*k4*k5 + k1*k2*k3*k4)*k**3+(k1*k2*k3 + k1*k2*k4 + k1*k2*k5 + k1*k3*k4 +k1*k3*k5 + k1*k4*k5 + k2*k3*k4 + k2*k3*k5 + k2*k4*k5 + k3*k4*k5)*k**2+ (k2*k3 + k1*k3 + k1*k4 + k2*k4 + k3*k4 + k1*k2 + k1*k5 + k2*k5 + k3*k5 + k4*k5)*k + k1+k2+k3+k4+k5-1
     solution=fsolve(p_k, x0, xtol=1.49012e-12, maxfev=1000)
@@ -176,6 +184,8 @@ def utilite5(k1,k2,k3,k4, k5,k,u1,u2,u3, u4, u5):
 
 # ---- 6 -----
 def calculk6(k1,k2,k3,k4,k5,k6):
+    if k1+k2+k3+k4+k5+k6==1:
+        return {'success':True, 'k':0}
     a=k1*k2*k3*k4*k5*k6
     b=(k1*k2*k3*k5*k6 + k1*k2*k3*k4*k5 + k1*k2*k4*k5*k6 + k2*k3*k4*k5*k6 + k1*k3*k4*k5*k6 + k1*k2*k3*k4*k6)
     c=(k1*k2*k3*k5 + k1*k2*k4*k5 + k2*k3*k4*k5 + k1*k3*k4*k5 + k1*k2*k3*k4 + k1*k2*k3*k6 + k1*k2*k4*k6 + k1*k2*k5*k6 + k1*k3*k4*k6 + k1*k3*k5*k6 + k1*k4*k5*k6 + k2*k3*k4*k6 + k2*k3*k5*k6  + k2*k4*k5*k6 + k3*k4*k5*k6)

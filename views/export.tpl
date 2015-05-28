@@ -25,6 +25,8 @@
     </tbody>
     </table>
 </div>
+<button type="button" class="btn btn-default" id="generate_list">Generate the list</button><br/>
+
 
 <br/>
 <h4>Choose K</h4>
