@@ -61,6 +61,12 @@ def generate_fichier(data):
         feuille.write(5, 1, monAttribut['method'])
         feuille.write(6, 1, monAttribut['mode'])
         feuille.write(7, 1, monAttribut['checked'])
+        feuille.write(8, 1, " ")
+        feuille.write(9, 1, " ")
+        feuille.write(10, 1, " ")
+        feuille.write(11, 1, " ")
+        feuille.write(12, 1, " ")
+        feuille.write(13, 1, " ")
         
         #ensuite on va mettre les points obtenus:
         #feuille.merge_range('C1:D1','Points')
@@ -79,7 +85,7 @@ def generate_fichier(data):
         #Ensuite on s'occupe de la fonction d'utilité
         #feuille.merge_range('E1:F1','Utility Function')
         # on fait une regression à l'aide des points que l'on a dans le questionnaire et on envoit tout ça dans la fonction regressions du fichier fit.py
-        points=monAttribut['questionnaire']['points']
+        points=monAttribut['questionnaire']['points'][:]
 
         if len(points)>0:
             if monAttribut['mode']=="normal":
@@ -210,7 +216,11 @@ def generate_fichier(data):
         feuille.set_column(2, 2, 30);
         feuille.write(0,3, 'IDAttribute', formatTitre);
         feuille.set_column(3, 3, 10);
-
+        feuille.write(0,4, 'utility type', formatTitre);
+        feuille.set_column(4, 4, 15);
+        
+        
+        
         ligne=1
         for monK in mesK['k']:
             feuille.write(ligne, 0, monK['ID'], formatNom)
@@ -237,9 +247,14 @@ def generate_fichier(data):
             utilities=mesK['GU']['utilities']
             numberUtilities=len(utilities)
             k=mesK['GU']['k']
+            
+            
 
             numero=1
             for myUtility in utilities:
+                
+                feuille.write(numero, 4, myUtility['type'])
+                
                 feuille.write(ligne,4+numero, "x"+str(numero), formatTitre)
                 feuille.write(ligne+1,4+numero, 1)
                 
@@ -356,6 +371,13 @@ def generate_fichier_with_specification(data):
         feuille.write(5, 1, monAttribut['method'])
         feuille.write(6, 1, monAttribut['mode'])
         feuille.write(7, 1, monAttribut['checked'])
+        feuille.write(8, 1, " ")
+        feuille.write(9, 1, " ")
+        feuille.write(10, 1, " ")
+        feuille.write(11, 1, " ")
+        feuille.write(12, 1, " ")
+        feuille.write(13, 1, " ")
+        
         
         #ensuite on va mettre les points obtenus:
         #feuille.merge_range('C1:D1','Points')
@@ -490,6 +512,8 @@ def generate_fichier_with_specification(data):
         feuille.set_column(2, 2, 50);
         feuille.write(0,3, 'IDAttribute', formatTitre);
         feuille.set_column(3, 3, 15);
+        feuille.write(0,4, 'utility type', formatTitre);
+        feuille.set_column(4, 4, 15);
 
         ligne=1
         for monK in mesK['k']:
@@ -519,6 +543,9 @@ def generate_fichier_with_specification(data):
 
             numero=1
             for myUtility in utilities:
+                
+                feuille.write(numero, 4, myUtility['type'])
+                
                 feuille.write(ligne,4+numero, "x"+str(numero), formatTitre)
                 feuille.write(ligne+1,4+numero, 1)
                 

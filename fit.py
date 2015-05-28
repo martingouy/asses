@@ -2,6 +2,7 @@
 #from pylab import *
 import numpy as np
 from scipy.optimize import curve_fit
+import traceback
 #from scipy import numpy
 #import matplotlib.pyplot as plt
 
@@ -170,13 +171,14 @@ def regressions_under_list_form(liste_cord):
     
     # creation of the fitted curves
     
+
     try:
         # exponential function
         popt1, pcov1 = curve_fit(funcexp, x, y, [0,0,0]) # fonction regression utilisant la funcexp cree en l14 avec CI nulles
         #popt1 = matrice ligne contenant les coefficients de la regression exponentielle optimisee apres calcul / popcov1 = matrice de covariances pour cette regression exp
         # ajout des coeeficients a, b et c dans le dictionnaire pour la regression exponentielle
         dictionnaire={};
-        dictionnaire['type'] = 'exp'
+        dictionnaire['type']='exp'
         dictionnaire['a']=popt1[0]
         dictionnaire['b']=popt1[1]
         dictionnaire['c']=popt1[2]
