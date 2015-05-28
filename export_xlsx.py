@@ -276,7 +276,7 @@ def generate_fichier(data):
             feuille.write(ligne,4+numero+numberUtilities, "U", formatTitre)
             
             def K(i):
-                return xl_rowcol_to_cell(i,1)
+                return xl_rowcol_to_cell(i,1, row_abs=True, col_abs=True)
             def U(i):
                 return xl_rowcol_to_cell(ligne+1,4+i+numberUtilities)
             
@@ -567,7 +567,7 @@ def generate_fichier_with_specification(data):
             feuille.write(ligne,4+numero+numberUtilities, "U", formatTitre)
             
             def K(i):
-                return xl_rowcol_to_cell(i,1)
+                return xl_rowcol_to_cell(i,1, row_abs=True, col_abs=True)
             def U(i):
                 return xl_rowcol_to_cell(ligne+1,4+i+numberUtilities)
             
@@ -715,7 +715,6 @@ def utilite5_excel(k1,k2,k3,k4,k5,k,u1,u2,u3,u4,u5):
     U=U.replace("u3", u3)
     U=U.replace("u4", u4)
     U=U.replace("u5", u5)
-    print(U)
     return (U)
 
 def utilite6_excel(k1,k2,k3,k4,k5,k6,k,u1,u2,u3,u4,u5,u6):
