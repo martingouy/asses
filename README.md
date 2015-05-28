@@ -1,4 +1,3 @@
-
 <div class=WordSection1>
 
 <p class=MsoNormal style='margin-top:24.0pt;margin-right:0mm;margin-bottom:
@@ -119,8 +118,20 @@ color:black'>&#8209;</span><span style='font-size:11.5pt;font-family:Arial;
 mso-bidi-font-family:"Times New Roman";color:black'>none</span><span
 style='font-size:11.5pt;font-family:"Times New Roman";color:black'>&#8209;</span><span
 style='font-size:11.5pt;font-family:Arial;mso-bidi-font-family:"Times New Roman";
-color:black'>win_amd64.whl</span><span style='font-size:10.0pt;font-family:
-Times;mso-bidi-font-family:"Times New Roman"'><o:p></o:p></span></p>
+color:black'>win_amd64.whl<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:35.0pt'><span style='font-size:11.5pt;
+font-family:Arial;mso-bidi-font-family:"Times New Roman";color:black'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal style='margin-left:35.0pt'><span class=SpellE><b
+style='mso-bidi-font-weight:normal'><span lang=EN-US style='font-size:13.0pt;
+font-family:Arial;mso-ansi-language:EN-US'>Sympy</span></b></span><b
+style='mso-bidi-font-weight:normal'><span lang=EN-US style='font-size:13.0pt;
+font-family:Arial;mso-ansi-language:EN-US'><br>
+</span></b><span style='font-size:11.0pt;font-family:Arial'><a
+href="http://www.sympy.org/fr/index.html">http://www.sympy.org/fr/index.html</a></span><b
+style='mso-bidi-font-weight:normal'><span lang=EN-US style='font-size:13.0pt;
+font-family:Arial;mso-ansi-language:EN-US'><o:p></o:p></span></b></p>
 
 <p class=MsoNormal style='margin-top:14.0pt;margin-right:0mm;margin-bottom:
 4.0pt;margin-left:0mm;text-indent:36.0pt;mso-outline-level:3'><span
@@ -130,12 +141,13 @@ style='font-size:13.5pt;font-family:Times;mso-fareast-font-family:"Times New Rom
 mso-bidi-font-family:"Times New Roman"'><o:p></o:p></span></b></p>
 
 <p class=MsoNormal style='text-indent:36.0pt'><span style='font-size:11.5pt;
-font-family:Arial;mso-bidi-font-family:"Times New Roman";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
-style='mso-tab-count:1'> </span>Ecrire &nbsp;« <span class=SpellE>pip</span> <span
-class=SpellE>install</span> <span class=SpellE>bottle</span> » directement dans
-le projet ou faire « <span class=SpellE>wget</span>
-http://bottlepy.org/bottle.py » dans le dossier du projet.</span><span
-style='font-size:10.0pt;font-family:Times;mso-bidi-font-family:"Times New Roman"'><o:p></o:p></span></p>
+font-family:Arial;mso-bidi-font-family:"Times New Roman";color:black'>&nbsp;&nbsp;<span
+style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Ecrire
+&nbsp;« <span class=SpellE>pip</span> <span class=SpellE>install</span> <span
+class=SpellE>bottle</span> » directement dans le projet ou faire « <span
+class=SpellE>wget</span> http://bottlepy.org/bottle.py » dans le dossier du
+projet.</span><span style='font-size:10.0pt;font-family:Times;mso-bidi-font-family:
+"Times New Roman"'><o:p></o:p></span></p>
 
 <p class=MsoNormal style='margin-top:14.0pt;margin-right:0mm;margin-bottom:
 4.0pt;margin-left:0mm;text-indent:36.0pt;mso-outline-level:3'><span
@@ -518,7 +530,3 @@ font-family:Times;mso-bidi-font-family:"Times New Roman"'><o:p></o:p></span></p>
 <p class=MsoNormal><o:p>&nbsp;</o:p></p>
 
 </div>
-
-</body>
-
-</html>
