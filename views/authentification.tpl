@@ -1,4 +1,4 @@
-%include('header_init.tpl', heading='Athentification')
+%include('header_init.tpl', heading='Authentification')
 
 
 <div class="alert alert-danger" role="alert" id="info" >
