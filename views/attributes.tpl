@@ -2,7 +2,7 @@
 
 <br />
 <br />
-<h2 style="display:inline-block; margin-right: 40px;"> Delete current simulation: </h2>
+<h2 style="display:inline-block; margin-right: 40px;"> Delete current assessments: </h2>
 <button type="button" class="btn btn-default del_simu">Delete</button>
 <h2> List of current attributes: </h2>
 <table class="table">
@@ -13,7 +13,7 @@
     <th>Unit</th>
     <th>Values</th>
     <th>Method</th> 
-    <th><img src='/static/img/delete.ico' style='width:16px;'/></th>
+    <th><img src='/static/img/delete.ico' style='width:16px;' class="del_simu"/></th>
     </tr>
   </thead>
   <tbody id="table_attributes">
@@ -34,25 +34,24 @@
         <input type="text" class="form-control" id="att_unit" placeholder="Unit">
     </div>
     <div class="form-group">
-        <label for="att_value_min">Value Min:</label>
+        <label for="att_value_min">Min value:</label>
         <input type="text"  class="form-control" id="att_value_min" placeholder="Value">
     </div>
     <div class="form-group">
-        <label for="att_value_max">Value Max:</label>
+        <label for="att_value_max">Max value:</label>
         <input type="text"  class="form-control" id="att_value_max" placeholder="Value">
     </div>
     <div class="form-group">
         <label for="att_method">Method:</label>
         <select class="form-control">
-          <option>PE</option>
-          <option>LE</option>
-          <option>CE_Constant_Prob</option>
-          <option>CE Variable Prob.</option>
+          <option>Probability Equivalence</option>
+          <option>Lottery Equivalence</option>
+          <option>Certainty Equivalence - Constant Probability</option>
         </select>
     </div>
     <div class="checkbox">
         <label>
-          <input name="mode" type="checkbox"> The min value is optimal
+          <input name="mode" type="checkbox"> The min value is preferred (decreasing utility function)
         </label>
     </div>
 
@@ -67,6 +66,7 @@
     $(function() {
 
        $('.del_simu').click(function() {
+            if(confirm("Are you sure ?") == false){return};
             localStorage.clear();
             window.location.reload();
         });
@@ -125,7 +125,20 @@
             var unit = $('#att_unit').val();
             var val_min = parseInt($('#att_value_min').val());
             var val_max = parseInt($('#att_value_max').val());
-            var method = $( "select option:selected" ).text();
+                           
+            var method="PE";
+            if($( "select option:selected" ).text()=="Probability Equivalence")
+            {
+                method="PE";
+            }
+            else if($( "select option:selected" ).text()=="Lottery Equivalence")
+            {
+                method="LE";
+            }
+            else if($( "select option:selected" ).text()=="Certainty Equivalence - Constant Probability")
+            {
+                method="CE_Constant_Prob";
+            }
 
             if( $('input[name=mode]').is(':checked') ) {
                 var mode = "reversed";	

@@ -84,7 +84,23 @@ $(function() {
 		{
 			$("#update_box").show("slow");
 			$("#update_attributes_number").html(NAttri);
+			if(NAttri>1)
+			{
+				$("#update_attributes_plurial").html("attributes are activated");
+			}
+			else
+				$("#update_attributes_plurial").html("attribute is activated");
+
 			$("#update_k_number").html(NK);
+			if(NK>1)
+			{
+				$("#update_k_number_plurial").html("are");
+			}
+			else
+			{
+				$("#update_k_number_plurial").html("is");
+			}
+
 		}
 
 	});

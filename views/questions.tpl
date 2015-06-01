@@ -1,13 +1,13 @@
-%include('header_init.tpl', heading='Treat attribute')
+%include('header_init.tpl', heading='Assess utility functions')
 	<div id="select">
 		<table class="table">
 			<thead>
 				<tr>
 					<th>Attribute</th>
 					<th>Method</th>
-					<th>N° questionnaires answered</th>
-					<th>Answer new questionnaire</th>
-					<th>Calulate utility function</th>
+					<th>Number of assessed points</th>
+					<th>Assess another point</th>
+					<th>Calculate utility function</th>
 				</tr>
 			</thead>
 			<tbody id="table_attributes">
@@ -40,13 +40,13 @@ $(function() {
 			continue;//we pass to the next one
 		var text = '<tr><td>' + asses_session.attributes[i].name + '</td><td>'+ asses_session.attributes[i].method + '</td><td>'+ asses_session.attributes[i].questionnaire.number +'</td>';
 		
-			text += '<td><button type="button" class="btn btn-default btn-xs answer_quest" id="q_' + asses_session.attributes[i].name  + '">Answer</button></td>';
+			text += '<td><button type="button" class="btn btn-default btn-xs answer_quest" id="q_' + asses_session.attributes[i].name  + '">Assess</button></td>';
 		
 		if (asses_session.attributes[i].questionnaire.number > 0) {
 			text += '<td><button type="button" class="btn btn-default btn-xs calc_util" id="u_' + asses_session.attributes[i].name  + '">Utility function</button></td>';
 		}
 		else{
-			text += '<td>Please answer questionnaire</td>';
+			text += '<td>No assessment yet</td>';
 		}
 		$('#table_attributes').append(text);
 	}

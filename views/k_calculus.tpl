@@ -1,12 +1,12 @@
-%include('header_init.tpl', heading='Multi Attributes')
+%include('header_init.tpl', heading='Scaling constants')
 <div class="page-header">
-  <h3>Ki computation</h3>
+  <h3>Scaling K<sub>i</sub> coefficients</h3>
 </div>
 
 <div class="alert alert-info" role="alert" id="update_box" >
   
   <button type="button" class="btn btn-info" id="update"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button>
-  <span id="update_attributes_number"></span> attributes are activated but <span id="update_k_number"></span> are used for K calculus. You need to refresh K list. All K value will be reseted.
+  <span id="update_attributes_number"></span> <span id="update_attributes_plurial">attributes are activated</span> but <span id="update_k_number"></span> <span id="update_k_number_plurial">are</span> used for the computation of the K<sub>i</sub>. You need to refresh the list of the K<sub>i</sub>. All the scaling constants’ values will be reset.
 </div>
         
 <div id="error_message">
@@ -47,7 +47,7 @@
 </div>
 
 <div class="alert alert-info" role="alert" id="calculatek_box_multiplicative" >
-  You need to calculate all ki in order to calculate K.
+  You need to calculate all k<sub>i</sub> in order to calculate K.
 </div>
 
 <div class="alert alert-info" role="alert" id="calculatek_box_multilinear" >
@@ -89,7 +89,7 @@
 
 
 <div class="page-header">
-  <h3>Calcul Utility function</h3>
+  <h3>Determine the utility function</h3>
 </div>
 
 <div style="text-align:center;" id="button_generate_list">

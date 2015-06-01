@@ -6,11 +6,11 @@
 </div>
 
 <div class="alert alert-success" role="alert" id="success" >
-      Welcome in Assess2
+      Welcome to Assess2
 </div>
 
 <div class="alert alert-success" role="alert" id="success_admin" >
-      Welcome in Assess2 password administration panel
+      Welcome to Assess2 password administration panel
 </div>
 
 

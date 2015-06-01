@@ -51,19 +51,19 @@
             <div class="collapse navbar-collapse navbar-ex1-collapse">
                 <ul class="nav navbar-nav side-nav">
                     <li class="import">
-                        <a href="{{ get_url('/import') }}"><i class="fa fa-fw fa-file"></i>Import simulation</a>
+                        <a href="{{ get_url('/import') }}"><i class="fa fa-fw fa-file"></i>Import assessment</a>
                     </li>
                     <li class="manage">
                         <a href="{{ get_url('/attributes') }}"><i class="fa fa-fw fa-file"></i>Manage attributes</a>
                     </li>
                     <li class="questions">
-                        <a href="{{ get_url('/questions') }}"><i class="fa fa-fw fa-file"></i>Treat attributes</a>
+                        <a href="{{ get_url('/questions') }}"><i class="fa fa-fw fa-file"></i>Utility assessment</a>
                     </li>
                     <li class="k">
-                        <a href="{{ get_url('/k_calculus') }}"><i class="fa fa-fw fa-file"></i>Multi attributes</a>
+                        <a href="{{ get_url('/k_calculus') }}"><i class="fa fa-fw fa-file"></i>Scaling constants</a>
                     </li>
                     <li class="export">
-                        <a href="{{ get_url('/export') }}"><i class="fa fa-fw fa-file"></i>Export simulation</a>
+                        <a href="{{ get_url('/export') }}"><i class="fa fa-fw fa-file"></i>Export assessment</a>
                     </li>
                 </ul>
             </div>
