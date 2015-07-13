@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>ASSES</title>
+    <title>ASSESS</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="{{ get_url('static', path='css/bootstrap.min.css') }}" rel="stylesheet">
@@ -43,27 +43,27 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="index.html">ASSES</a>
+                <a class="navbar-brand" href="/attributes">ASSESS</a>
             </div>
             <!-- Top Menu Items -->
-            
+
             <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
             <div class="collapse navbar-collapse navbar-ex1-collapse">
                 <ul class="nav navbar-nav side-nav">
                     <li class="import">
-                        <a href="{{ get_url('/import') }}"><i class="fa fa-fw fa-file"></i>Import simulation</a>
+                        <a href="{{ get_url('/import') }}"><i class="fa fa-fw fa-file"></i>Import assessment</a>
                     </li>
                     <li class="manage">
                         <a href="{{ get_url('/attributes') }}"><i class="fa fa-fw fa-file"></i>Manage attributes</a>
                     </li>
                     <li class="questions">
-                        <a href="{{ get_url('/questions') }}"><i class="fa fa-fw fa-file"></i>Treat attributes</a>
+                        <a href="{{ get_url('/questions') }}"><i class="fa fa-fw fa-file"></i>Utility assessment</a>
                     </li>
                     <li class="k">
-                        <a href="{{ get_url('/k_calculus') }}"><i class="fa fa-fw fa-file"></i>k calculus</a>
+                        <a href="{{ get_url('/k_calculus') }}"><i class="fa fa-fw fa-file"></i>Scaling constants</a>
                     </li>
                     <li class="export">
-                        <a href="{{ get_url('/export') }}"><i class="fa fa-fw fa-file"></i>Export simulation</a>
+                        <a href="{{ get_url('/export') }}"><i class="fa fa-fw fa-file"></i>Export assessment</a>
                     </li>
                 </ul>
             </div>

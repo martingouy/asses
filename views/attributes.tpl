@@ -2,17 +2,18 @@
 
 <br />
 <br />
-<h2 style="display:inline-block; margin-right: 40px;"> Delete current simulation: </h2>
+<h2 style="display:inline-block; margin-right: 40px;"> Delete current assessments: </h2>
 <button type="button" class="btn btn-default del_simu">Delete</button>
 <h2> List of current attributes: </h2>
 <table class="table">
   <thead>
     <tr>
-    <th>Attribut</th>
-    <th>Unité</th>
-    <th>Valeurs</th>
-    <th>Méthode</th>
-    <th>Etat</th>
+    <th style='width:50px;'>State</th>
+    <th>Attribute name</th>
+    <th>Unit</th>
+    <th>Values</th>
+    <th>Method</th> 
+    <th><img src='/static/img/delete.ico' style='width:16px;' class="del_simu"/></th>
     </tr>
   </thead>
   <tbody id="table_attributes">
@@ -33,38 +34,30 @@
         <input type="text" class="form-control" id="att_unit" placeholder="Unit">
     </div>
     <div class="form-group">
-        <label for="att_value_min">Value Min:</label>
+        <label for="att_value_min">Min value:</label>
         <input type="text"  class="form-control" id="att_value_min" placeholder="Value">
     </div>
     <div class="form-group">
-        <label for="att_value_max">Value Max:</label>
+        <label for="att_value_max">Max value:</label>
         <input type="text"  class="form-control" id="att_value_max" placeholder="Value">
     </div>
     <div class="form-group">
         <label for="att_method">Method:</label>
         <select class="form-control">
-          <option>PE</option>
-          <option>LE</option>
-          <option>CE_Constant_Prob</option>
-          <option>CE Variable Prob.</option>
+          <option>Probability Equivalence</option>
+          <option>Lottery Equivalence</option>
+          <option>Certainty Equivalence - Constant Probability</option>
         </select>
     </div>
     <div class="checkbox">
         <label>
-          <input name="mode" type="checkbox"> The min value is optimal
+          <input name="mode" type="checkbox"> The min value is preferred (decreasing utility function)
         </label>
     </div>
 
     <button type="submit" class="btn btn-default" id="submit">Submit</button>
 </div>
-<div id="delete_attribute">
-    <h2>Delete an attribute:</h2>
-    <div class="form-group">
-        <label for="att_name_del">Name:</label>
-        <input type="text" class="form-control" id="att_name_del" placeholder="Name">
-    </div>
-    <button type="submit" class="btn btn-default" id="submit_del">Delete</button>
-</div>
+
 
 %include('header_end.tpl')
 
@@ -72,30 +65,55 @@
 <script>
     $(function() {
 
-        $('.del_simu').click(function() {
+       $('.del_simu').click(function() {
+            if(confirm("Are you sure ?") == false){return};
             localStorage.clear();
             window.location.reload();
         });
+
 
         $('li.manage').addClass("active");
         var asses_session = JSON.parse(localStorage.getItem("asses_session"));
 
         
         if (!asses_session){
-            asses_session = {"attributes": [], "k_calculus": {"nb_quest": 0, "k" :[]} };
+            asses_session = {"attributes": [], "k_calculus": [{"method":"multiplicative", "active":"false", "k":[], "GK":null, "GU":null},{"method":"multilinear","active":"false", "k":[], "GK":null, "GU":null}]};
             localStorage.setItem("asses_session", JSON.stringify(asses_session));
         }
 
-        function sync_table() {
-            var text_table = '';
+        function sync_table() { 
+			$('#table_attributes').empty();
             if (asses_session){
                 for (var i=0; i < asses_session.attributes.length; i++) {
                     var attribute = asses_session.attributes[i];
-                    text_table += '<tr><td>'+ attribute.name +'</td><td>'+ attribute.unit +'</td><td>['+ attribute.val_min +','+ attribute.val_max +']</td><td>'+ attribute.method +'</td><td>'+ attribute.completed +'</td></tr>';
+					var text_table="<tr>";
+					if(attribute.checked)
+						text_table+='<td><input type="checkbox" id="checkbox_'+i+'" value="'+i+'" name="' + attribute.name + '" checked></td>';
+					else
+						text_table+='<td><input type="checkbox" id="checkbox_'+i+'" value="'+i+'" name="' + attribute.name + '" ></td>';
+			
+				
+			
+                    text_table += '<td>'+ attribute.name +'</td><td>'+ attribute.unit +'</td><td>['+ attribute.val_min +','+ attribute.val_max +']</td><td>'+ attribute.method +'</td>';
+					text_table+='<td><img id="deleteK'+i+'" src="/static/img/delete.ico" style="width:16px;"/></td></tr>';
+					
+					$('#table_attributes').append(text_table);
+					
+					//we will define the action when we click on the check input
+					$('#checkbox_'+i).click(function(){checked_button_clicked($(this))});
+			
+					(function(_i){
+					$('#deleteK'+_i).click(function(){
+					    if(confirm("Are you sure ?") == false){return};
+						asses_session.attributes.splice(_i,1); 
+						// backup local
+						localStorage.setItem("asses_session", JSON.stringify(asses_session));
+						//refresh the page
+						window.location.reload();
+						});
+					})(i);
                 }
 
-                $('#table_attributes').children().remove();
-                $('#table_attributes').append(text_table);
             }
         }
         sync_table();
@@ -107,7 +125,20 @@
             var unit = $('#att_unit').val();
             var val_min = parseInt($('#att_value_min').val());
             var val_max = parseInt($('#att_value_max').val());
-            var method = $( "select option:selected" ).text();
+                           
+            var method="PE";
+            if($( "select option:selected" ).text()=="Probability Equivalence")
+            {
+                method="PE";
+            }
+            else if($( "select option:selected" ).text()=="Lottery Equivalence")
+            {
+                method="LE";
+            }
+            else if($( "select option:selected" ).text()=="Certainty Equivalence - Constant Probability")
+            {
+                method="CE_Constant_Prob";
+            }
 
             if( $('input[name=mode]').is(':checked') ) {
                 var mode = "reversed";	
@@ -120,10 +151,12 @@
                 alert('Please fill correctly all the fields');
             }
             else {
-                asses_session.attributes.push({"name": name, 'unit': unit, 'val_min': val_min, 'val_max': val_max, 'method': method, 'mode' : mode ,'completed': 'False', 'questionnaire': {'number': 0, 'points': [], 'utility': {}}});
+                asses_session.attributes.push({"name": name, 'unit': unit, 'val_min': val_min, 'val_max': val_max, 'method': method, 'mode' : mode ,'completed': 'False', 'checked':true, 'questionnaire': {'number': 0, 'points': [], 'utility': {}}});
                 sync_table();
                 localStorage.setItem("asses_session", JSON.stringify(asses_session));
             }
+			
+			
         });
 
         function isAttribute(name){
@@ -134,21 +167,27 @@
             }
             return [false, 0];
         }
+		
+		
+		function checked_button_clicked(element)
+		{ 
+			var checked=$(element).prop("checked");
+			var i=$(element).val();
+			
+			//we modify the propriety
+			var asses_session = JSON.parse(localStorage.getItem("asses_session"));
+			asses_session.attributes[i].checked=checked; 
+			 
+			//we update the assess_session storage 
+			localStorage.setItem("asses_session", JSON.stringify(asses_session));
+		
+		}
 
-        $('#submit_del').click(function() {
-            var name = $('#att_name_del').val();
-            if (!name) {
-                alert("Please enter a value");
-            }
-            else if (!isAttribute(name)[0]) {
-                alert("This name doesn't match any attribute, please try again");
-            }
-            else {
-                asses_session.attributes.splice(isAttribute(name)[1], 1);
-                sync_table();
-                localStorage.setItem("asses_session", JSON.stringify(asses_session));
-            }
-        });
+
+
+		
+
+        
     });
 </script>
 </body>

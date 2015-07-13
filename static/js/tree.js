@@ -12,12 +12,14 @@ var Arbre = function(id, target) {
 	this.dislayed = false;
 	this.html = 
 	'<div class="proba_tree" id=\"tree_'+ this.identifiant +'\">\
+				<span class="questions_val_mean"></span>\
             	<img src="'+ tree_image +'" class="center img_tree"></img>\
-            	<span class="questions_val_min"></span>\
-            	<span class="questions_val_max"></span>\
-            	<span class="questions_val_mean"></span>\
-            	<span class="questions_proba_haut"></span>\
-            	<span class="questions_proba_bas"></span>\
+				<div class="questions_right">\
+					<span class="questions_proba_haut"></span>\
+					<span class="questions_val_max"></span>\
+					<span class="questions_proba_bas"></span>\
+					<span class="questions_val_min"></span>\
+				</div>\
         	</div>';
 }
 

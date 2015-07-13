@@ -1,13 +1,13 @@
-%include('header_init.tpl', heading='Treat attribute')
+%include('header_init.tpl', heading='Assess utility functions')
 	<div id="select">
 		<table class="table">
 			<thead>
 				<tr>
 					<th>Attribute</th>
 					<th>Method</th>
-					<th>N° questionnaires answered</th>
-					<th>Answer new questionnaire</th>
-					<th>Calulate utility function</th>
+					<th>Number of assessed points</th>
+					<th>Assess another point</th>
+					<th>Calculate utility function</th>
 				</tr>
 			</thead>
 			<tbody id="table_attributes">
@@ -18,7 +18,6 @@
             </div>
             <div id="charts">
             	<h2>Select the regression function you want to use</h2>
-
             </div>	
 
 %include('header_end.tpl')
@@ -37,21 +36,17 @@ $(function() {
 
 	// We fill the table
 	for (var i=0; i < asses_session.attributes.length; i++){
+		if(!asses_session.attributes[i].checked)//if note activated
+			continue;//we pass to the next one
 		var text = '<tr><td>' + asses_session.attributes[i].name + '</td><td>'+ asses_session.attributes[i].method + '</td><td>'+ asses_session.attributes[i].questionnaire.number +'</td>';
-		if (asses_session.attributes[i].questionnaire.number < 3 && asses_session.attributes[i].completed == 'False') {
-			text += '<td><button type="button" class="btn btn-default btn-xs answer_quest" id="q_' + asses_session.attributes[i].name  + '">Answer</button></td>';
-		}
-		else {
-			text += '<td>Done</td>';
-		}
-		if (asses_session.attributes[i].completed == 'False'  && asses_session.attributes[i].questionnaire.number > 0) {
+		
+			text += '<td><button type="button" class="btn btn-default btn-xs answer_quest" id="q_' + asses_session.attributes[i].name  + '">Assess</button></td>';
+		
+		if (asses_session.attributes[i].questionnaire.number > 0) {
 			text += '<td><button type="button" class="btn btn-default btn-xs calc_util" id="u_' + asses_session.attributes[i].name  + '">Utility function</button></td>';
 		}
-		else if (asses_session.attributes[i].completed == 'True') {
-			text += '<td>Done</td>';
-		}
 		else{
-			text += '<td>Please answer questionnaire</td>';
+			text += '<td>No assessment yet</td>';
 		}
 		$('#table_attributes').append(text);
 	}
@@ -106,10 +101,10 @@ $(function() {
 
 				$('.container-fluid').append(
 					'<div id=\"choice\">\
-				            	<img src="{{ get_url('static', path='img/tree_choice.png') }}" class="center"></img>\
+				            	<span id="questions_val_mean"></span>\
+				            	<img src="{{ get_url("static", path="img/tree_choice.png") }}" class="center"></img>\
 				            	<span id="questions_val_min"></span>\
 				            	<span id="questions_val_max"></span>\
-				            	<span id="questions_val_mean"></span>\
 				            	<span id="questions_proba_haut"></span>\
 				            	<span id="questions_proba_bas"></span>\
 				        	</div>'
@@ -130,7 +125,7 @@ $(function() {
 					var gain_certain = parseFloat(val_min) + (parseFloat(val_max)- parseFloat(val_min)) * 3 / 4;
 					$('#questions_val_mean').append(gain_certain);
 				}
-				$('#choice').append('</div><button type="button" class="btn btn-default"><a id="gain">Gain</a></button><button type="button" class="btn btn-default"><a id="lottery">Lottery</a></button>');
+				$('#choice').append('</div><button type="button" class="btn btn-default" id="gain">Gain</button><button type="button" class="btn btn-default" id="lottery">Lottery</button>');
 
 				// FUNCTIONS
 				function sync_values() {
@@ -149,26 +144,27 @@ $(function() {
 
 					if (max_interval - min_interval <= 0.05){
 						sync_values();
-						ask_final_value();
+						ask_final_value(Math.round((max_interval + min_interval)*100/2)/100);
 					}
 					else {
 						sync_values();
 					}
 				}
 
-				function ask_final_value(){
+				function ask_final_value(val){
 					// we delete the choice div
 					$('.btn').hide();
 					$('.container-fluid').append(
 						'<div id= "final_value" style="text-align: center;"><br /><br /><p>We are almost done, please now enter the value of the probability: <br /> '+ min_interval +'\
-						 <= <input type="text" class="form-control" id="final_proba" placeholder="Probability" style="width: 100px; display: inline-block"> <= '+ max_interval +'</p><button type="button" class="btn btn-default final_validation">Validate</button></div>'
+						 <= <input type="text" class="form-control" id="final_proba" placeholder="Probability" value="'+val+'" style="width: 100px; display: inline-block"> <= '+ max_interval +'</p><button type="button" class="btn btn-default final_validation">Validate</button></div>'
 					);
+
 
 					// when the user validate
 					$('.final_validation').click(function(){
 						var final_proba = parseFloat($('#final_proba').val());
 
-						if (final_proba <= max_interval && final_proba >= min_interval) {
+						if (final_proba <= 1 && final_proba >= 0) {
 							// we save it 
 							asses_session.attributes[indice].questionnaire.points.push([gain_certain, final_proba]);
 							asses_session.attributes[indice].questionnaire.number += 1;
@@ -250,7 +246,7 @@ $(function() {
 					if (max_interval - min_interval <= 0.05){
 						arbre_gauche.questions_proba_haut = probability;
 						arbre_gauche.update();
-						ask_final_value();
+						ask_final_value(Math.round((max_interval + min_interval)*100/2)/100);
 					}
 					else {
 						arbre_gauche.questions_proba_haut = probability;
@@ -258,19 +254,19 @@ $(function() {
 					}
 				}
 
-				function ask_final_value(){
+				function ask_final_value(val){
 					$('.lottery_a').hide();
 					$('.lottery_b').hide();
 					$('.container-fluid').append(
 						'<div id= "final_value" style="text-align: center;"><br /><br /><p>We are almost done, please now enter the value of the probability: <br /> '+ min_interval +'\
-						 <= <input type="text" class="form-control" id="final_proba" placeholder="Probability" style="width: 100px; display: inline-block"> <= '+ max_interval +'</p><button type="button" class="btn btn-default final_validation">Validate</button></div>'
+						 <= <input type="text" class="form-control" id="final_proba" placeholder="Probability" value="'+val+'" style="width: 100px; display: inline-block"> <= '+ max_interval +'</p><button type="button" class="btn btn-default final_validation">Validate</button></div>'
 					);
 
 					// when the user validate
 					$('.final_validation').click(function(){
 						var final_proba = parseFloat($('#final_proba').val());
 
-						if (final_proba <= max_interval && final_proba >= min_interval) {
+						if (final_proba <= 1 && final_proba >= 0) {
 							// we save it 
 							asses_session.attributes[indice].questionnaire.points.push([arbre_droite.questions_val_max, final_proba * 2]);
 							asses_session.attributes[indice].questionnaire.number += 1;
@@ -377,7 +373,7 @@ $(function() {
 						$('.lottery').hide();
 						arbre_gauche.questions_val_mean = gain;
 						arbre_gauche.update();
-						ask_final_value();
+						ask_final_value(Math.round((max_interval + min_interval)*100/2)/100);
 					}
 					else {
 						arbre_gauche.questions_val_mean = gain;
@@ -385,12 +381,12 @@ $(function() {
 					}
 				}
 
-				function ask_final_value(){
+				function ask_final_value(val){
 					$('.lottery_a').hide();
 					$('.lottery_b').hide();
 					$('.container-fluid').append(
 						'<div id= "final_value" style="text-align: center;"><br /><br /><p>We are almost done, please now enter the value of the gain: <br /> '+ min_interval +'\
-						 <= <input type="text" class="form-control" id="final_proba" placeholder="Probability" style="width: 100px; display: inline-block"> <= '+ max_interval +'</p><button type="button" class="btn btn-default final_validation">Validate</button></div>'
+						 <= <input type="text" class="form-control" id="final_proba" placeholder="Probability" value="'+val+'" style="width: 100px; display: inline-block"> <= '+ max_interval +'</p><button type="button" class="btn btn-default final_validation">Validate</button></div>'
 					);
 
 					// when the user validate
@@ -439,7 +435,7 @@ $(function() {
 		// we store the name of the attribute
 		var name = $(this).attr('id').slice(2);
 
-		// we delete the slect div
+		// we hide the slect div
 		$('#select').hide();
 
 		// which index is it ?
@@ -465,55 +461,71 @@ $(function() {
 		}
 		json_2_send = {"type":"calc_util"};
 		json_2_send["points"] = points;
+        
+        function reduce(nombre){return Math.round(nombre*100000000)/100000000;}
+        function signe(nombre){if(nombre>=0){return "+"+nombre}else{return nombre}};
+                          
+        function addTextForm(div_function, copie)
+        {
+              var text=$('<div class="functions_text_form"><pre>'+copie+'</pre></div>');
+              var copy_button=$('<button class="btn functions_text_form" data-clipboard-text="'+copie+'" title="Click to copy me.">Copy to clipboard</button>');
+              
+              div_function.append(text);
+              div_function.append(copy_button);
+              $('#charts').append(div_function);
+              
+              var client = new ZeroClipboard(copy_button);
+              client.on( "aftercopy", function( event ) {
+                        copy_button.text("Done !");
+                        setTimeout(function(){copy_button.text("Copy to clipboard");}, 2000);
+                        } );
 
+        }
+                          
 		$.post('ajax', JSON.stringify(json_2_send), function(data) {
 
-			$.post('ajax', JSON.stringify({"type":"svg", "data": data, "min": val_min, "max": val_max, "liste_cord": points}), function(data2) {
+			$.post('ajax', JSON.stringify({"type":"svg", "data": data, "min": val_min, "max": val_max, "liste_cord": points, "width":8}), function(data2) {
 				$('#charts').append('<div id="main_graph">'+ data2+'</div>');
 
 				for (var key in data) {
 					$('#charts').show();
 					if (key == 'exp') {
-						div_function = '<div id="' + key +'" class="functions_graph"><h3 style="color:#401539">Exponential</h3><br />Coefficient of determination: ' + Math.round(data[key]['r2'] * 100) / 100 + '<br /><button type="button" class="btn btn-default b_choose">Choose</button></div>';
-						$('#charts').append(div_function);
-					}
+						var div_function = $('<div id="' + key +'" class="functions_graph"><h3 style="color:#401539">Exponential</h3><br />Coefficient of determination: ' + Math.round(data[key]['r2'] * 100) / 100 + '<br /><br/></div>');
+                        var copie=reduce(data[key]['a'])+"*exp("+signe(-reduce(data[key]['b']))+"x)"+signe(reduce(data[key]['c']));
+                        addTextForm(div_function, copie);
+                                           	}
 					else if (key == 'log') {
-						div_function = '<div id="' + key +'" class="functions_graph"><h3 style="color:#D9585A">Logarithmic</h3><br />Coefficient of determination: ' + Math.round(data[key]['r2'] * 100) / 100 + '<br /><button type="button" class="btn btn-default b_choose">Choose</button></div>';
-						$('#charts').append(div_function);
+						var div_function = $('<div id="' + key +'" class="functions_graph"><h3 style="color:#D9585A">Logarithmic</h3><br />Coefficient of determination: ' + Math.round(data[key]['r2'] * 100) / 100 + '<br /><br/></div>');
+                        var copie=reduce(data[key]['a'])+"*log("+reduce(data[key]['b'])+"x"+signe(reduce(data[key]['c']))+")"+signe(reduce(data[key]['d']));
+                        addTextForm(div_function, copie);
+                 
+						
 					}
 					else if (key == 'pow') {
-						div_function = '<div id="' + key +'" class="functions_graph"><h3 style="color:#6DA63C">Power</h3><br />Coefficient of determination: ' + Math.round(data[key]['r2'] * 100) / 100 + '<br /><button type="button" class="btn btn-default b_choose">Choose</button></div>';
-						$('#charts').append(div_function);
+						var div_function = $('<div id="' + key +'" class="functions_graph"><h3 style="color:#6DA63C">Power</h3><br />Coefficient of determination: ' + Math.round(data[key]['r2'] * 100) / 100 + '<br /><br/></div>');
+                        var copie=reduce(data[key]['a'])+"*(pow(x,"+reduce(1-data[key]['b'])+")-1)/("+reduce(1-data[key]['b'])+")"+signe(reduce(data[key]['c']));
+                        addTextForm(div_function, copie);
 					}
 					else if (key == 'quad') {
-						div_function = '<div id="' + key +'" class="functions_graph"><h3 style="color:#458C8C">Quadratic</h3><br />Coefficient of determination: ' + Math.round(data[key]['r2'] * 100) / 100 + '<br /><button type="button" class="btn btn-default b_choose">Choose</button></div>';
-						$('#charts').append(div_function);
+						var div_function = $('<div id="' + key +'" class="functions_graph"><h3 style="color:#458C8C">Quadratic</h3><br />Coefficient of determination: ' + Math.round(data[key]['r2'] * 100) / 100 + '<br /><br/></div>');
+                        var copie=reduce(data[key]['c'])+"*x"+signe(reduce(-data[key]['b']))+"*pow(x,2)"+signe(reduce(data[key]['a']));
+                        addTextForm(div_function, copie);
 					}
 					else if (key == 'lin') {
-						div_function = '<div id="' + key +'" class="functions_graph"><h3 style="color:#D9B504">Linear</h3><br />Coefficient of determination: ' + Math.round(data[key]['r2'] * 100) / 100 + '<br /><button type="button" class="btn btn-default b_choose">Choose</button></div>';
-						$('#charts').append(div_function);
+						var div_function = $('<div id="' + key +'" class="functions_graph"><h3 style="color:#D9B504">Linear</h3><br />Coefficient of determination: ' + Math.round(data[key]['r2'] * 100) / 100 + '<br /><br/></div>');
+                        var copie=reduce(data[key]['a'])+"*x"+signe(reduce(data[key]['b']));
+                        addTextForm(div_function, copie);
 					}
 				}
 
-				$('.b_choose').click(function(){
-					var selected_function = $(this).parent().attr('id');
-					
-					// we save it
-					asses_session.attributes[indice].questionnaire.utility[selected_function] = data[selected_function];
-					asses_session.attributes[indice].completed = 'True';
-					// backup local
-					localStorage.setItem("asses_session", JSON.stringify(asses_session));
-					// we reload the page
-					window.location.reload();
-
-				});
-			});
+							});
 		});
 
 	});
 });
 </script>
-
+<!-- Library to copy into clipboard -->
+<script src="{{ get_url('static', path='js/ZeroClipboard/ZeroClipboard.js') }}"></script>
 </body>
 
 </html>
